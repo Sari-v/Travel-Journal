@@ -6,6 +6,12 @@
 <meta name="theme-color" content="#faf8f4">
 <title>Meraki Paris Tour</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Meraki">
 <style>
   :root {
     --paper:#faf8f4; --card:#ffffff; --ink:#1d1d1f; --ink2:#46433c; --mut:#8e8a82;
@@ -196,6 +202,14 @@
   #moods button.sel { opacity:1; border-color:var(--green); background:var(--green-soft); transform:scale(1.06); }
   #jtext { width:100%; min-height:120px; resize:none; border:none; outline:none; background:transparent; font-family:var(--sans); font-size:16px; line-height:1.6; color:var(--ink); border-bottom:.5px solid rgba(0,0,0,.12); padding-bottom:10px; margin-bottom:16px; }
   #jtext::placeholder { color:#c4beb2; }
+  #photoStrip { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .pthumb { position:relative; width:64px; height:64px; border-radius:12px; overflow:hidden; flex-shrink:0; }
+  .pthumb img { width:100%; height:100%; object-fit:cover; }
+  .pthumb button[data-rmphoto] { position:absolute; top:3px; right:3px; width:20px; height:20px; border:none; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; font-size:10px; line-height:1; cursor:pointer; padding:0; }
+  .pthumb.add { display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--chip); border:1px dashed #c9c2b4; color:var(--mut); font-size:18px; cursor:pointer; }
+  .pthumb.add span { font-size:9px; font-weight:600; letter-spacing:.04em; }
+  .jphotos { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .jphotos img { width:74px; height:74px; object-fit:cover; border-radius:10px; }
   #sheet .s-row { display:flex; gap:10px; }
   #jsave { flex:1; background:var(--ink); color:#fff; border:none; border-radius:999px; padding:15px 0; font-family:var(--sans); font-weight:600; font-size:15px; cursor:pointer; }
   #jcancel { background:transparent; color:var(--mut); border:none; padding:0 16px; font-size:14px; font-weight:600; cursor:pointer; }
@@ -287,6 +301,8 @@
     <div class="s-date" id="sheetDate"></div>
     <div id="moods"></div>
     <textarea id="jtext" placeholder="What do you see, taste, feel right now…"></textarea>
+    <div id="photoStrip"></div>
+    <input id="photoInput" type="file" accept="image/*" capture="environment" multiple hidden>
     <div class="s-row">
       <button id="jsave">Keep this moment</button>
       <button id="jcancel">Later</button>
@@ -705,6 +721,74 @@ function renderSaved() {
   });
 }
 
+/* ---------- photos (IndexedDB, on-device) ---------- */
+let photoCache = {};
+let sheetPhotos = [];
+let _idb = null;
+function idb() {
+  if (_idb) return _idb;
+  _idb = new Promise((res, rej) => {
+    const r = indexedDB.open('meraki-journal', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('photos', { keyPath: 'id' });
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+  return _idb;
+}
+async function loadPhotos() {
+  try {
+    const db = await idb();
+    await new Promise(res => {
+      const q = db.transaction('photos').objectStore('photos').getAll();
+      q.onsuccess = () => { (q.result || []).forEach(rec => photoCache[rec.id] = rec.photos); res(); };
+      q.onerror = () => res();
+    });
+  } catch (_) {}
+}
+async function savePhotos(id, photos) {
+  if (!photos || !photos.length) { return deletePhotos(id); }
+  photoCache[id] = photos;
+  try { const db = await idb(); db.transaction('photos', 'readwrite').objectStore('photos').put({ id, photos }); } catch (_) {}
+}
+async function deletePhotos(id) {
+  delete photoCache[id];
+  try { const db = await idb(); db.transaction('photos', 'readwrite').objectStore('photos').delete(id); } catch (_) {}
+}
+function compressImage(file) {
+  return new Promise(res => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 1280; let w = img.width, h = img.height;
+        if (w > h && w > max) { h = h * max / w; w = max; } else if (h > max) { w = w * max / h; h = max; }
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        res(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = () => res(null);
+      img.src = reader.result;
+    };
+    reader.onerror = () => res(null);
+    reader.readAsDataURL(file);
+  });
+}
+function renderPhotoStrip() {
+  const strip = $('#photoStrip');
+  if (!strip) return;
+  strip.innerHTML = sheetPhotos.map((src, i) => `<div class="pthumb"><img src="${src}" alt=""><button data-rmphoto="${i}">✕</button></div>`).join('')
+    + `<button id="addPhotoBtn" class="pthumb add" type="button">＋<span>Photo</span></button>`;
+  strip.querySelector('#addPhotoBtn').onclick = () => $('#photoInput').click();
+  strip.querySelectorAll('[data-rmphoto]').forEach(b => b.onclick = () => { sheetPhotos.splice(+b.dataset.rmphoto, 1); renderPhotoStrip(); });
+}
+if ($('#photoInput')) $('#photoInput').onchange = async (ev) => {
+  const files = [...ev.target.files].slice(0, 6);
+  for (const f of files) { const d = await compressImage(f); if (d) sheetPhotos.push(d); }
+  ev.target.value = '';
+  renderPhotoStrip();
+};
+loadPhotos().then(() => renderJournal());
+
 /* ---------- journal ---------- */
 let sheetPlace = null;
 let sheetMood = MOODS[0];
@@ -727,6 +811,8 @@ function openSheet(place, entry) {
   $('#sheetPlace').textContent = place ? place.name : ('Somewhere in ' + cityMeta(activeCity).name);
   $('#sheetDate').textContent = fmtDay(entry ? entry.ts : Date.now()) + ' · ' + fmtTime(entry ? entry.ts : Date.now());
   $('#jtext').value = entry ? entry.text : '';
+  sheetPhotos = (entry && photoCache[entry.id]) ? [...photoCache[entry.id]] : [];
+  renderPhotoStrip();
   moodsEl.querySelectorAll('button').forEach((x, i) => x.classList.toggle('sel', MOODS[i] === sheetMood));
   $('#sheetWrap').classList.add('open');
   setTimeout(() => $('#jtext').focus(), 350);
@@ -736,13 +822,17 @@ $('#sheetScrim').onclick = closeSheet;
 $('#jcancel').onclick = closeSheet;
 $('#jsave').onclick = () => {
   const text = $('#jtext').value.trim();
-  if (!text) { toast('Write a little something first'); return; }
+  if (!text && !sheetPhotos.length) { toast('Write a little something first'); return; }
+  let id;
   if (editingId) {
+    id = editingId;
     const e = journal.find(x => x.id === editingId);
     if (e) { e.text = text; e.mood = sheetMood; }
   } else {
-    journal.push({ id:'j'+Date.now(), city:activeCity, placeId:sheetPlace?sheetPlace.id:null, placeName:sheetPlace?sheetPlace.name:('Somewhere in '+cityMeta(activeCity).name), text, mood:sheetMood, ts:Date.now() });
+    id = 'j' + Date.now();
+    journal.push({ id, city:activeCity, placeId:sheetPlace?sheetPlace.id:null, placeName:sheetPlace?sheetPlace.name:('Somewhere in '+cityMeta(activeCity).name), text, mood:sheetMood, ts:Date.now() });
   }
+  savePhotos(id, sheetPhotos);
   persist();
   closeSheet();
   renderJournal();
@@ -770,6 +860,7 @@ function renderJournal() {
         <div class="jcard" data-jid="${e.id}">
           <div class="jhead"><span class="jmood">${e.mood}</span><h3>${e.placeName}</h3><span class="jtime">${fmtTime(e.ts)}</span></div>
           <p>${e.text.replace(/</g,'&lt;')}</p>
+          ${(photoCache[e.id]&&photoCache[e.id].length)?`<div class="jphotos">${photoCache[e.id].map(src=>`<img src="${src}" alt="">`).join('')}</div>`:''}
           <div class="jacts"><button data-jedit="${e.id}">Edit</button><button data-jdel="${e.id}">Delete</button></div>
         </div>`;
     }
@@ -791,6 +882,7 @@ function renderJournal() {
     openSheet(PLACES.find(p => p.id === e.placeId) || { name: e.placeName }, e);
   });
   wrap.querySelectorAll('[data-jdel]').forEach(b => b.onclick = () => {
+    deletePhotos(b.dataset.jdel);
     journal = journal.filter(x => x.id !== b.dataset.jdel);
     persist(); renderJournal(); toast('Moment removed');
   });
@@ -823,6 +915,7 @@ function exportJournalFile() {
       writtenAt: new Date(e.ts).toISOString(),
       mood: e.mood,
       note: e.text,
+      photos: photoCache[e.id] || [],
       place: {
         name: e.placeName, id: e.placeId || null,
         category: p.category || null, subcategory: p.subcategory || null,
@@ -958,6 +1051,11 @@ document.addEventListener('click', e => {
   if (b) { e.stopPropagation(); speakPlace(b.dataset.speak); }
 });
 if ('speechSynthesis' in window) speechSynthesis.getVoices();
+
+/* ---------- PWA service worker ---------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 
 /* ---------- nav ---------- */
 document.querySelectorAll('nav button').forEach(b => {
