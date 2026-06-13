@@ -5,3 +5,4 @@ node_modules/
 app/demos.html
 app/demos2.html
 app/demo-*.html
+.gstack/

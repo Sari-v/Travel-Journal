@@ -30,6 +30,8 @@
   .l-title span { color:var(--green); }
   .l-gold { width:44px; height:2px; background:linear-gradient(90deg,#b08d3e,#d8bc7a); border-radius:2px; margin:20px auto; animation-delay:.34s; }
   .l-sub { font-size:16px; color:var(--mut); max-width:280px; line-height:1.5; letter-spacing:-0.01em; animation-delay:.42s; }
+  .l-quote { font-size:19px; line-height:1.5; color:var(--ink2); max-width:300px; margin:22px auto 0; font-weight:500; font-style:italic; letter-spacing:-0.01em; animation-delay:.42s; }
+  .l-quote .l-qa { display:block; margin-top:12px; font-size:11.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; font-style:normal; color:var(--gold); }
   .l-stats { display:flex; gap:30px; margin:30px 0 36px; animation-delay:.54s; }
   .l-stat b { font-size:22px; font-weight:700; letter-spacing:-0.02em; display:block; }
   .l-stat span { font-size:11px; font-weight:500; color:var(--mut); text-transform:uppercase; letter-spacing:0.08em; }
@@ -204,13 +206,11 @@
   <svg class="bigeiffel" viewBox="0 0 40 58" fill="none">
     <path d="M20 2 L24 28 L34 54 M20 2 L16 28 L6 54 M11 38 L29 38 M14 24 L26 24 M6 54 Q20 46 34 54" stroke="#b08d3e" stroke-width="0.7" stroke-linecap="round"/>
   </svg>
-  <div class="l-greet l-rev">Made for Ramya</div>
   <h1 class="l-title l-rev">Meraki<br><span>Paris Tour.</span></h1>
-  <div class="l-gold l-rev"></div>
-  <p class="l-sub l-rev">A city gathered with soul — swipe what calls to you, hear every story, and keep a journal of every moment.</p>
+  <p class="l-quote l-rev" id="lQuote"></p>
   <div class="l-stats l-rev">
-    <div class="l-stat"><b>184</b><span>Places</span></div>
-    <div class="l-stat"><b>9</b><span>Worlds</span></div>
+    <div class="l-stat"><b id="statPlaces">0</b><span>Places</span></div>
+    <div class="l-stat"><b id="statWorlds">0</b><span>Worlds</span></div>
     <div class="l-stat"><b>∞</b><span>Moments</span></div>
   </div>
   <button id="enterBtn" class="l-rev">Let's go</button>
@@ -381,13 +381,39 @@ async function loadImg(p, ph) {
 }
 
 /* ---------- landing ---------- */
+const QUOTES = [
+  ['Paris is always a good idea.', 'Audrey Hepburn'],
+  ['To travel is to live.', 'Hans Christian Andersen'],
+  ['The world is a book, and those who do not travel read only one page.', 'Saint Augustine'],
+  ['We travel not to escape life, but for life not to escape us.', 'Anonymous'],
+  ['Travel makes one modest. You see what a tiny place you occupy in the world.', 'Gustave Flaubert'],
+  ['Once a year, go somewhere you have never been before.', 'Dalai Lama'],
+  ['Wherever you go becomes a part of you somehow.', 'Anita Desai'],
+  ['Live your life by a compass, not a clock.', 'Stephen Covey'],
+];
+function animCount(el, to, ms) {
+  if (!el) return;
+  const start = performance.now();
+  (function step(now) {
+    const t = Math.min(1, (now - start) / ms);
+    el.textContent = Math.round((1 - Math.pow(1 - t, 3)) * to);
+    if (t < 1) requestAnimationFrame(step);
+  })(start);
+}
+function initLanding() {
+  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  $('#lQuote').innerHTML = '“' + q[0] + '”<span class="l-qa">' + q[1] + '</span>';
+  animCount($('#statPlaces'), PLACES.length, 1000);
+  animCount($('#statWorlds'), Object.keys(CATS).length, 1000);
+}
 if (localStorage.getItem('pe_entered')) $('#landing').classList.add('hidden');
+else initLanding();
 $('#enterBtn').onclick = () => {
   $('#landing').classList.add('hidden');
   localStorage.setItem('pe_entered','1');
   if (!localStorage.getItem('pe_guided')) setTimeout(() => openGuide(), 450);
 };
-$('#logoBtn').onclick = () => $('#landing').classList.remove('hidden');
+$('#logoBtn').onclick = () => { $('#landing').classList.remove('hidden'); initLanding(); };
 
 /* ---------- guide / walkthrough ---------- */
 const GUIDE_STEPS = [
