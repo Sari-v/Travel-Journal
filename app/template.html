@@ -65,6 +65,24 @@
   #guide .g-btns { display:flex; gap:10px; align-items:center; }
   #guide #gSkip { background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer; padding:14px 18px; }
   #guide #gNext { flex:1; background:var(--ink); color:#fff; border:none; border-radius:999px; padding:15px 0; font-family:var(--sans); font-size:15px; font-weight:600; cursor:pointer; }
+
+  /* ===== CITY PICKER ===== */
+  #citySheetWrap { position:fixed; inset:0; z-index:620; display:none; }
+  #citySheetWrap.open { display:block; }
+  #citySheetWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #citySheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); max-height:82vh; overflow-y:auto; }
+  #citySheetWrap.open #citySheet { transform:none; }
+  #citySheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  #citySheet .s-eyebrow { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  #citySheet h2 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin-bottom:14px; }
+  .city-row { display:flex; align-items:center; gap:13px; width:100%; text-align:left; background:var(--card); border:.5px solid var(--line); border-radius:16px; padding:13px 15px; margin-bottom:9px; cursor:pointer; font-family:var(--sans); }
+  .city-row.on { border-color:var(--green); background:var(--green-soft); }
+  .city-flag { font-size:24px; line-height:1; }
+  .city-info { display:flex; flex-direction:column; }
+  .city-info b { font-size:16px; font-weight:650; letter-spacing:-0.01em; color:var(--ink); }
+  .city-info span { font-size:12.5px; color:var(--mut); }
+  .city-check { margin-left:auto; color:var(--green); font-weight:700; }
+  .city-add { margin-top:14px; font-size:13px; line-height:1.5; color:var(--mut); text-align:center; }
   #filters { display:flex; gap:8px; overflow-x:auto; padding:14px 20px; flex-shrink:0; scrollbar-width:none; position:relative; z-index:2; }
   #filters::-webkit-scrollbar { display:none; }
   .chip { background:var(--chip); border:none; border-radius:999px; padding:9px 16px; font-family:var(--sans); font-size:14px; font-weight:500; color:#3c3a35; white-space:nowrap; cursor:pointer; flex-shrink:0; }
@@ -206,7 +224,7 @@
   <svg class="bigeiffel" viewBox="0 0 40 58" fill="none">
     <path d="M20 2 L24 28 L34 54 M20 2 L16 28 L6 54 M11 38 L29 38 M14 24 L26 24 M6 54 Q20 46 34 54" stroke="#b08d3e" stroke-width="0.7" stroke-linecap="round"/>
   </svg>
-  <h1 class="l-title l-rev">Meraki<br><span>Paris Tour.</span></h1>
+  <h1 class="l-title l-rev">Meraki<br><span id="lCity">Paris.</span></h1>
   <p class="l-quote l-rev" id="lQuote"></p>
   <div class="l-stats l-rev">
     <div class="l-stat"><b id="statPlaces">0</b><span>Places</span></div>
@@ -218,9 +236,9 @@
 </div>
 
 <header>
-  <div class="wm" id="logoBtn">
+  <div class="wm" id="cityBtn">
     <svg width="13" height="18" viewBox="0 0 13 18" fill="none"><path d="M6.5 0.5 L8.2 9 L11.8 16 M6.5 0.5 L4.8 9 L1.2 16 M3.6 11.5 L9.4 11.5 M4.6 7.5 L8.4 7.5 M1.2 16 L4.4 13.8 Q6.5 12.6 8.6 13.8 L11.8 16" stroke="#1d1d1f" stroke-width="1.1" stroke-linecap="round"/></svg>
-    Meraki Paris
+    Meraki · <span id="cityName">Paris</span> <span style="color:var(--mut);font-size:11px">▾</span>
   </div>
   <div style="display:flex; gap:8px; align-items:center;">
     <button id="helpBtn" aria-label="How it works">?</button>
@@ -276,6 +294,17 @@
   </div>
 </div>
 
+<div id="citySheetWrap">
+  <div class="scrim" id="cityScrim"></div>
+  <div id="citySheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">Your trips</div>
+    <h2>Where to?</h2>
+    <div id="cityList"></div>
+    <p class="city-add">Going somewhere new? Ask Claude to add your next city — it researches every place in the same format and drops it right in.</p>
+  </div>
+</div>
+
 <div id="guide">
   <div class="g-card">
     <div class="g-ico" id="gIco">◉</div>
@@ -295,7 +324,15 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const DATA = /*__PLACES_DATA__*/;
-const PLACES = DATA.places;
+const CITIES = DATA.manifest;
+const ALL = {};
+for (const c of CITIES) {
+  ALL[c.id] = DATA.cities[c.id].places.map(p => ({ ...p, id: c.id + '/' + p.id, _rawId: p.id, city: c.id }));
+}
+function cityMeta(id) { return CITIES.find(c => c.id === id) || CITIES[0]; }
+let activeCity = localStorage.getItem('pe_city');
+if (!activeCity || !ALL[activeCity]) activeCity = CITIES[0].id;
+let PLACES = ALL[activeCity];
 
 const CATS = {
   food:       { label: 'Food',        color: '#b06a2c' },
@@ -316,6 +353,18 @@ let activeCats = new Set(Object.keys(CATS));
 let seen = new Set(JSON.parse(localStorage.getItem('pe_seen') || '[]'));
 let saved = new Set(JSON.parse(localStorage.getItem('pe_saved') || '[]'));
 let journal = JSON.parse(localStorage.getItem('pe_journal') || '[]');
+(function migrateToCities() {
+  let changed = false;
+  const fix = s => (typeof s === 'string' && s.includes('/')) ? s : 'paris/' + s;
+  if ([...seen].some(s => !String(s).includes('/'))) { seen = new Set([...seen].map(fix)); changed = true; }
+  if ([...saved].some(s => !String(s).includes('/'))) { saved = new Set([...saved].map(fix)); changed = true; }
+  journal.forEach(e => { if (!e.city) { e.city = 'paris'; if (e.placeId && !String(e.placeId).includes('/')) e.placeId = 'paris/' + e.placeId; changed = true; } });
+  if (changed) {
+    localStorage.setItem('pe_seen', JSON.stringify([...seen]));
+    localStorage.setItem('pe_saved', JSON.stringify([...saved]));
+    localStorage.setItem('pe_journal', JSON.stringify(journal));
+  }
+})();
 let nudgeSnooze = JSON.parse(localStorage.getItem('pe_snooze') || '{}');
 let imgCache = JSON.parse(localStorage.getItem('pe_imgs2') || '{}');
 let queue = [];
@@ -335,8 +384,9 @@ function persist() {
   localStorage.setItem('pe_saved', JSON.stringify([...saved]));
   localStorage.setItem('pe_journal', JSON.stringify(journal));
   localStorage.setItem('pe_snooze', JSON.stringify(nudgeSnooze));
-  $('#savedDot').dataset.n = saved.size;
-  $('#journalDot').dataset.n = journal.length;
+  localStorage.setItem('pe_city', activeCity);
+  $('#savedDot').dataset.n = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
+  $('#journalDot').dataset.n = journal.filter(e => e.city === activeCity).length;
 }
 function haversine(a, b) {
   const R = 6371, rad = x => x * Math.PI / 180;
@@ -413,7 +463,7 @@ $('#enterBtn').onclick = () => {
   localStorage.setItem('pe_entered','1');
   if (!localStorage.getItem('pe_guided')) setTimeout(() => openGuide(), 450);
 };
-$('#logoBtn').onclick = () => { $('#landing').classList.remove('hidden'); initLanding(); };
+/* wordmark is now the city picker (#cityBtn); landing shows on first run */
 
 /* ---------- guide / walkthrough ---------- */
 const GUIDE_STEPS = [
@@ -585,11 +635,16 @@ $('#resetBtn').onclick = () => { seen = new Set(); persist(); rebuild(); toast('
 let map, userMarker;
 const markers = [];
 function initMap() {
-  map = L.map('map', { zoomControl: false }).setView([48.8584, 2.3340], 13);
+  map = L.map('map', { zoomControl: false }).setView(cityMeta(activeCity).center, 13);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
   }).addTo(map);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
+  drawMarkers();
+}
+function drawMarkers() {
+  markers.forEach(m => m.remove());
+  markers.length = 0;
   for (const p of PLACES) {
     const c = CATS[p.category];
     const m = L.circleMarker([p.lat, p.lng], {
@@ -669,7 +724,7 @@ function openSheet(place, entry) {
   sheetPlace = place;
   editingId = entry ? entry.id : null;
   sheetMood = entry ? entry.mood : MOODS[0];
-  $('#sheetPlace').textContent = place ? place.name : 'Somewhere in Paris';
+  $('#sheetPlace').textContent = place ? place.name : ('Somewhere in ' + cityMeta(activeCity).name);
   $('#sheetDate').textContent = fmtDay(entry ? entry.ts : Date.now()) + ' · ' + fmtTime(entry ? entry.ts : Date.now());
   $('#jtext').value = entry ? entry.text : '';
   moodsEl.querySelectorAll('button').forEach((x, i) => x.classList.toggle('sel', MOODS[i] === sheetMood));
@@ -686,7 +741,7 @@ $('#jsave').onclick = () => {
     const e = journal.find(x => x.id === editingId);
     if (e) { e.text = text; e.mood = sheetMood; }
   } else {
-    journal.push({ id:'j'+Date.now(), placeId:sheetPlace?sheetPlace.id:null, placeName:sheetPlace?sheetPlace.name:'Somewhere in Paris', text, mood:sheetMood, ts:Date.now() });
+    journal.push({ id:'j'+Date.now(), city:activeCity, placeId:sheetPlace?sheetPlace.id:null, placeName:sheetPlace?sheetPlace.name:('Somewhere in '+cityMeta(activeCity).name), text, mood:sheetMood, ts:Date.now() });
   }
   persist();
   closeSheet();
@@ -695,16 +750,18 @@ $('#jsave').onclick = () => {
 };
 function renderJournal() {
   const wrap = $('#journalList');
-  let html = `<div class="section-title">Journal</div><div class="section-sub">Every moment, in her words</div>
+  const mine = journal.filter(e => e.city === activeCity);
+  const cm = cityMeta(activeCity);
+  let html = `<div class="section-title">${cm.name} journal</div><div class="section-sub">${mine.length ? mine.length + ' moment' + (mine.length>1?'s':'') + ' on this trip' : 'Every moment of this trip'}</div>
     <div id="journalTop">
       <button id="newEntryBtn">New moment</button>
       <button id="shareBtn">Share</button>
       <button id="exportBtn">Export file</button>
     </div>`;
-  if (!journal.length) {
+  if (!mine.length) {
     html += `<div class="empty-note"><span class="big">Your story starts here</span>When you arrive somewhere you saved, I'll ask how it felt.<br>Or tap "New moment" anytime.</div>`;
   } else {
-    const sorted = [...journal].sort((a, b) => b.ts - a.ts);
+    const sorted = [...mine].sort((a, b) => b.ts - a.ts);
     let lastDay = '';
     for (const e of sorted) {
       const day = fmtDay(e.ts);
@@ -739,10 +796,12 @@ function renderJournal() {
   });
 }
 function exportJournal() {
-  if (!journal.length) { toast('No moments yet'); return; }
-  const sorted = [...journal].sort((a, b) => a.ts - b.ts);
+  const mine = journal.filter(e => e.city === activeCity);
+  if (!mine.length) { toast('No moments yet'); return; }
+  const cm = cityMeta(activeCity);
+  const sorted = [...mine].sort((a, b) => a.ts - b.ts);
   const days = [...new Set(sorted.map(e => fmtDay(e.ts)))];
-  let out = `MERAKI PARIS TOUR\nRamya's Paris journal — ${journal.length} moment${journal.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
+  let out = `MERAKI · ${cm.name.toUpperCase()}\nRamya's ${cm.name} journal — ${mine.length} moment${mine.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
   let lastDay = '';
   for (const e of sorted) {
     const day = fmtDay(e.ts);
@@ -750,13 +809,15 @@ function exportJournal() {
     out += `\n${e.mood} ${e.placeName} · ${fmtTime(e.ts)}\n${e.text}\n`;
   }
   out += `\n— fin —`;
-  if (navigator.share) navigator.share({ title: "Ramya's Paris journal", text: out }).catch(() => {});
+  if (navigator.share) navigator.share({ title: "Ramya's " + cm.name + " journal", text: out }).catch(() => {});
   else navigator.clipboard.writeText(out).then(() => toast('Journal copied to clipboard'));
 }
 // Structured export — the file Claude can later turn into a full journal / scrapbook
 function exportJournalFile() {
+  const cm = cityMeta(activeCity);
+  const mine = journal.filter(e => e.city === activeCity);
   const byId = Object.fromEntries(PLACES.map(p => [p.id, p]));
-  const moments = [...journal].sort((a, b) => a.ts - b.ts).map(e => {
+  const moments = [...mine].sort((a, b) => a.ts - b.ts).map(e => {
     const p = byId[e.placeId] || {};
     return {
       writtenAt: new Date(e.ts).toISOString(),
@@ -771,16 +832,18 @@ function exportJournalFile() {
       },
     };
   });
-  const visitedIds = new Set(journal.map(e => e.placeId).filter(Boolean));
+  const visitedIds = new Set(mine.map(e => e.placeId).filter(Boolean));
   const savedNotVisited = PLACES.filter(p => saved.has(p.id) && !visitedIds.has(p.id))
     .map(p => ({ name: p.name, id: p.id, category: p.category, neighborhood: p.neighborhood, address: p.address, lat: p.lat, lng: p.lng }));
-  const days = [...new Set(journal.map(e => fmtDay(e.ts)))];
+  const days = [...new Set(mine.map(e => fmtDay(e.ts)))];
   const data = {
-    app: 'Meraki Paris Tour',
+    app: 'Meraki Travels',
     traveller: 'Ramya',
+    city: cm.name,
+    country: cm.country,
     exportedAt: new Date().toISOString(),
-    purpose: 'Feed this file to Claude to generate a full Paris travel journal, scrapbook, or trip recap. "moments" are places she visited and wrote about; "savedNotVisited" are places she loved but has not journaled yet.',
-    stats: { momentsWritten: journal.length, daysWithMoments: days.length, totalSaved: saved.size, visited: visitedIds.size },
+    purpose: 'Feed this file to Claude to generate a full travel journal, scrapbook, or trip recap for this city. "moments" are places visited and written about; "savedNotVisited" are places loved but not yet journaled.',
+    stats: { momentsWritten: mine.length, daysWithMoments: days.length, totalSaved: savedNotVisited.length + visitedIds.size, visited: visitedIds.size },
     moments,
     savedNotVisited,
   };
@@ -788,10 +851,10 @@ function exportJournalFile() {
   const stamp = new Date().toISOString().slice(0, 10);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `meraki-paris-journal-${stamp}.json`;
+  a.download = `meraki-${activeCity}-journal-${stamp}.json`;
   document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  toast(journal.length ? 'Journal file saved' : 'Empty journal saved');
+  toast(mine.length ? 'Journal file saved' : 'Empty journal saved');
 }
 
 /* ---------- proximity nudge ---------- */
@@ -912,6 +975,46 @@ document.querySelectorAll('nav button').forEach(b => {
     if (b.dataset.view === 'journalView') renderJournal();
   };
 });
+
+/* ---------- city picker ---------- */
+function fmtCityStats(id) {
+  const sc = [...saved].filter(k => k.startsWith(id + '/')).length;
+  const jc = journal.filter(e => e.city === id).length;
+  const parts = [];
+  if (sc) parts.push(sc + ' saved');
+  if (jc) parts.push(jc + ' moment' + (jc > 1 ? 's' : ''));
+  return parts.length ? parts.join(' · ') : (cityMeta(id).count + ' places');
+}
+function renderCityList() {
+  $('#cityList').innerHTML = CITIES.map(c => `
+    <button class="city-row${c.id === activeCity ? ' on' : ''}" data-city="${c.id}">
+      <span class="city-flag">${c.emoji || '📍'}</span>
+      <span class="city-info"><b>${c.name}</b><span>${c.country} · ${fmtCityStats(c.id)}</span></span>
+      ${c.id === activeCity ? '<span class="city-check">✓</span>' : ''}
+    </button>`).join('');
+  $('#cityList').querySelectorAll('[data-city]').forEach(b => b.onclick = () => switchCity(b.dataset.city));
+}
+function openCitySheet() { renderCityList(); $('#citySheetWrap').classList.add('open'); }
+function closeCitySheet() { $('#citySheetWrap').classList.remove('open'); }
+function switchCity(id) {
+  if (!ALL[id]) return;
+  activeCity = id; PLACES = ALL[id];
+  localStorage.setItem('pe_city', id);
+  if (speakingId) { speechSynthesis.cancel(); speakingId = null; }
+  updateCityUI();
+  if (map) { drawMarkers(); refreshMarkers(); map.setView(cityMeta(id).center, 13); }
+  rebuild(); renderJournal();
+  closeCitySheet();
+  toast('Now exploring ' + cityMeta(id).name);
+}
+function updateCityUI() {
+  const c = cityMeta(activeCity);
+  const cn = $('#cityName'); if (cn) cn.textContent = c.name;
+  const lc = $('#lCity'); if (lc) lc.textContent = c.name + '.';
+}
+$('#cityBtn').onclick = openCitySheet;
+$('#cityScrim').onclick = closeCitySheet;
+updateCityUI();
 
 function rebuild() {
   buildQueue();

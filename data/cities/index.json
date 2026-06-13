@@ -1,0 +1,12 @@
+{
+  "cities": [
+    {
+      "id": "paris",
+      "name": "Paris",
+      "country": "France",
+      "emoji": "🇫🇷",
+      "center": [48.8566, 2.3522],
+      "tagline": "Food, art, music and quiet corners — gathered with soul."
+    }
+  ]
+}
