@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#faf8f4">
+<title>Meraki Paris Tour</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --paper:#faf8f4; --card:#ffffff; --ink:#1d1d1f; --ink2:#46433c; --mut:#8e8a82;
+    --line:rgba(0,0,0,0.07); --green:#2e6e4e; --green-deep:#27513c; --green-soft:#eef0ea;
+    --gold:#b08d3e; --red:#c84b3c; --chip:#f0ede6; --r:22px;
+    --sans:-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; overflow:hidden; }
+  body { font-family:var(--sans); -webkit-font-smoothing:antialiased; background:var(--paper); color:var(--ink); display:flex; flex-direction:column; }
+  body::after { content:""; position:fixed; right:-30px; bottom:40px; width:240px; height:340px; pointer-events:none; z-index:0; opacity:0.05;
+    background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="340" viewBox="0 0 40 58" fill="none"><path d="M20 2 L24 28 L34 54 M20 2 L16 28 L6 54 M11 38 L29 38 M14 24 L26 24 M6 54 Q20 46 34 54" stroke="%23b08d3e" stroke-width="0.9" stroke-linecap="round"/></svg>') no-repeat center / contain; }
+
+  /* ===== LANDING ===== */
+  #landing { position:fixed; inset:0; z-index:500; background:var(--paper); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px; transition:opacity .5s, visibility .5s; overflow:hidden; }
+  #landing.hidden { opacity:0; visibility:hidden; pointer-events:none; }
+  #landing .bigeiffel { position:absolute; left:50%; top:50%; transform:translate(-50%,-54%); width:300px; height:430px; opacity:0.13; pointer-events:none; }
+  .l-rev { opacity:0; transform:translateY(14px); animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards; position:relative; }
+  @keyframes rise { to { opacity:1; transform:none; } }
+  .l-greet { font-size:14px; font-weight:500; color:var(--mut); animation-delay:.1s; }
+  .l-title { font-size:46px; font-weight:700; letter-spacing:-0.025em; line-height:1.06; margin-top:10px; animation-delay:.22s; }
+  .l-title span { color:var(--green); }
+  .l-gold { width:44px; height:2px; background:linear-gradient(90deg,#b08d3e,#d8bc7a); border-radius:2px; margin:20px auto; animation-delay:.34s; }
+  .l-sub { font-size:16px; color:var(--mut); max-width:280px; line-height:1.5; letter-spacing:-0.01em; animation-delay:.42s; }
+  .l-stats { display:flex; gap:30px; margin:30px 0 36px; animation-delay:.54s; }
+  .l-stat b { font-size:22px; font-weight:700; letter-spacing:-0.02em; display:block; }
+  .l-stat span { font-size:11px; font-weight:500; color:var(--mut); text-transform:uppercase; letter-spacing:0.08em; }
+  #enterBtn { background:var(--ink); color:#fff; border:none; border-radius:999px; padding:16px 44px; font-family:var(--sans); font-size:15px; font-weight:600; cursor:pointer; animation-delay:.66s; transition:transform .15s; }
+  #enterBtn:active { transform:scale(.96); }
+  .l-foot { position:absolute; bottom:28px; font-size:11px; color:#c4beb2; letter-spacing:0.06em; animation-delay:.8s; }
+
+  /* ===== SHELL ===== */
+  header { padding:18px 20px 0; display:flex; justify-content:space-between; align-items:center; flex-shrink:0; position:relative; z-index:2; }
+  .wm { font-size:15px; font-weight:600; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px; cursor:pointer; }
+  #locBtn { background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:8px 14px; font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; }
+  #locBtn.on { background:var(--green); color:#fff; }
+  #helpBtn { width:32px; height:32px; border-radius:50%; background:var(--chip); color:var(--ink2); border:none; font-family:var(--sans); font-size:15px; font-weight:600; cursor:pointer; line-height:1; }
+
+  /* ===== GUIDE / WALKTHROUGH ===== */
+  #guide { position:fixed; inset:0; z-index:700; display:none; align-items:flex-end; justify-content:center;
+    background:rgba(30,28,24,.5); backdrop-filter:blur(3px); padding:0 0 0; }
+  #guide.open { display:flex; }
+  #guide .g-card { background:var(--paper); width:100%; max-width:430px; border-radius:24px 24px 0 0;
+    padding:30px 26px calc(24px + env(safe-area-inset-bottom)); text-align:center;
+    transform:translateY(100%); transition:transform .34s cubic-bezier(.2,.8,.25,1); }
+  #guide.open .g-card { transform:none; }
+  #guide .g-ico { width:62px; height:62px; margin:0 auto 16px; border-radius:50%; background:var(--green-soft);
+    color:var(--green); display:flex; align-items:center; justify-content:center; font-size:28px; }
+  #guide .g-step { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+  #guide h2 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin-bottom:8px; }
+  #guide p { font-size:15.5px; line-height:1.55; color:var(--ink2); max-width:320px; margin:0 auto; }
+  #guide .g-dots { display:flex; gap:7px; justify-content:center; margin:22px 0; }
+  #guide .g-dots i { width:7px; height:7px; border-radius:50%; background:#d8d3c8; transition:all .2s; }
+  #guide .g-dots i.on { background:var(--green); width:20px; border-radius:99px; }
+  #guide .g-btns { display:flex; gap:10px; align-items:center; }
+  #guide #gSkip { background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer; padding:14px 18px; }
+  #guide #gNext { flex:1; background:var(--ink); color:#fff; border:none; border-radius:999px; padding:15px 0; font-family:var(--sans); font-size:15px; font-weight:600; cursor:pointer; }
+  #filters { display:flex; gap:8px; overflow-x:auto; padding:14px 20px; flex-shrink:0; scrollbar-width:none; position:relative; z-index:2; }
+  #filters::-webkit-scrollbar { display:none; }
+  .chip { background:var(--chip); border:none; border-radius:999px; padding:9px 16px; font-family:var(--sans); font-size:14px; font-weight:500; color:#3c3a35; white-space:nowrap; cursor:pointer; flex-shrink:0; }
+  .chip.active { background:var(--green); color:#fff; }
+
+  main { flex:1; position:relative; overflow:hidden; z-index:1; }
+  .view { position:absolute; inset:0; display:none; }
+  .view.active { display:block; }
+
+  /* ===== DECK ===== */
+  #deck { align-items:center; justify-content:center; }
+  #deck.active { display:flex; }
+  #stack { position:relative; width:min(92vw,400px); height:100%; max-height:680px; margin:auto; padding:2px 0 86px; }
+  .pcard { position:absolute; inset:2px 0 86px; background:var(--card); border-radius:var(--r); border:0.5px solid var(--line);
+    box-shadow:0 2px 6px rgba(40,35,25,.05), 0 20px 48px rgba(40,35,25,.13);
+    display:flex; flex-direction:column; touch-action:none; user-select:none; overflow:hidden; }
+  .ph { height:188px; flex-shrink:0; position:relative; background:linear-gradient(135deg,var(--green) 0%,var(--green-deep) 100%); }
+  .ph .fallback { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.4; }
+  .ph img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .4s; }
+  .ph.has img { opacity:1; }
+  .ph::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 50%, rgba(20,18,14,.58)); }
+  .ph .onimg { position:absolute; left:18px; right:80px; bottom:14px; color:#fff; z-index:2; }
+  .ph .cat { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; opacity:.92; }
+  .ph h2 { font-size:25px; font-weight:700; letter-spacing:-0.02em; margin-top:3px; line-height:1.08; text-shadow:0 1px 12px rgba(0,0,0,.35); }
+  .ph .dist { position:absolute; right:14px; top:14px; z-index:2; background:rgba(255,255,255,.22); backdrop-filter:blur(10px); border:.5px solid rgba(255,255,255,.4); color:#fff; border-radius:999px; padding:6px 12px; font-size:12.5px; font-weight:600; }
+  .bd { padding:14px 20px 18px; overflow-y:auto; flex:1; }
+  .where { font-size:13.5px; color:var(--mut); }
+  .row { display:flex; align-items:center; gap:11px; margin-top:8px; font-size:14px; flex-wrap:wrap; }
+  .row b { font-weight:600; }
+  .row .star { color:var(--gold); }
+  .dotsep { width:3px; height:3px; border-radius:50%; background:#d8d3c8; flex-shrink:0; }
+  .hr { height:.5px; background:linear-gradient(90deg, rgba(176,141,62,.45), rgba(176,141,62,.08)); margin:13px 0; }
+  .rev { font-size:15px; line-height:1.5; color:var(--ink2); letter-spacing:-0.01em; }
+  .miss { margin-top:11px; background:#f4f6f1; border-radius:12px; padding:11px 14px; font-size:13.5px; color:var(--green-deep); line-height:1.45; }
+  .miss b { font-weight:650; }
+  .gsay { margin-top:11px; font-size:13.5px; color:var(--ink2); line-height:1.5; }
+  .gsay b { font-weight:600; color:var(--mut); font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:3px; }
+  .tip { margin-top:11px; font-size:13.5px; color:var(--mut); line-height:1.5; }
+  .storytxt { margin-top:11px; font-size:13.5px; line-height:1.55; color:var(--ink2); }
+  .storytxt b { font-weight:600; color:var(--gold); font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; display:block; margin-bottom:3px; }
+  .play { margin-top:14px; display:flex; align-items:center; gap:14px; }
+  .playbtn { display:inline-flex; align-items:center; gap:8px; background:var(--chip); border:none; border-radius:999px; padding:10px 16px; font-family:var(--sans); font-size:14px; font-weight:600; color:var(--ink); cursor:pointer; }
+  .playbtn i { width:22px; height:22px; border-radius:50%; background:var(--green); color:#fff; font-style:normal; display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .playbtn.playing i { background:var(--red); }
+  .gmlink { font-size:14px; font-weight:600; color:var(--green); text-decoration:none; cursor:pointer; }
+  .addr { margin-top:12px; font-size:12.5px; color:#b3ada0; line-height:1.4; }
+  .badge { position:absolute; top:150px; font-size:17px; font-weight:700; padding:8px 18px; border-radius:999px; opacity:0; pointer-events:none; z-index:5; backdrop-filter:blur(8px); }
+  .badge.like { left:18px; background:rgba(46,110,78,.9); color:#fff; }
+  .badge.nope { right:18px; background:rgba(255,255,255,.85); color:var(--mut); border:.5px solid var(--line); }
+  #deckBtns { position:absolute; bottom:16px; left:0; right:0; display:flex; justify-content:center; align-items:center; gap:16px; z-index:10; }
+  #deckBtns button { width:54px; height:54px; border-radius:50%; border:.5px solid var(--line); background:var(--card); box-shadow:0 4px 14px rgba(40,35,25,.09); font-size:19px; color:var(--mut); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .15s; }
+  #deckBtns button:active { transform:scale(.92); }
+  #mapsBtn { width:46px !important; height:46px !important; font-size:15px !important; color:var(--green) !important; }
+  #saveBtn { color:var(--red) !important; }
+  #deckEmpty { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; padding:36px; }
+  #deckEmpty.show { display:flex; }
+  #deckEmpty h2 { font-size:26px; font-weight:700; letter-spacing:-0.02em; }
+  #deckEmpty p { color:var(--mut); font-size:15px; }
+  #resetBtn { background:var(--ink); color:#fff; border:none; border-radius:999px; padding:13px 28px; font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer; }
+
+  /* ===== MAP ===== */
+  #map { width:100%; height:100%; background:#eee9df; }
+  .leaflet-popup-content-wrapper { background:var(--card); color:var(--ink); border-radius:16px; box-shadow:0 10px 30px rgba(40,35,25,.2); }
+  .leaflet-popup-tip { background:var(--card); }
+  .leaflet-popup-content { margin:13px 15px; font-family:var(--sans); }
+  .pop h3 { font-size:16px; font-weight:700; letter-spacing:-0.01em; margin-bottom:2px; }
+  .pop .pr { color:var(--gold); font-weight:600; font-size:13px; }
+  .pop .pp { font-size:13px; line-height:1.45; margin:6px 0; color:var(--ink2); }
+  .pop .pt { font-size:12.5px; color:var(--mut); margin-bottom:7px; }
+  .pop a { color:var(--green); font-weight:600; font-size:13.5px; text-decoration:none; }
+
+  /* ===== LISTS ===== */
+  .listwrap { height:100%; overflow-y:auto; padding:4px 20px 100px; }
+  .section-title { font-size:28px; font-weight:700; letter-spacing:-0.022em; margin:10px 2px 4px; }
+  .section-sub { font-size:14px; color:var(--mut); margin:0 2px 16px; }
+  .lcard { background:var(--card); border:.5px solid var(--line); border-radius:18px; padding:15px 16px; margin-bottom:10px; display:flex; gap:13px; align-items:flex-start; cursor:pointer; box-shadow:0 2px 8px rgba(40,35,25,.04); }
+  .lcard .dot { width:9px; height:9px; border-radius:50%; margin-top:6px; flex-shrink:0; }
+  .lcard h3 { font-size:16px; font-weight:650; letter-spacing:-0.01em; margin-bottom:2px; }
+  .lcard .meta { font-size:13px; color:var(--mut); }
+  .lcard .lrating { font-size:13px; color:var(--gold); font-weight:600; margin-top:3px; }
+  .lcard .acts { margin-left:auto; display:flex; gap:6px; flex-shrink:0; }
+  .lcard .acts button { background:var(--chip); border:none; border-radius:50%; width:34px; height:34px; font-size:14px; cursor:pointer; color:var(--ink2); }
+  .empty-note { text-align:center; color:var(--mut); padding:60px 36px; font-size:15px; line-height:1.6; }
+  .empty-note .big { font-size:22px; font-weight:700; color:var(--ink); display:block; margin-bottom:8px; letter-spacing:-0.02em; }
+  .day-rule { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:22px 2px 10px; }
+  .jcard { background:var(--card); border:.5px solid var(--line); border-radius:18px; padding:17px 18px 13px; margin-bottom:10px; box-shadow:0 2px 8px rgba(40,35,25,.04); }
+  .jcard .jhead { display:flex; align-items:baseline; gap:9px; margin-bottom:7px; }
+  .jcard .jmood { font-size:18px; }
+  .jcard h3 { font-size:16px; font-weight:650; letter-spacing:-0.01em; }
+  .jcard .jtime { margin-left:auto; font-size:12px; color:var(--mut); }
+  .jcard p { font-size:14.5px; line-height:1.55; color:var(--ink2); white-space:pre-wrap; }
+  .jcard .jacts { display:flex; gap:16px; margin-top:10px; }
+  .jcard .jacts button { background:none; border:none; font-size:12.5px; font-weight:600; color:var(--mut); cursor:pointer; }
+  #journalTop { display:flex; gap:10px; margin:2px 2px 8px; }
+  #journalTop button { flex:1; border-radius:999px; padding:12px 0; font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; }
+  #newEntryBtn { background:var(--ink); color:#fff; border:none; }
+  #exportBtn { background:var(--card); color:var(--green); border:.5px solid rgba(46,110,78,.35); }
+
+  /* ===== SHEET & NUDGE ===== */
+  #sheetWrap { position:fixed; inset:0; z-index:600; display:none; }
+  #sheetWrap.open { display:block; }
+  #sheetWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #sheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); }
+  #sheetWrap.open #sheet { transform:none; }
+  #sheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  #sheet .s-eyebrow { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  #sheet h2 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin-bottom:2px; }
+  #sheet .s-date { font-size:13px; color:var(--mut); margin-bottom:13px; }
+  #moods { display:flex; gap:8px; margin-bottom:13px; }
+  #moods button { font-size:20px; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:7px 10px; cursor:pointer; opacity:.5; transition:all .15s; }
+  #moods button.sel { opacity:1; border-color:var(--green); background:var(--green-soft); transform:scale(1.06); }
+  #jtext { width:100%; min-height:120px; resize:none; border:none; outline:none; background:transparent; font-family:var(--sans); font-size:16px; line-height:1.6; color:var(--ink); border-bottom:.5px solid rgba(0,0,0,.12); padding-bottom:10px; margin-bottom:16px; }
+  #jtext::placeholder { color:#c4beb2; }
+  #sheet .s-row { display:flex; gap:10px; }
+  #jsave { flex:1; background:var(--ink); color:#fff; border:none; border-radius:999px; padding:15px 0; font-family:var(--sans); font-weight:600; font-size:15px; cursor:pointer; }
+  #jcancel { background:transparent; color:var(--mut); border:none; padding:0 16px; font-size:14px; font-weight:600; cursor:pointer; }
+  #nudge { position:fixed; top:14px; left:14px; right:14px; z-index:550; background:var(--card); border:.5px solid var(--line); border-radius:18px; padding:14px 15px; display:none; gap:12px; align-items:center; box-shadow:0 14px 40px rgba(40,35,25,.25); animation:nudgeIn .4s cubic-bezier(.2,.8,.25,1); }
+  #nudge.show { display:flex; }
+  @keyframes nudgeIn { from { transform:translateY(-120%); } to { transform:none; } }
+  #nudge .n-ico { width:38px; height:38px; border-radius:50%; background:var(--green-soft); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  #nudge .n-txt b { font-size:14.5px; font-weight:650; display:block; letter-spacing:-0.01em; }
+  #nudge .n-txt span { font-size:12.5px; color:var(--mut); }
+  #nudge .n-write { margin-left:auto; background:var(--ink); color:#fff; border:none; border-radius:999px; padding:9px 16px; font-size:13px; font-weight:600; cursor:pointer; flex-shrink:0; }
+  #nudge .n-x { background:none; border:none; color:var(--mut); font-size:15px; cursor:pointer; padding:4px; flex-shrink:0; }
+
+  nav { display:flex; flex-shrink:0; background:rgba(250,248,244,.88); backdrop-filter:blur(20px); border-top:.5px solid rgba(176,141,62,.35); padding:6px 0 calc(10px + env(safe-area-inset-bottom)); position:relative; z-index:2; }
+  nav button { flex:1; background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:10.5px; font-weight:500; cursor:pointer; padding-top:5px; }
+  nav button .ico { display:block; font-size:20px; margin-bottom:2px; font-weight:400; }
+  nav button.active { color:var(--green); }
+  nav button .ndot { position:relative; display:inline-block; }
+  nav button .ndot[data-n]:not([data-n="0"])::after { content:attr(data-n); position:absolute; top:-3px; right:-14px; background:var(--red); color:#fff; font-size:9px; font-weight:700; border-radius:99px; padding:1.5px 5px; }
+  #toast { position:fixed; bottom:96px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; border-radius:999px; padding:11px 20px; font-size:13.5px; font-weight:500; opacity:0; transition:opacity .25s; pointer-events:none; z-index:999; white-space:nowrap; }
+  #toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<div id="landing">
+  <svg class="bigeiffel" viewBox="0 0 40 58" fill="none">
+    <path d="M20 2 L24 28 L34 54 M20 2 L16 28 L6 54 M11 38 L29 38 M14 24 L26 24 M6 54 Q20 46 34 54" stroke="#b08d3e" stroke-width="0.7" stroke-linecap="round"/>
+  </svg>
+  <div class="l-greet l-rev">Made for Ramya</div>
+  <h1 class="l-title l-rev">Meraki<br><span>Paris Tour.</span></h1>
+  <div class="l-gold l-rev"></div>
+  <p class="l-sub l-rev">A city gathered with soul — swipe what calls to you, hear every story, and keep a journal of every moment.</p>
+  <div class="l-stats l-rev">
+    <div class="l-stat"><b>184</b><span>Places</span></div>
+    <div class="l-stat"><b>9</b><span>Worlds</span></div>
+    <div class="l-stat"><b>∞</b><span>Moments</span></div>
+  </div>
+  <button id="enterBtn" class="l-rev">Let's go</button>
+  <div class="l-foot l-rev">Chosen with care · Été 2026</div>
+</div>
+
+<header>
+  <div class="wm" id="logoBtn">
+    <svg width="13" height="18" viewBox="0 0 13 18" fill="none"><path d="M6.5 0.5 L8.2 9 L11.8 16 M6.5 0.5 L4.8 9 L1.2 16 M3.6 11.5 L9.4 11.5 M4.6 7.5 L8.4 7.5 M1.2 16 L4.4 13.8 Q6.5 12.6 8.6 13.8 L11.8 16" stroke="#1d1d1f" stroke-width="1.1" stroke-linecap="round"/></svg>
+    Meraki Paris
+  </div>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <button id="helpBtn" aria-label="How it works">?</button>
+    <button id="locBtn">Near Me</button>
+  </div>
+</header>
+<div id="filters"></div>
+<main>
+  <div id="deck" class="view active">
+    <div id="stack"></div>
+    <div id="deckBtns">
+      <button id="skipBtn" title="Skip">✕</button>
+      <button id="mapsBtn" title="Directions">➤</button>
+      <button id="saveBtn" title="Save">♥</button>
+    </div>
+    <div id="deckEmpty">
+      <h2>That's everything.</h2>
+      <p>You've seen every place in this filter.</p>
+      <button id="resetBtn">Start over</button>
+    </div>
+  </div>
+  <div id="mapView" class="view"><div id="map"></div></div>
+  <div id="savedView" class="view"><div class="listwrap" id="savedList"></div></div>
+  <div id="journalView" class="view"><div class="listwrap" id="journalList"></div></div>
+</main>
+<nav>
+  <button data-view="deck" class="active"><span class="ico">◉</span>Discover</button>
+  <button data-view="mapView"><span class="ico">◇</span>Map</button>
+  <button data-view="savedView"><span class="ico ndot" id="savedDot" data-n="0">♡</span>Saved</button>
+  <button data-view="journalView"><span class="ico ndot" id="journalDot" data-n="0">✎</span>Journal</button>
+</nav>
+
+<div id="nudge">
+  <div class="n-ico">✎</div>
+  <div class="n-txt"><b id="nudgeName"></b><span>You're here — capture this moment?</span></div>
+  <button class="n-write" id="nudgeWrite">Write</button>
+  <button class="n-x" id="nudgeX">✕</button>
+</div>
+
+<div id="sheetWrap">
+  <div class="scrim" id="sheetScrim"></div>
+  <div id="sheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">A moment at</div>
+    <h2 id="sheetPlace"></h2>
+    <div class="s-date" id="sheetDate"></div>
+    <div id="moods"></div>
+    <textarea id="jtext" placeholder="What do you see, taste, feel right now…"></textarea>
+    <div class="s-row">
+      <button id="jsave">Keep this moment</button>
+      <button id="jcancel">Later</button>
+    </div>
+  </div>
+</div>
+
+<div id="guide">
+  <div class="g-card">
+    <div class="g-ico" id="gIco">◉</div>
+    <div class="g-step" id="gStep"></div>
+    <h2 id="gTitle"></h2>
+    <p id="gText"></p>
+    <div class="g-dots" id="gDots"></div>
+    <div class="g-btns">
+      <button id="gSkip">Skip</button>
+      <button id="gNext">Next</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const DATA = /*__PLACES_DATA__*/;
+const PLACES = DATA.places;
+
+const CATS = {
+  food:       { label: 'Food',        color: '#b06a2c' },
+  cafe:       { label: 'Cafés',       color: '#8a6d4a' },
+  touristy:   { label: 'Touristy',    color: '#5a7aa8' },
+  local:      { label: 'Local',       color: '#2e6e4e' },
+  experience: { label: 'Experiences', color: '#9a6bab' },
+  arts:       { label: 'Arts',        color: '#c0504f' },
+  music:      { label: 'Music',       color: '#b08d3e' },
+  workshop:   { label: 'Workshops',   color: '#4f9a92' },
+  photo:      { label: 'Photo Spots', color: '#c4708c' },
+};
+const MOODS = ['✨','😍','🥐','😌','🥹','🌧'];
+const EIFFEL_SVG = '<svg width="60" height="86" viewBox="0 0 40 58" fill="none"><path d="M20 2 L24 28 L34 54 M20 2 L16 28 L6 54 M11 38 L29 38 M14 24 L26 24 M6 54 Q20 46 34 54" stroke="rgba(255,255,255,0.85)" stroke-width="1.1" stroke-linecap="round"/></svg>';
+
+let userLoc = null;
+let activeCats = new Set(Object.keys(CATS));
+let seen = new Set(JSON.parse(localStorage.getItem('pe_seen') || '[]'));
+let saved = new Set(JSON.parse(localStorage.getItem('pe_saved') || '[]'));
+let journal = JSON.parse(localStorage.getItem('pe_journal') || '[]');
+let nudgeSnooze = JSON.parse(localStorage.getItem('pe_snooze') || '{}');
+let imgCache = JSON.parse(localStorage.getItem('pe_imgs2') || '{}');
+let queue = [];
+let watchId = null;
+
+const $ = s => document.querySelector(s);
+const toastEl = $('#toast');
+let toastTimer;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1900);
+}
+function persist() {
+  localStorage.setItem('pe_seen', JSON.stringify([...seen]));
+  localStorage.setItem('pe_saved', JSON.stringify([...saved]));
+  localStorage.setItem('pe_journal', JSON.stringify(journal));
+  localStorage.setItem('pe_snooze', JSON.stringify(nudgeSnooze));
+  $('#savedDot').dataset.n = saved.size;
+  $('#journalDot').dataset.n = journal.length;
+}
+function haversine(a, b) {
+  const R = 6371, rad = x => x * Math.PI / 180;
+  const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+  const h = Math.sin(dLat/2)**2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function distLabel(p) {
+  if (!userLoc) return '';
+  const km = haversine(userLoc, p);
+  return km < 1 ? `${Math.round(km*1000)} m` : `${km.toFixed(1)} km`;
+}
+function gmapsUrl(p) { return `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`; }
+function fmtCount(n) { return n >= 1000 ? (n/1000).toFixed(n >= 10000 ? 0 : 1) + 'k' : n; }
+function fmtDay(ts) { return new Date(ts).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' }); }
+function fmtTime(ts) { return new Date(ts).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }); }
+function priceShort(p) { return p.price.split('—')[0].split('(')[0].trim(); }
+
+/* ---------- wikipedia images ---------- */
+function wikiTitle(p) {
+  return p.name.split('(')[0].split(' — ')[0].split(' & ')[0].replace(/^(Sunrise at|Sunset Picnic at|Browsing the|Wandering|Swimming in the Seine at)\s+/i,'').trim();
+}
+async function loadImg(p, ph) {
+  const img = ph.querySelector('img');
+  const apply = () => {
+    const raw = imgCache[p.id];
+    if (!raw) return;
+    img.onload = () => ph.classList.add('has');
+    img.onerror = () => { if (img.src !== raw) img.src = raw; };
+    img.src = raw.replace(/\/(\d+)px-/, '/640px-');
+  };
+  if (imgCache[p.id] !== undefined) { apply(); return; }
+  try {
+    const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(wikiTitle(p)));
+    if (r.ok) {
+      const j = await r.json();
+      imgCache[p.id] = (j.thumbnail && j.type !== 'disambiguation') ? j.thumbnail.source : null;
+    } else imgCache[p.id] = null;
+  } catch (e) { imgCache[p.id] = null; }
+  try { localStorage.setItem('pe_imgs2', JSON.stringify(imgCache)); } catch (e) {}
+  apply();
+}
+
+/* ---------- landing ---------- */
+if (localStorage.getItem('pe_entered')) $('#landing').classList.add('hidden');
+$('#enterBtn').onclick = () => {
+  $('#landing').classList.add('hidden');
+  localStorage.setItem('pe_entered','1');
+  if (!localStorage.getItem('pe_guided')) setTimeout(() => openGuide(), 450);
+};
+$('#logoBtn').onclick = () => $('#landing').classList.remove('hidden');
+
+/* ---------- guide / walkthrough ---------- */
+const GUIDE_STEPS = [
+  { ico:'🗼', title:'Bienvenue, Ramya', text:'184 hand-picked places across Paris — food, cafés, art, music, photo spots and more. Here’s how to make it yours in 30 seconds.' },
+  { ico:'♥', title:'Swipe to choose', text:'Swipe a card right (or tap ♥) to save a place you love. Swipe left (or ✕) to skip. The ➤ button opens directions.' },
+  { ico:'🎧', title:'Hear its story', text:'Tap Listen on any card and a voice tells you the history and a hidden fact — like a private guide in your pocket.' },
+  { ico:'◉', title:'Near Me', text:'Tap Near Me and everything re-sorts by how close it is. As you walk, distances update live.' },
+  { ico:'◇', title:'The map', text:'See all 184 places as pins, colour-coded by type. Tap any pin for the details, the story, and directions.' },
+  { ico:'✎', title:'Your journal', text:'When you arrive at a place you saved, the app gently asks how it felt. Write a line, pick a mood — it becomes a diary of your trip.' },
+  { ico:'⬇', title:'Keep it forever', text:'In the Journal tab, Export file saves your whole trip as a keepsake you can turn into a beautiful printed journal later. Bon voyage!' },
+];
+let gIndex = 0;
+function renderGuide() {
+  const s = GUIDE_STEPS[gIndex];
+  $('#gIco').textContent = s.ico;
+  $('#gStep').textContent = `${gIndex + 1} of ${GUIDE_STEPS.length}`;
+  $('#gTitle').textContent = s.title;
+  $('#gText').textContent = s.text;
+  $('#gDots').innerHTML = GUIDE_STEPS.map((_, i) => `<i class="${i === gIndex ? 'on' : ''}"></i>`).join('');
+  $('#gNext').textContent = gIndex === GUIDE_STEPS.length - 1 ? 'Start exploring' : 'Next';
+  $('#gSkip').style.visibility = gIndex === GUIDE_STEPS.length - 1 ? 'hidden' : 'visible';
+}
+function openGuide() { gIndex = 0; renderGuide(); $('#guide').classList.add('open'); }
+function closeGuide() { $('#guide').classList.remove('open'); localStorage.setItem('pe_guided','1'); }
+$('#gNext').onclick = () => { if (gIndex < GUIDE_STEPS.length - 1) { gIndex++; renderGuide(); } else closeGuide(); };
+$('#gSkip').onclick = closeGuide;
+$('#guide').addEventListener('click', e => { if (e.target.id === 'guide') closeGuide(); });
+$('#helpBtn').onclick = openGuide;
+$('#landing').addEventListener('click', e => {
+  if (e.target.id === 'landing' && localStorage.getItem('pe_entered')) $('#landing').classList.add('hidden');
+});
+
+/* ---------- filters ---------- */
+const filtersEl = $('#filters');
+const allChip = document.createElement('button');
+allChip.className = 'chip active';
+allChip.textContent = 'All';
+allChip.onclick = () => {
+  activeCats = new Set(Object.keys(CATS));
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  allChip.classList.add('active');
+  rebuild();
+};
+filtersEl.appendChild(allChip);
+for (const [key, c] of Object.entries(CATS)) {
+  const b = document.createElement('button');
+  b.className = 'chip';
+  b.textContent = c.label;
+  b.dataset.cat = key;
+  b.onclick = () => {
+    if (allChip.classList.contains('active')) { allChip.classList.remove('active'); activeCats = new Set(); }
+    if (activeCats.has(key)) { activeCats.delete(key); b.classList.remove('active'); }
+    else { activeCats.add(key); b.classList.add('active'); }
+    if (activeCats.size === 0) { activeCats = new Set(Object.keys(CATS)); allChip.classList.add('active'); }
+    rebuild();
+  };
+  filtersEl.appendChild(b);
+}
+
+/* ---------- deck ---------- */
+const stack = $('#stack');
+function buildQueue() {
+  queue = PLACES.filter(p => activeCats.has(p.category) && !seen.has(p.id) && !saved.has(p.id));
+  if (userLoc) queue.sort((a, b) => haversine(userLoc, a) - haversine(userLoc, b));
+  else queue.sort((a, b) => (b.googleRating * Math.log10(b.googleReviewCount + 1)) - (a.googleRating * Math.log10(a.googleReviewCount + 1)));
+}
+function cardHtml(p) {
+  const c = CATS[p.category];
+  const d = distLabel(p);
+  return `
+    <div class="ph">
+      <div class="fallback">${EIFFEL_SVG}</div>
+      <img alt="">
+      ${d ? `<div class="dist">${d}</div>` : ''}
+      <div class="onimg">
+        <div class="cat">${c.label} · ${p.subcategory}</div>
+        <h2>${p.name}</h2>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="where">${p.neighborhood}</div>
+      <div class="row">
+        <span class="star"><b>★ ${p.googleRating}</b></span>
+        <span style="color:var(--mut)">${fmtCount(p.googleReviewCount)} reviews</span>
+        <span class="dotsep"></span>
+        <span>${priceShort(p)}</span>
+      </div>
+      <div class="hr"></div>
+      <div class="rev">${p.reviewSummary}</div>
+      ${p.highlight ? `<div class="miss"><b>Don't miss</b> — ${p.highlight}</div>` : ''}
+      <div class="gsay"><b>Reviewers say</b>${p.googleReviewSummary}</div>
+      <div class="tip">Tip: ${p.localTip}</div>
+      ${p.story ? `<div class="storytxt"><b>The story</b>${p.story}</div>` : ''}
+      <div class="play">
+        ${p.story ? `<button class="playbtn" data-speak="${p.id}"><i>▶</i> Listen</button>` : ''}
+        <a class="gmlink" href="${gmapsUrl(p)}" target="_blank">Directions</a>
+      </div>
+      <div class="addr">${p.address}</div>
+    </div>
+    <div class="badge like">Saved ♥</div>
+    <div class="badge nope">Skip</div>`;
+}
+function renderStack() {
+  stack.innerHTML = '';
+  const top3 = queue.slice(0, 3);
+  $('#deckEmpty').classList.toggle('show', top3.length === 0);
+  for (let i = top3.length - 1; i >= 0; i--) {
+    const p = top3[i];
+    const el = document.createElement('div');
+    el.className = 'pcard';
+    el.dataset.id = p.id;
+    el.innerHTML = cardHtml(p);
+    el.style.transform = `translateY(${i * 8}px) scale(${1 - i * 0.03})`;
+    el.style.zIndex = 10 - i;
+    if (i === 0) attachSwipe(el, p);
+    stack.appendChild(el);
+    loadImg(p, el.querySelector('.ph'));
+  }
+}
+function attachSwipe(el, p) {
+  let startX = 0, startY = 0, dx = 0, dy = 0, dragging = false;
+  const likeB = el.querySelector('.badge.like'), nopeB = el.querySelector('.badge.nope');
+  el.addEventListener('pointerdown', e => {
+    if (e.target.closest('.playbtn, .gmlink')) return;
+    dragging = true; startX = e.clientX; startY = e.clientY;
+    el.setPointerCapture(e.pointerId);
+    el.style.transition = 'none';
+  });
+  el.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    dx = e.clientX - startX; dy = e.clientY - startY;
+    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+    el.style.transform = `translate(${dx}px, ${dy * 0.3}px) rotate(${dx * 0.04}deg)`;
+    likeB.style.opacity = Math.max(0, Math.min(1, dx / 90));
+    nopeB.style.opacity = Math.max(0, Math.min(1, -dx / 90));
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    if (dx > 110) flyOut(el, p, true);
+    else if (dx < -110) flyOut(el, p, false);
+    else {
+      el.style.transition = 'transform .25s';
+      el.style.transform = '';
+      likeB.style.opacity = 0; nopeB.style.opacity = 0;
+    }
+    dx = 0; dy = 0;
+  };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+}
+function flyOut(el, p, liked) {
+  if (speakingId) { speechSynthesis.cancel(); speakingId = null; }
+  el.style.transition = 'transform .35s ease-in';
+  el.style.transform = `translate(${liked ? '120vw' : '-120vw'}, -30px) rotate(${liked ? 14 : -14}deg)`;
+  if (liked) { saved.add(p.id); toast(`Saved ${p.name} ♥`); }
+  else seen.add(p.id);
+  persist();
+  queue = queue.filter(q => q.id !== p.id);
+  setTimeout(renderStack, 280);
+  renderSaved();
+}
+$('#skipBtn').onclick = () => { const p = queue[0]; if (p) flyOut(stack.querySelector('.pcard:last-child'), p, false); };
+$('#saveBtn').onclick = () => { const p = queue[0]; if (p) flyOut(stack.querySelector('.pcard:last-child'), p, true); };
+$('#mapsBtn').onclick = () => { const p = queue[0]; if (p) window.open(gmapsUrl(p), '_blank'); };
+$('#resetBtn').onclick = () => { seen = new Set(); persist(); rebuild(); toast('Deck reset'); };
+
+/* ---------- map ---------- */
+let map, userMarker;
+const markers = [];
+function initMap() {
+  map = L.map('map', { zoomControl: false }).setView([48.8584, 2.3340], 13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
+  }).addTo(map);
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+  for (const p of PLACES) {
+    const c = CATS[p.category];
+    const m = L.circleMarker([p.lat, p.lng], {
+      radius: 7.5, color: '#ffffff', weight: 1.5, fillColor: c.color, fillOpacity: 0.92,
+    });
+    m.bindPopup(`
+      <div class="pop">
+        <h3>${p.name}</h3>
+        <div class="pr">★ ${p.googleRating} · ${fmtCount(p.googleReviewCount)} reviews · ${priceShort(p)}</div>
+        <div class="pp">${p.reviewSummary}</div>
+        <div class="pt">Tip: ${p.localTip}</div>
+        <a href="${gmapsUrl(p)}" target="_blank">Directions</a>
+        ${p.story ? ` &nbsp;·&nbsp; <a href="#" onclick="speakPlace('${p.id}');return false">▶ Listen</a>` : ''}
+      </div>`);
+    m._cat = p.category;
+    m.addTo(map);
+    markers.push(m);
+  }
+}
+function refreshMarkers() {
+  for (const m of markers) {
+    if (activeCats.has(m._cat)) m.addTo(map);
+    else m.remove();
+  }
+}
+
+/* ---------- saved ---------- */
+function renderSaved() {
+  const wrap = $('#savedList');
+  const items = PLACES.filter(p => saved.has(p.id));
+  if (userLoc) items.sort((a, b) => haversine(userLoc, a) - haversine(userLoc, b));
+  let html = `<div class="section-title">Saved</div><div class="section-sub">${items.length ? items.length + ' places, nearest first' : 'Your collection'}</div>`;
+  if (!items.length) {
+    wrap.innerHTML = html + `<div class="empty-note"><span class="big">Nothing yet</span>Swipe right on places you love.<br>They'll gather here, nearest first.</div>`;
+    return;
+  }
+  html += items.map(p => `
+    <div class="lcard" data-id="${p.id}">
+      <div class="dot" style="background:${CATS[p.category].color}"></div>
+      <div>
+        <h3>${p.name}</h3>
+        <div class="meta">${p.neighborhood}${userLoc ? ' · ' + distLabel(p) : ''}</div>
+        <div class="lrating">★ ${p.googleRating} (${fmtCount(p.googleReviewCount)})</div>
+      </div>
+      <div class="acts">
+        <button data-journal="${p.id}" title="Write about it">✎</button>
+        <button data-un="${p.id}" title="Remove">✕</button>
+      </div>
+    </div>`).join('');
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.lcard').forEach(el => {
+    el.onclick = e => {
+      const t = e.target;
+      if (t.dataset.un) { saved.delete(t.dataset.un); persist(); renderSaved(); rebuild(); return; }
+      if (t.dataset.journal) { openSheet(PLACES.find(p => p.id === t.dataset.journal)); return; }
+      window.open(gmapsUrl(PLACES.find(p => p.id === el.dataset.id)), '_blank');
+    };
+  });
+}
+
+/* ---------- journal ---------- */
+let sheetPlace = null;
+let sheetMood = MOODS[0];
+let editingId = null;
+const moodsEl = $('#moods');
+for (const m of MOODS) {
+  const b = document.createElement('button');
+  b.textContent = m;
+  b.onclick = () => {
+    sheetMood = m;
+    moodsEl.querySelectorAll('button').forEach(x => x.classList.remove('sel'));
+    b.classList.add('sel');
+  };
+  moodsEl.appendChild(b);
+}
+function openSheet(place, entry) {
+  sheetPlace = place;
+  editingId = entry ? entry.id : null;
+  sheetMood = entry ? entry.mood : MOODS[0];
+  $('#sheetPlace').textContent = place ? place.name : 'Somewhere in Paris';
+  $('#sheetDate').textContent = fmtDay(entry ? entry.ts : Date.now()) + ' · ' + fmtTime(entry ? entry.ts : Date.now());
+  $('#jtext').value = entry ? entry.text : '';
+  moodsEl.querySelectorAll('button').forEach((x, i) => x.classList.toggle('sel', MOODS[i] === sheetMood));
+  $('#sheetWrap').classList.add('open');
+  setTimeout(() => $('#jtext').focus(), 350);
+}
+function closeSheet() { $('#sheetWrap').classList.remove('open'); }
+$('#sheetScrim').onclick = closeSheet;
+$('#jcancel').onclick = closeSheet;
+$('#jsave').onclick = () => {
+  const text = $('#jtext').value.trim();
+  if (!text) { toast('Write a little something first'); return; }
+  if (editingId) {
+    const e = journal.find(x => x.id === editingId);
+    if (e) { e.text = text; e.mood = sheetMood; }
+  } else {
+    journal.push({ id:'j'+Date.now(), placeId:sheetPlace?sheetPlace.id:null, placeName:sheetPlace?sheetPlace.name:'Somewhere in Paris', text, mood:sheetMood, ts:Date.now() });
+  }
+  persist();
+  closeSheet();
+  renderJournal();
+  toast('Moment kept');
+};
+function renderJournal() {
+  const wrap = $('#journalList');
+  let html = `<div class="section-title">Journal</div><div class="section-sub">Every moment, in her words</div>
+    <div id="journalTop">
+      <button id="newEntryBtn">New moment</button>
+      <button id="shareBtn">Share</button>
+      <button id="exportBtn">Export file</button>
+    </div>`;
+  if (!journal.length) {
+    html += `<div class="empty-note"><span class="big">Your story starts here</span>When you arrive somewhere you saved, I'll ask how it felt.<br>Or tap "New moment" anytime.</div>`;
+  } else {
+    const sorted = [...journal].sort((a, b) => b.ts - a.ts);
+    let lastDay = '';
+    for (const e of sorted) {
+      const day = fmtDay(e.ts);
+      if (day !== lastDay) { html += `<div class="day-rule">${day}</div>`; lastDay = day; }
+      html += `
+        <div class="jcard" data-jid="${e.id}">
+          <div class="jhead"><span class="jmood">${e.mood}</span><h3>${e.placeName}</h3><span class="jtime">${fmtTime(e.ts)}</span></div>
+          <p>${e.text.replace(/</g,'&lt;')}</p>
+          <div class="jacts"><button data-jedit="${e.id}">Edit</button><button data-jdel="${e.id}">Delete</button></div>
+        </div>`;
+    }
+  }
+  wrap.innerHTML = html;
+  $('#newEntryBtn').onclick = () => {
+    let nearest = null;
+    if (userLoc) {
+      const sp = PLACES.filter(p => saved.has(p.id));
+      sp.sort((a, b) => haversine(userLoc, a) - haversine(userLoc, b));
+      if (sp[0] && haversine(userLoc, sp[0]) < 0.3) nearest = sp[0];
+    }
+    openSheet(nearest);
+  };
+  $('#shareBtn').onclick = exportJournal;
+  $('#exportBtn').onclick = exportJournalFile;
+  wrap.querySelectorAll('[data-jedit]').forEach(b => b.onclick = () => {
+    const e = journal.find(x => x.id === b.dataset.jedit);
+    openSheet(PLACES.find(p => p.id === e.placeId) || { name: e.placeName }, e);
+  });
+  wrap.querySelectorAll('[data-jdel]').forEach(b => b.onclick = () => {
+    journal = journal.filter(x => x.id !== b.dataset.jdel);
+    persist(); renderJournal(); toast('Moment removed');
+  });
+}
+function exportJournal() {
+  if (!journal.length) { toast('No moments yet'); return; }
+  const sorted = [...journal].sort((a, b) => a.ts - b.ts);
+  const days = [...new Set(sorted.map(e => fmtDay(e.ts)))];
+  let out = `MERAKI PARIS TOUR\nRamya's Paris journal — ${journal.length} moment${journal.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
+  let lastDay = '';
+  for (const e of sorted) {
+    const day = fmtDay(e.ts);
+    if (day !== lastDay) { out += `\n──── ${day} ────\n`; lastDay = day; }
+    out += `\n${e.mood} ${e.placeName} · ${fmtTime(e.ts)}\n${e.text}\n`;
+  }
+  out += `\n— fin —`;
+  if (navigator.share) navigator.share({ title: "Ramya's Paris journal", text: out }).catch(() => {});
+  else navigator.clipboard.writeText(out).then(() => toast('Journal copied to clipboard'));
+}
+// Structured export — the file Claude can later turn into a full journal / scrapbook
+function exportJournalFile() {
+  const byId = Object.fromEntries(PLACES.map(p => [p.id, p]));
+  const moments = [...journal].sort((a, b) => a.ts - b.ts).map(e => {
+    const p = byId[e.placeId] || {};
+    return {
+      writtenAt: new Date(e.ts).toISOString(),
+      mood: e.mood,
+      note: e.text,
+      place: {
+        name: e.placeName, id: e.placeId || null,
+        category: p.category || null, subcategory: p.subcategory || null,
+        neighborhood: p.neighborhood || null, address: p.address || null,
+        lat: p.lat ?? null, lng: p.lng ?? null,
+        story: p.story || null, googleRating: p.googleRating ?? null,
+      },
+    };
+  });
+  const visitedIds = new Set(journal.map(e => e.placeId).filter(Boolean));
+  const savedNotVisited = PLACES.filter(p => saved.has(p.id) && !visitedIds.has(p.id))
+    .map(p => ({ name: p.name, id: p.id, category: p.category, neighborhood: p.neighborhood, address: p.address, lat: p.lat, lng: p.lng }));
+  const days = [...new Set(journal.map(e => fmtDay(e.ts)))];
+  const data = {
+    app: 'Meraki Paris Tour',
+    traveller: 'Ramya',
+    exportedAt: new Date().toISOString(),
+    purpose: 'Feed this file to Claude to generate a full Paris travel journal, scrapbook, or trip recap. "moments" are places she visited and wrote about; "savedNotVisited" are places she loved but has not journaled yet.',
+    stats: { momentsWritten: journal.length, daysWithMoments: days.length, totalSaved: saved.size, visited: visitedIds.size },
+    moments,
+    savedNotVisited,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const stamp = new Date().toISOString().slice(0, 10);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `meraki-paris-journal-${stamp}.json`;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  toast(journal.length ? 'Journal file saved' : 'Empty journal saved');
+}
+
+/* ---------- proximity nudge ---------- */
+let nudgePlace = null;
+function checkProximity() {
+  if (!userLoc) return;
+  if ($('#sheetWrap').classList.contains('open') || $('#nudge').classList.contains('show')) return;
+  for (const p of PLACES) {
+    if (!saved.has(p.id)) continue;
+    if (haversine(userLoc, p) * 1000 > 150) continue;
+    if (journal.some(e => e.placeId === p.id)) continue;
+    if (nudgeSnooze[p.id] && Date.now() - nudgeSnooze[p.id] < 2 * 3600 * 1000) continue;
+    nudgePlace = p;
+    $('#nudgeName').textContent = p.name;
+    $('#nudge').classList.add('show');
+    return;
+  }
+}
+$('#nudgeWrite').onclick = () => { $('#nudge').classList.remove('show'); openSheet(nudgePlace); };
+$('#nudgeX').onclick = () => {
+  if (nudgePlace) nudgeSnooze[nudgePlace.id] = Date.now();
+  persist();
+  $('#nudge').classList.remove('show');
+};
+
+/* ---------- geolocation ---------- */
+function onPosition(pos) {
+  userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+  $('#locBtn').classList.add('on');
+  $('#locBtn').textContent = 'Around You';
+  if (map) {
+    if (userMarker) userMarker.remove();
+    userMarker = L.circleMarker([userLoc.lat, userLoc.lng], { radius: 9, color: '#fff', weight: 2.5, fillColor: '#2e6e4e', fillOpacity: 1 }).addTo(map).bindPopup('You are here');
+  }
+  rebuild();
+  checkProximity();
+}
+$('#locBtn').onclick = () => {
+  if (!navigator.geolocation) { toast('Location not supported'); return; }
+  toast('Finding you…');
+  navigator.geolocation.getCurrentPosition(pos => {
+    onPosition(pos);
+    const inParis = haversine(userLoc, { lat: 48.8566, lng: 2.3522 }) < 30;
+    if (map && inParis) map.setView([userLoc.lat, userLoc.lng], 15);
+    toast(inParis ? 'Showing what’s around you' : 'Location set — top-rated first');
+    if (watchId === null && navigator.geolocation.watchPosition) {
+      watchId = navigator.geolocation.watchPosition(onPosition, () => {}, { enableHighAccuracy: true, maximumAge: 30000 });
+    }
+  }, () => toast('Could not get location'), { enableHighAccuracy: true, timeout: 10000 });
+};
+
+/* ---------- voice guide ---------- */
+let speakingId = null;
+function pickVoice() {
+  const vs = speechSynthesis.getVoices();
+  if (!vs.length) return null;
+  // prefer modern enhanced/premium/Siri voices, then known-good named voices, then any English
+  const score = v => {
+    let s = 0;
+    const n = v.name.toLowerCase();
+    if (/premium|enhanced|neural|siri/.test(n)) s += 100;
+    if (!v.localService) s += 8; // network voices tend to be higher quality
+    // known pleasant, natural voices across platforms
+    if (/\b(samantha|sonia|libby|aria|jenny|serena|moira|tessa|fiona|kate|martha|stephanie|ava|allison|zoe|nora)\b/.test(n)) s += 40;
+    if (/\b(daniel|arthur|catherine|karen|rishi)\b/.test(n)) s += 25;
+    if (/en[-_]gb/i.test(v.lang)) s += 12;
+    else if (/en[-_](us|au|ie)/i.test(v.lang)) s += 6;
+    else if (/^en/i.test(v.lang)) s += 2;
+    // penalize the joke/novelty Mac voices
+    if (/\b(albert|bad news|bahh|bells|boing|bubbles|cellos|fred|good news|jester|organ|ralph|trinoids|whisper|wobble|zarvox|superstar|junior|grandma|grandpa)\b/.test(n)) s -= 200;
+    return s;
+  };
+  return vs.filter(v => /^en/i.test(v.lang)).sort((a, b) => score(b) - score(a))[0] || vs[0];
+}
+function setListenBtns() {
+  document.querySelectorAll('[data-speak]').forEach(b => {
+    const on = b.dataset.speak === speakingId;
+    b.classList.toggle('playing', on);
+    b.innerHTML = on ? '<i>■</i> Stop' : '<i>▶</i> Listen';
+  });
+}
+window.speakPlace = function (id) {
+  if (!('speechSynthesis' in window)) { toast('Voice not supported on this device'); return; }
+  if (speakingId === id) { speechSynthesis.cancel(); speakingId = null; setListenBtns(); return; }
+  speechSynthesis.cancel();
+  const p = PLACES.find(x => x.id === id);
+  if (!p || !p.story) return;
+  const u = new SpeechSynthesisUtterance(p.name + '. ' + p.story);
+  const v = pickVoice();
+  if (v) u.voice = v;
+  u.lang = v ? v.lang : 'en-GB';
+  u.rate = 0.93;
+  u.pitch = 1.05;
+  u.onend = u.onerror = () => { if (speakingId === id) { speakingId = null; setListenBtns(); } };
+  speakingId = id;
+  setListenBtns();
+  speechSynthesis.speak(u);
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-speak]');
+  if (b) { e.stopPropagation(); speakPlace(b.dataset.speak); }
+});
+if ('speechSynthesis' in window) speechSynthesis.getVoices();
+
+/* ---------- nav ---------- */
+document.querySelectorAll('nav button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    b.classList.add('active');
+    $('#' + b.dataset.view).classList.add('active');
+    if (b.dataset.view === 'mapView') {
+      if (!map) initMap();
+      setTimeout(() => map.invalidateSize(), 60);
+      refreshMarkers();
+    }
+    if (b.dataset.view === 'savedView') renderSaved();
+    if (b.dataset.view === 'journalView') renderJournal();
+  };
+});
+
+function rebuild() {
+  buildQueue();
+  renderStack();
+  if (map) refreshMarkers();
+  renderSaved();
+}
+persist();
+rebuild();
+renderJournal();
+</script>
+</body>
+</html>

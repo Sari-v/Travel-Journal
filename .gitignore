@@ -1,0 +1,7 @@
+.DS_Store
+node_modules/
+.vercel
+*.log
+app/demos.html
+app/demos2.html
+app/demo-*.html
