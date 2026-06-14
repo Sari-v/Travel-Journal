@@ -6,7 +6,51 @@
       "country": "France",
       "emoji": "🇫🇷",
       "center": [48.8566, 2.3522],
-      "tagline": "Food, art, music and quiet corners — gathered with soul."
+      "tagline": "Food, art, music and quiet corners — gathered with soul.",
+      "bestTime": "April–June and September–October. Spring brings blossom and café terraces without the August crush; early autumn is warm, golden and far quieter once the summer crowds leave. Avoid August, when many locals shut up shop and leave the city.",
+      "itinerary": [
+        {
+          "day": "Day 1",
+          "title": "Classic Paris",
+          "plan": "Morning at the Louvre (book the first slot), then walk the Tuileries down to the Seine. Lunch in the 1st, afternoon at Notre-Dame and the Île de la Cité. End with sunset at the Eiffel Tower and a slow dinner in the 7th."
+        },
+        {
+          "day": "Day 2",
+          "title": "Montmartre & the north",
+          "plan": "Climb to Sacré-Cœur early before the crowds, wander the artists' square and back lanes. Afternoon at the Musée d'Orsay for the Impressionists, then an aperitif along Canal Saint-Martin with the after-work crowd."
+        },
+        {
+          "day": "Day 3",
+          "title": "Le Marais & the Left Bank",
+          "plan": "Brunch and vintage shopping in the Marais, falafel on Rue des Rosiers. Cross to the Latin Quarter for Shakespeare & Company and the Panthéon, then drinks and live music in Saint-Germain to close the trip."
+        }
+      ]
+    },
+    {
+      "id": "amsterdam",
+      "name": "Amsterdam",
+      "country": "Netherlands",
+      "emoji": "🇳🇱",
+      "center": [52.3676, 4.9041],
+      "tagline": "Canals, Golden-Age art, brown cafés and long, generous nights.",
+      "bestTime": "April–May and September. Late April is tulip season and King's Day (27 April) turns the whole city orange — magical but very busy. September has mild weather, golden canal light and thinner crowds. Winters are dark and cold, but the city glows during the Amsterdam Light Festival (Dec–Jan).",
+      "itinerary": [
+        {
+          "day": "Day 1",
+          "title": "Canals & the old centre",
+          "plan": "Start at Dam Square and the Royal Palace, wander the Nine Streets and the Jordaan, stopping for apple pie at Winkel 43. Take an afternoon canal cruise on a small open boat, then dinner at Moeders and a first night out around Leidseplein (Chicago Social Club or Paradiso)."
+        },
+        {
+          "day": "Day 2",
+          "title": "Museums & the south",
+          "plan": "Rijksmuseum at opening (straight to the Night Watch), then the Van Gogh Museum and a picnic on Museumplein. Stroll Vondelpark, taste cheese at Reypenaer, then a glam night at Jimmy Woo or a techno session at Shelter across the IJ."
+        },
+        {
+          "day": "Day 3",
+          "title": "Local Amsterdam",
+          "plan": "Morning bike ride along the canals to De Pijp and the Albert Cuyp Market for stroopwafels. Afternoon at the A'DAM Lookout swing across the river, sunset photos at the Magere Brug and the Seven Bridges, then a final, easy night dancing at Disco Dolly or Club NYX."
+        }
+      ]
     }
   ]
 }

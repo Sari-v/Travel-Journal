@@ -51,6 +51,7 @@
   #locBtn { background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:8px 14px; font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; }
   #locBtn.on { background:var(--green); color:#fff; }
   #helpBtn { width:32px; height:32px; border-radius:50%; background:var(--chip); color:var(--ink2); border:none; font-family:var(--sans); font-size:15px; font-weight:600; cursor:pointer; line-height:1; }
+  #addBtn { width:32px; height:32px; border-radius:50%; background:var(--green-soft); color:var(--green); border:none; font-family:var(--sans); font-size:19px; font-weight:600; cursor:pointer; line-height:1; }
 
   /* ===== GUIDE / WALKTHROUGH ===== */
   #guide { position:fixed; inset:0; z-index:700; display:none; align-items:flex-end; justify-content:center;
@@ -89,6 +90,108 @@
   .city-info span { font-size:12.5px; color:var(--mut); }
   .city-check { margin-left:auto; color:var(--green); font-weight:700; }
   .city-add { margin-top:14px; font-size:13px; line-height:1.5; color:var(--mut); text-align:center; }
+  #cityTrip { margin-top:18px; }
+  #cityTrip:empty { display:none; }
+  .trip-head { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:0 0 7px; }
+  .trip-when { background:var(--card); border:.5px solid var(--line); border-radius:14px; padding:12px 14px; font-size:13.5px; line-height:1.55; color:var(--ink); display:flex; gap:9px; }
+  .trip-when .tw-ico { font-size:16px; line-height:1.3; flex-shrink:0; }
+  .trip-toggle { width:100%; text-align:left; background:var(--card); border:.5px solid var(--line); border-radius:14px; padding:12px 14px; margin-top:10px; font-family:var(--sans); font-size:14px; font-weight:600; color:var(--ink); cursor:pointer; display:flex; align-items:center; gap:9px; }
+  .trip-toggle .tt-arrow { margin-left:auto; color:var(--mut); transition:transform .2s; }
+  .trip-toggle.open .tt-arrow { transform:rotate(180deg); }
+  .trip-days { display:none; padding:4px 2px 0; }
+  .trip-days.open { display:block; }
+  .trip-day { padding:11px 0; border-bottom:.5px solid var(--line); }
+  .trip-day:last-child { border-bottom:none; padding-bottom:2px; }
+  .trip-day .td-top { display:flex; align-items:baseline; gap:8px; margin-bottom:4px; }
+  .trip-day .td-num { font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); }
+  .trip-day .td-title { font-size:14.5px; font-weight:650; letter-spacing:-0.01em; color:var(--ink); }
+  .trip-day .td-plan { font-size:13px; line-height:1.55; color:var(--mut); }
+  /* ---- Add a place sheet ---- */
+  #addWrap { position:fixed; inset:0; z-index:640; display:none; }
+  #addWrap.open { display:block; }
+  #addWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #addSheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); max-height:90vh; overflow-y:auto; }
+  #addWrap.open #addSheet { transform:none; }
+  #addSheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  #addSheet .s-eyebrow { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  #addSheet h2 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin-bottom:14px; }
+  .ap-l { display:block; font-size:12px; font-weight:600; letter-spacing:.03em; color:var(--mut); margin:14px 0 6px; }
+  .ap-l .ap-opt { font-weight:500; color:#bdb7a8; }
+  .ap-in { width:100%; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:12px 14px; font-family:var(--sans); font-size:15px; color:var(--ink); }
+  textarea.ap-in { min-height:70px; resize:vertical; }
+  #apCats { display:flex; flex-wrap:wrap; gap:7px; }
+  #apCats .chip { background:var(--chip); border:none; border-radius:999px; padding:8px 14px; font-family:var(--sans); font-size:13px; font-weight:500; color:#3c3a35; cursor:pointer; }
+  #apCats .chip.active { background:var(--green); color:#fff; }
+  #apMap { height:170px; border-radius:14px; overflow:hidden; border:.5px solid var(--line); }
+  .ap-coords { display:flex; align-items:center; gap:10px; margin-top:9px; }
+  #apGeo { background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:9px 14px; font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  #apLatLng { font-size:12.5px; color:var(--mut); }
+  #apPhotoStrip { display:flex; flex-wrap:wrap; gap:8px; }
+  .mine-tag { position:absolute; top:12px; left:12px; background:rgba(46,110,78,.92); color:#fff; font-size:10.5px; font-weight:650; letter-spacing:.03em; padding:4px 9px; border-radius:999px; z-index:3; }
+  /* ---- account row (in city sheet) ---- */
+  #cityAccount:empty { display:none; }
+  .acct { display:flex; align-items:center; gap:11px; background:var(--card); border:.5px solid var(--line); border-radius:16px; padding:11px 14px; margin-bottom:16px; }
+  .acct .av { width:34px; height:34px; border-radius:50%; background:var(--green-soft); color:var(--green); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0; }
+  .acct .ai { display:flex; flex-direction:column; line-height:1.25; }
+  .acct .ai b { font-size:14px; color:var(--ink); }
+  .acct .ai span { font-size:12px; color:var(--mut); }
+  .acct .abtn { margin-left:auto; background:var(--chip); border:none; border-radius:999px; padding:8px 13px; font-family:var(--sans); font-size:12.5px; font-weight:600; color:#3c3a35; cursor:pointer; }
+  .acct.signin { cursor:pointer; }
+  .acct.signin .aprompt { font-size:13.5px; color:var(--ink); font-weight:600; }
+  /* ---- auth sheet ---- */
+  #authWrap, #buildWrap, #itinWrap { position:fixed; inset:0; z-index:650; display:none; }
+  #authWrap.open, #buildWrap.open, #itinWrap.open { display:block; }
+  #authWrap .scrim, #buildWrap .scrim, #itinWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #authSheet, #buildSheet, #itinSheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); max-height:90vh; overflow-y:auto; }
+  #authWrap.open #authSheet, #buildWrap.open #buildSheet, #itinWrap.open #itinSheet { transform:none; }
+  #authSheet .grab, #buildSheet .grab, #itinSheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  #authSheet .s-eyebrow, #buildSheet .s-eyebrow { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  #authSheet h2, #buildSheet h2 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin-bottom:8px; }
+  .auth-sub { font-size:13.5px; line-height:1.5; color:var(--mut); margin-bottom:6px; }
+  .auth-primary { width:100%; background:var(--ink); color:#fff; border:none; border-radius:999px; padding:15px 0; font-family:var(--sans); font-weight:600; font-size:15px; cursor:pointer; margin-top:14px; }
+  .auth-or { display:flex; align-items:center; text-align:center; color:var(--mut); font-size:12px; margin:14px 0; }
+  .auth-or::before, .auth-or::after { content:''; flex:1; height:1px; background:var(--line); }
+  .auth-or span { padding:0 12px; }
+  .auth-google { width:100%; background:var(--card); color:var(--ink); border:.5px solid var(--line); border-radius:999px; padding:14px 0; font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; }
+  .auth-msg { font-size:13px; color:var(--green); text-align:center; margin-top:12px; min-height:18px; }
+  .auth-cancel { display:block; margin:14px auto 0; background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:13px; cursor:pointer; }
+  /* ---- itineraries section + cards ---- */
+  #cityItins:empty { display:none; }
+  .itin-head { display:flex; align-items:center; margin:20px 0 9px; }
+  .itin-head .ih-t { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+  .itin-head .ih-build { margin-left:auto; background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:7px 13px; font-family:var(--sans); font-size:12.5px; font-weight:600; cursor:pointer; }
+  .itin-card { background:var(--card); border:.5px solid var(--line); border-radius:16px; padding:13px 15px; margin-bottom:9px; cursor:pointer; }
+  .itin-card b { font-size:15px; font-weight:650; letter-spacing:-0.01em; color:var(--ink); display:block; }
+  .itin-card .ic-by { font-size:12px; color:var(--mut); margin:2px 0 7px; }
+  .itin-card .ic-meta { display:flex; gap:14px; align-items:center; font-size:12.5px; color:var(--mut); }
+  .itin-empty { font-size:13px; color:var(--mut); line-height:1.5; padding:2px 2px 4px; }
+  .like-btn { display:inline-flex; align-items:center; gap:5px; background:none; border:none; font-family:var(--sans); font-size:13px; color:var(--mut); cursor:pointer; padding:0; }
+  .like-btn.on { color:var(--green); font-weight:600; }
+  .like-btn .lh { font-size:14px; }
+  /* ---- build sheet stops ---- */
+  .bi-stop { display:flex; align-items:center; gap:10px; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:8px; }
+  .bi-stop input[type=checkbox] { width:18px; height:18px; accent-color:var(--green); flex-shrink:0; }
+  .bi-stop .bs-name { font-size:13.5px; color:var(--ink); flex:1; }
+  .bi-stop .bs-day { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--mut); }
+  .bi-stop .bs-day button { width:24px; height:24px; border-radius:50%; border:.5px solid var(--line); background:var(--paper); cursor:pointer; font-size:13px; line-height:1; }
+  /* ---- itinerary detail + comments ---- */
+  #itinBody h2 { font-size:22px; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px; }
+  #itinBody .id-by { font-size:12.5px; color:var(--mut); margin-bottom:10px; }
+  #itinBody .id-sum { font-size:14px; line-height:1.55; color:var(--ink2); margin-bottom:14px; }
+  #itinBody .id-day { font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); margin:14px 0 6px; }
+  #itinBody .id-stop { font-size:14px; color:var(--ink); padding:6px 0; border-bottom:.5px solid var(--line); }
+  #itinBody .id-stop small { color:var(--mut); }
+  .id-actions { display:flex; align-items:center; gap:16px; margin:16px 0; }
+  .id-exp { background:var(--ink); color:#fff; border:none; border-radius:999px; padding:11px 18px; font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; }
+  .cmt-h { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:18px 0 10px; }
+  .cmt { display:flex; gap:9px; margin-bottom:11px; }
+  .cmt .cav { width:26px; height:26px; border-radius:50%; background:var(--green-soft); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+  .cmt .cbody { font-size:13.5px; line-height:1.45; color:var(--ink); }
+  .cmt .cbody .cwho { font-weight:650; margin-right:6px; }
+  .cmt-box { display:flex; gap:8px; margin-top:10px; }
+  .cmt-box input { flex:1; background:var(--card); border:.5px solid var(--line); border-radius:999px; padding:11px 15px; font-family:var(--sans); font-size:14px; }
+  .cmt-box button { background:var(--green); color:#fff; border:none; border-radius:999px; padding:0 16px; font-family:var(--sans); font-weight:600; font-size:13px; cursor:pointer; }
+  .id-report { display:block; margin:8px 0 0; background:none; border:none; color:var(--mut); font-size:12px; cursor:pointer; }
   #filters { display:flex; gap:8px; overflow-x:auto; padding:14px 20px; flex-shrink:0; scrollbar-width:none; position:relative; z-index:2; }
   #filters::-webkit-scrollbar { display:none; }
   .chip { background:var(--chip); border:none; border-radius:999px; padding:9px 16px; font-family:var(--sans); font-size:14px; font-weight:500; color:#3c3a35; white-space:nowrap; cursor:pointer; flex-shrink:0; }
@@ -255,6 +358,7 @@
     Meraki · <span id="cityName">Paris</span> <span style="color:var(--mut);font-size:11px">▾</span>
   </div>
   <div style="display:flex; gap:8px; align-items:center;">
+    <button id="addBtn" aria-label="Add a place">＋</button>
     <button id="helpBtn" aria-label="How it works">?</button>
     <button id="locBtn">Near Me</button>
   </div>
@@ -314,10 +418,91 @@
   <div class="scrim" id="cityScrim"></div>
   <div id="citySheet">
     <div class="grab"></div>
+    <div id="cityAccount"></div>
     <div class="s-eyebrow">Your trips</div>
     <h2>Where to?</h2>
     <div id="cityList"></div>
+    <div id="cityTrip"></div>
+    <div id="cityItins"></div>
     <p class="city-add">Going somewhere new? Ask Claude to add your next city — it researches every place in the same format and drops it right in.</p>
+  </div>
+</div>
+
+<div id="addWrap">
+  <div class="scrim" id="addScrim"></div>
+  <div id="addSheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">Your discovery</div>
+    <h2>Add a place</h2>
+    <label class="ap-l">Name</label>
+    <input id="apName" class="ap-in" placeholder="e.g. Café de Klos">
+    <label class="ap-l">Category</label>
+    <div id="apCats"></div>
+    <label class="ap-l">Neighbourhood</label>
+    <input id="apHood" class="ap-in" placeholder="e.g. Jordaan">
+    <label class="ap-l">Address</label>
+    <input id="apAddr" class="ap-in" placeholder="Street + number">
+    <label class="ap-l">Where is it?</label>
+    <div id="apMap"></div>
+    <div class="ap-coords">
+      <button id="apGeo" type="button">📍 Use my location</button>
+      <span id="apLatLng">Tap the map to drop a pin</span>
+    </div>
+    <label class="ap-l">Photo</label>
+    <div id="apPhotoStrip"></div>
+    <input id="apPhotoInput" type="file" accept="image/*" capture="environment" multiple hidden>
+    <label class="ap-l">Your note</label>
+    <textarea id="apNote" class="ap-in" placeholder="What makes it special? (this becomes the card's story)"></textarea>
+    <label class="ap-l">Price <span class="ap-opt">(optional)</span></label>
+    <input id="apPrice" class="ap-in" placeholder="e.g. €€ — mains €15–20">
+    <div class="s-row">
+      <button id="apSave">Save place</button>
+      <button id="apCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="authWrap">
+  <div class="scrim" id="authScrim"></div>
+  <div id="authSheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">Travel together</div>
+    <h2>Join Meraki</h2>
+    <p class="auth-sub">Add places, publish itineraries and save across your devices. Likes and warmth only — never dislikes.</p>
+    <label class="ap-l">Email</label>
+    <input id="authEmail" class="ap-in" type="email" placeholder="you@email.com" autocomplete="email">
+    <button id="authSend" class="auth-primary">Send magic link</button>
+    <div class="auth-or"><span>or</span></div>
+    <button id="authGoogle" class="auth-google">Continue with Google</button>
+    <div id="authMsg" class="auth-msg"></div>
+    <button id="authCancel" class="auth-cancel">Maybe later</button>
+  </div>
+</div>
+
+<div id="buildWrap">
+  <div class="scrim" id="buildScrim"></div>
+  <div id="buildSheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">Share your route</div>
+    <h2>Build an itinerary</h2>
+    <label class="ap-l">Title</label>
+    <input id="biTitle" class="ap-in" placeholder="e.g. 3 perfect days for clubs">
+    <label class="ap-l">Summary <span class="ap-opt">(optional)</span></label>
+    <textarea id="biSummary" class="ap-in" placeholder="A line on the vibe of this trip"></textarea>
+    <label class="ap-l">Stops <span class="ap-opt">(from your saved places — set a day for each)</span></label>
+    <div id="biStops"></div>
+    <div class="s-row">
+      <button id="biPublish">Publish itinerary</button>
+      <button id="biCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="itinWrap">
+  <div class="scrim" id="itinScrim"></div>
+  <div id="itinSheet">
+    <div class="grab"></div>
+    <div id="itinBody"></div>
   </div>
 </div>
 
@@ -338,13 +523,29 @@
 <div id="toast"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="db.js"></script>
 <script>
 const DATA = /*__PLACES_DATA__*/;
 const CITIES = DATA.manifest;
+const curatedSeed = {};
 const ALL = {};
 for (const c of CITIES) {
-  ALL[c.id] = DATA.cities[c.id].places.map(p => ({ ...p, id: c.id + '/' + p.id, _rawId: p.id, city: c.id }));
+  curatedSeed[c.id] = DATA.cities[c.id].places.map(p => ({ ...p, id: c.id + '/' + p.id, _rawId: p.id, city: c.id }));
 }
+let myPlaces = JSON.parse(localStorage.getItem('pe_myplaces') || '[]');
+let cloudPlaces = {};   // community places fetched from Supabase, per city
+function rebuildAll() {
+  for (const c of CITIES) {
+    const mine = myPlaces.filter(p => p.city === c.id);
+    const cloud = cloudPlaces[c.id] || [];
+    ALL[c.id] = curatedSeed[c.id].concat(cloud, mine);
+    const cm = CITIES.find(x => x.id === c.id);
+    if (cm) cm.count = ALL[c.id].length;
+  }
+}
+rebuildAll();
 function cityMeta(id) { return CITIES.find(c => c.id === id) || CITIES[0]; }
 let activeCity = localStorage.getItem('pe_city');
 if (!activeCity || !ALL[activeCity]) activeCity = CITIES[0].id;
@@ -358,6 +559,7 @@ const CATS = {
   experience: { label: 'Experiences', color: '#9a6bab' },
   arts:       { label: 'Arts',        color: '#c0504f' },
   music:      { label: 'Music',       color: '#b08d3e' },
+  nightlife:  { label: 'Nightlife',   color: '#6a5a8c' },
   workshop:   { label: 'Workshops',   color: '#4f9a92' },
   photo:      { label: 'Photo Spots', color: '#c4708c' },
 };
@@ -399,6 +601,7 @@ function persist() {
   localStorage.setItem('pe_seen', JSON.stringify([...seen]));
   localStorage.setItem('pe_saved', JSON.stringify([...saved]));
   localStorage.setItem('pe_journal', JSON.stringify(journal));
+  localStorage.setItem('pe_myplaces', JSON.stringify(myPlaces));
   localStorage.setItem('pe_snooze', JSON.stringify(nudgeSnooze));
   localStorage.setItem('pe_city', activeCity);
   $('#savedDot').dataset.n = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
@@ -427,6 +630,11 @@ function wikiTitle(p) {
 }
 async function loadImg(p, ph) {
   const img = ph.querySelector('img');
+  // Community places: prefer cloud photo URL, then a locally-stored photo.
+  if (p.source === 'community') {
+    const cloud = (p.photoUrls && p.photoUrls[0]) || (photoCache[p.id] && photoCache[p.id][0]);
+    if (cloud) { img.onload = () => ph.classList.add('has'); img.src = cloud; return; }
+  }
   const apply = () => {
     const raw = imgCache[p.id];
     if (!raw) return;
@@ -435,6 +643,7 @@ async function loadImg(p, ph) {
     img.src = raw.replace(/\/(\d+)px-/, '/640px-');
   };
   if (imgCache[p.id] !== undefined) { apply(); return; }
+  if (p.source === 'community') { imgCache[p.id] = null; return; }
   try {
     const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(wikiTitle(p)));
     if (r.ok) {
@@ -544,7 +753,12 @@ const stack = $('#stack');
 function buildQueue() {
   queue = PLACES.filter(p => activeCats.has(p.category) && !seen.has(p.id) && !saved.has(p.id));
   if (userLoc) queue.sort((a, b) => haversine(userLoc, a) - haversine(userLoc, b));
-  else queue.sort((a, b) => (b.googleRating * Math.log10(b.googleReviewCount + 1)) - (a.googleRating * Math.log10(a.googleReviewCount + 1)));
+  else queue.sort((a, b) => {
+    const ac = a.source === 'community', bc = b.source === 'community';
+    if (ac !== bc) return ac ? -1 : 1;              // your own places surface first
+    if (ac && bc) return (b.createdAt || '').localeCompare(a.createdAt || ''); // newest first
+    return (b.googleRating * Math.log10(b.googleReviewCount + 1)) - (a.googleRating * Math.log10(a.googleReviewCount + 1));
+  });
 }
 function cardHtml(p) {
   const c = CATS[p.category];
@@ -558,20 +772,23 @@ function cardHtml(p) {
         <div class="cat">${c.label} · ${p.subcategory}</div>
         <h2>${p.name}</h2>
       </div>
+      ${p.source === 'community' ? `<div class="mine-tag">${p.author === 'other' ? 'Community pick' : 'Added by you'}</div>` : ''}
     </div>
     <div class="bd">
       <div class="where">${p.neighborhood}</div>
       <div class="row">
-        <span class="star"><b>★ ${p.googleRating}</b></span>
+        ${p.source === 'community'
+          ? `<span style="color:var(--green);font-weight:600">${p.author === 'other' ? '♥ ' + (p.likeCount || 0) + ' · community' : 'Your spot'}</span>${priceShort(p) ? '<span class="dotsep"></span><span>' + priceShort(p) + '</span>' : ''}`
+          : `<span class="star"><b>★ ${p.googleRating}</b></span>
         <span style="color:var(--mut)">${fmtCount(p.googleReviewCount)} reviews</span>
         <span class="dotsep"></span>
-        <span>${priceShort(p)}</span>
+        <span>${priceShort(p)}</span>`}
       </div>
       <div class="hr"></div>
-      <div class="rev">${p.reviewSummary}</div>
+      ${p.reviewSummary ? `<div class="rev">${p.reviewSummary}</div>` : ''}
       ${p.highlight ? `<div class="miss"><b>Don't miss</b> — ${p.highlight}</div>` : ''}
-      <div class="gsay"><b>Reviewers say</b>${p.googleReviewSummary}</div>
-      <div class="tip">Tip: ${p.localTip}</div>
+      ${p.googleReviewSummary ? `<div class="gsay"><b>Reviewers say</b>${p.googleReviewSummary}</div>` : ''}
+      ${p.localTip ? `<div class="tip">Tip: ${p.localTip}</div>` : ''}
       ${p.story ? `<div class="storytxt"><b>The story</b>${p.story}</div>` : ''}
       <div class="play">
         ${p.story ? `<button class="playbtn" data-speak="${p.id}"><i>▶</i> Listen</button>` : ''}
@@ -787,7 +1004,7 @@ if ($('#photoInput')) $('#photoInput').onchange = async (ev) => {
   ev.target.value = '';
   renderPhotoStrip();
 };
-loadPhotos().then(() => renderJournal());
+loadPhotos().then(() => { renderJournal(); try { if (myPlaces.length) renderStack(); } catch (e) {} });
 
 /* ---------- journal ---------- */
 let sheetPlace = null;
@@ -1092,7 +1309,29 @@ function renderCityList() {
     </button>`).join('');
   $('#cityList').querySelectorAll('[data-city]').forEach(b => b.onclick = () => switchCity(b.dataset.city));
 }
-function openCitySheet() { renderCityList(); $('#citySheetWrap').classList.add('open'); }
+function renderCityTrip() {
+  const el = $('#cityTrip'); if (!el) return;
+  const c = cityMeta(activeCity);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m]));
+  let html = '';
+  if (c.bestTime) {
+    html += `<p class="trip-head">When to go to ${esc(c.name)}</p>
+      <div class="trip-when"><span class="tw-ico">🗓️</span><span>${esc(c.bestTime)}</span></div>`;
+  }
+  if (Array.isArray(c.itinerary) && c.itinerary.length) {
+    const days = c.itinerary.length;
+    html += `<button class="trip-toggle" id="tripToggle"><span>🧭</span> Suggested ${days}-day itinerary <span class="tt-arrow">▾</span></button>
+      <div class="trip-days" id="tripDays">` +
+      c.itinerary.map(d => `<div class="trip-day">
+        <div class="td-top"><span class="td-num">${esc(d.day)}</span><span class="td-title">${esc(d.title)}</span></div>
+        <div class="td-plan">${esc(d.plan)}</div>
+      </div>`).join('') + `</div>`;
+  }
+  el.innerHTML = html;
+  const tg = $('#tripToggle');
+  if (tg) tg.onclick = () => { tg.classList.toggle('open'); $('#tripDays').classList.toggle('open'); };
+}
+function openCitySheet() { renderCityAccount(); renderCityList(); renderCityTrip(); renderCityItins(); if (DB.ready) loadItineraries(); $('#citySheetWrap').classList.add('open'); }
 function closeCitySheet() { $('#citySheetWrap').classList.remove('open'); }
 function switchCity(id) {
   if (!ALL[id]) return;
@@ -1113,6 +1352,298 @@ function updateCityUI() {
 $('#cityBtn').onclick = openCitySheet;
 $('#cityScrim').onclick = closeCitySheet;
 updateCityUI();
+
+/* ---------- add a place (community, local-first) ---------- */
+let apCat = 'food', apPhotos = [];
+let apMap = null, apMarker = null, apLat = null, apLng = null;
+function renderApCats() {
+  const el = $('#apCats'); el.innerHTML = '';
+  for (const [key, c] of Object.entries(CATS)) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (key === apCat ? ' active' : '');
+    b.textContent = c.label;
+    b.onclick = () => { apCat = key; renderApCats(); };
+    el.appendChild(b);
+  }
+}
+function setApLatLng(lat, lng) {
+  apLat = lat; apLng = lng;
+  $('#apLatLng').textContent = lat.toFixed(5) + ', ' + lng.toFixed(5);
+  if (apMarker) apMarker.setLatLng([lat, lng]);
+}
+function renderApPhotos() {
+  const strip = $('#apPhotoStrip');
+  strip.innerHTML = apPhotos.map((src, i) => `<div class="pthumb"><img src="${src}" alt=""><button data-rmap="${i}">✕</button></div>`).join('')
+    + `<button id="apAddPhoto" class="pthumb add" type="button">＋<span>Photo</span></button>`;
+  strip.querySelector('#apAddPhoto').onclick = () => $('#apPhotoInput').click();
+  strip.querySelectorAll('[data-rmap]').forEach(b => b.onclick = () => { apPhotos.splice(+b.dataset.rmap, 1); renderApPhotos(); });
+}
+$('#apPhotoInput').onchange = async (ev) => {
+  const files = [...ev.target.files].slice(0, 6);
+  for (const f of files) { const d = await compressImage(f); if (d) apPhotos.push(d); }
+  ev.target.value = ''; renderApPhotos();
+};
+function openAddSheet() {
+  apCat = (activeCats.size === 1) ? [...activeCats][0] : 'food';
+  apPhotos = []; apLat = apLng = null;
+  ['#apName','#apHood','#apAddr','#apNote','#apPrice'].forEach(s => $(s).value = '');
+  $('#apLatLng').textContent = 'Tap the map to drop a pin';
+  renderApCats(); renderApPhotos();
+  $('#addWrap').classList.add('open');
+  const center = userLoc ? [userLoc.lat, userLoc.lng] : cityMeta(activeCity).center;
+  setTimeout(() => {
+    if (!apMap) {
+      apMap = L.map('apMap', { zoomControl: false }).setView(center, 14);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '© OpenStreetMap, © CARTO' }).addTo(apMap);
+      apMarker = L.marker(center, { draggable: true }).addTo(apMap);
+      apMarker.on('dragend', () => { const ll = apMarker.getLatLng(); setApLatLng(ll.lat, ll.lng); });
+      apMap.on('click', e => setApLatLng(e.latlng.lat, e.latlng.lng));
+    } else { apMap.setView(center, 14); apMarker.setLatLng(center); }
+    apMap.invalidateSize();
+    if (userLoc) setApLatLng(userLoc.lat, userLoc.lng);
+  }, 320);
+}
+function closeAddSheet() { $('#addWrap').classList.remove('open'); }
+$('#addBtn').onclick = openAddSheet;
+$('#addScrim').onclick = closeAddSheet;
+$('#apCancel').onclick = closeAddSheet;
+$('#apGeo').onclick = () => {
+  if (!navigator.geolocation) { toast('Location not available'); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => { const { latitude, longitude } = pos.coords; if (apMap) apMap.setView([latitude, longitude], 15); setApLatLng(latitude, longitude); },
+    () => toast('Could not get your location'),
+    { enableHighAccuracy: true, timeout: 8000 });
+};
+$('#apSave').onclick = async () => {
+  const name = $('#apName').value.trim();
+  if (!name) { toast('Give your place a name'); return; }
+  if (apLat == null || apLng == null) { toast('Drop a pin so it shows on the map'); return; }
+  const rawId = 'my-' + Date.now().toString(36);
+  const fullId = activeCity + '/' + rawId;
+  const note = $('#apNote').value.trim();
+  const place = {
+    id: fullId, _rawId: rawId, city: activeCity,
+    source: 'community', author: 'me', createdAt: new Date().toISOString(),
+    category: apCat, subcategory: 'added by you',
+    name, neighborhood: $('#apHood').value.trim() || cityMeta(activeCity).name,
+    address: $('#apAddr').value.trim() || '',
+    lat: +apLat.toFixed(6), lng: +apLng.toFixed(6),
+    price: $('#apPrice').value.trim() || '',
+    googleRating: 0, googleReviewCount: 0,
+    reviewSummary: note || 'A place you added to ' + cityMeta(activeCity).name + '.',
+    googleReviewSummary: '', localTip: '', story: note || '', highlight: '',
+  };
+  const signedIn = DB.ready && DB.user;
+  $('#apSave').disabled = true; $('#apSave').textContent = signedIn ? 'Sharing…' : 'Saving…';
+  if (signedIn) {
+    // Publish to the community (cloud) so others can find it.
+    const row = await DB.addPlace(place, apPhotos);
+    if (row) { (cloudPlaces[activeCity] = cloudPlaces[activeCity] || []).unshift(row); }
+    else { toast('Could not share — saved on this device instead'); myPlaces.push(place); if (apPhotos.length) await savePhotos(fullId, apPhotos); }
+  } else {
+    myPlaces.push(place);
+    if (apPhotos.length) await savePhotos(fullId, apPhotos);
+  }
+  $('#apSave').disabled = false; $('#apSave').textContent = 'Save place';
+  persist();
+  rebuildAll();
+  PLACES = ALL[activeCity];
+  if (map) { drawMarkers(); refreshMarkers(); }
+  rebuild();
+  closeAddSheet();
+  toast(signedIn ? 'Shared with the ' + cityMeta(activeCity).name + ' community' : 'Added to ' + cityMeta(activeCity).name + ' — find it on the map');
+};
+
+/* ---------- community: auth, account, itineraries, likes, comments ---------- */
+const escHtml = s => String(s == null ? '' : s).replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m]));
+const initials = s => (s || 'You').trim().slice(0, 2).toUpperCase();
+let itinCache = {};
+
+function renderCityAccount() {
+  const el = $('#cityAccount'); if (!el) return;
+  if (!DB.ready) { el.innerHTML = ''; return; }
+  const u = DB.user, p = DB.profile;
+  if (u) {
+    const name = (p && (p.display_name || p.handle)) || 'You';
+    el.innerHTML = `<div class="acct"><div class="av">${escHtml(initials(name))}</div>
+      <div class="ai"><b>${escHtml(name)}</b><span>Signed in · syncing</span></div>
+      <button class="abtn" id="acctOut">Sign out</button></div>`;
+    $('#acctOut').onclick = async () => { await DB.signOut(); toast('Signed out'); };
+  } else {
+    el.innerHTML = `<div class="acct signin" id="acctIn"><div class="av">✦</div>
+      <div class="ai"><span class="aprompt">Sign in to sync &amp; share</span><span>Add places &amp; itineraries for everyone</span></div>
+      <button class="abtn">Join</button></div>`;
+    $('#acctIn').onclick = openAuthSheet;
+  }
+}
+
+function openAuthSheet() {
+  if (!DB.ready) { toast('Add Supabase keys in config.js to enable accounts'); return; }
+  $('#authMsg').textContent = ''; $('#authEmail').value = '';
+  $('#authWrap').classList.add('open');
+}
+function closeAuthSheet() { $('#authWrap').classList.remove('open'); }
+if ($('#authScrim')) {
+  $('#authScrim').onclick = closeAuthSheet;
+  $('#authCancel').onclick = closeAuthSheet;
+  $('#authSend').onclick = async () => {
+    const email = $('#authEmail').value.trim();
+    if (!/.+@.+\..+/.test(email)) { $('#authMsg').textContent = 'Enter a valid email'; return; }
+    $('#authSend').disabled = true; $('#authMsg').textContent = 'Sending…';
+    const { error } = await DB.signInEmail(email);
+    $('#authSend').disabled = false;
+    $('#authMsg').textContent = error ? ('Could not send: ' + (error.message || error)) : 'Check your email for the magic link ✦';
+  };
+  $('#authGoogle').onclick = () => DB.signInGoogle();
+}
+
+function renderCityItins() {
+  const el = $('#cityItins'); if (!el) return;
+  if (!DB.ready) { el.innerHTML = ''; return; }
+  const list = itinCache[activeCity] || [];
+  let html = `<div class="itin-head"><span class="ih-t">Itineraries · ${escHtml(cityMeta(activeCity).name)}</span><button class="ih-build" id="itinBuild">+ Build</button></div>`;
+  if (!list.length) {
+    html += `<div class="itin-empty">No community trips here yet. Save a few places, then build the first one for ${escHtml(cityMeta(activeCity).name)}.</div>`;
+  } else {
+    html += list.map(it => {
+      const who = it.profiles ? (it.profiles.display_name || it.profiles.handle) : 'a traveller';
+      return `<div class="itin-card" data-itin="${it.id}"><b>${escHtml(it.title)}</b>
+        <div class="ic-by">by ${escHtml(who)} · ${it.days} day${it.days>1?'s':''}</div>
+        <div class="ic-meta"><span>♥ ${it.like_count||0}</span><span>Tap to open →</span></div></div>`;
+    }).join('');
+  }
+  el.innerHTML = html;
+  $('#itinBuild').onclick = openBuildSheet;
+  el.querySelectorAll('[data-itin]').forEach(c => c.onclick = () => openItin(c.dataset.itin));
+}
+async function loadItineraries() {
+  if (!DB.ready) return;
+  itinCache[activeCity] = await DB.getItineraries(activeCity);
+  if ($('#citySheetWrap').classList.contains('open')) renderCityItins();
+}
+
+let biStops = [];
+function openBuildSheet() {
+  if (!DB.user) { closeCitySheet(); openAuthSheet(); return; }
+  const savedPlaces = (ALL[activeCity] || []).filter(p => saved.has(p.id));
+  if (!savedPlaces.length) { toast('Save a few places first (swipe right)'); return; }
+  biStops = savedPlaces.map(p => ({ placeRef: p.id, placeName: p.name, day: 1, checked: true }));
+  $('#biTitle').value = ''; $('#biSummary').value = '';
+  renderBiStops();
+  $('#buildWrap').classList.add('open');
+}
+function closeBuildSheet() { $('#buildWrap').classList.remove('open'); }
+function renderBiStops() {
+  $('#biStops').innerHTML = biStops.map((s, i) => `<div class="bi-stop">
+    <input type="checkbox" data-bic="${i}" ${s.checked ? 'checked' : ''}>
+    <span class="bs-name">${escHtml(s.placeName)}</span>
+    <span class="bs-day"><button data-bid="${i}" data-d="-1">−</button>Day ${s.day}<button data-bid="${i}" data-d="1">+</button></span></div>`).join('');
+  $('#biStops').querySelectorAll('[data-bic]').forEach(b => b.onchange = () => { biStops[+b.dataset.bic].checked = b.checked; });
+  $('#biStops').querySelectorAll('[data-bid]').forEach(b => b.onclick = () => { const s = biStops[+b.dataset.bid]; s.day = Math.max(1, s.day + (+b.dataset.d)); renderBiStops(); });
+}
+if ($('#buildScrim')) {
+  $('#buildScrim').onclick = closeBuildSheet;
+  $('#biCancel').onclick = closeBuildSheet;
+  $('#biPublish').onclick = async () => {
+    const title = $('#biTitle').value.trim();
+    if (!title) { toast('Give your itinerary a title'); return; }
+    const chosen = biStops.filter(s => s.checked);
+    if (!chosen.length) { toast('Pick at least one stop'); return; }
+    const days = Math.max(...chosen.map(s => s.day));
+    $('#biPublish').disabled = true; $('#biPublish').textContent = 'Publishing…';
+    const stops = chosen.sort((a, b) => a.day - b.day).map((s, i) => ({ placeRef: s.placeRef, placeName: s.placeName, day: s.day, position: i }));
+    const row = await DB.createItinerary({ cityId: activeCity, title, summary: $('#biSummary').value.trim(), days }, stops, true);
+    $('#biPublish').disabled = false; $('#biPublish').textContent = 'Publish itinerary';
+    if (row) { toast('Published to ' + cityMeta(activeCity).name); closeBuildSheet(); await loadItineraries(); }
+    else { toast('Could not publish — check your connection'); }
+  };
+}
+
+async function openItin(id) {
+  $('#itinBody').innerHTML = '<div class="itin-empty">Loading…</div>';
+  $('#itinWrap').classList.add('open');
+  const it = await DB.getItinerary(id);
+  if (!it) { $('#itinBody').innerHTML = '<div class="itin-empty">Could not load this itinerary.</div>'; return; }
+  const who = it.profiles ? (it.profiles.display_name || it.profiles.handle) : 'a traveller';
+  const likedS = await DB.likedSet('itinerary', [id]);
+  let liked = likedS.has(id);
+  const byDay = {};
+  (it.stops || []).forEach(s => { (byDay[s.day] = byDay[s.day] || []).push(s); });
+  let daysHtml = '';
+  Object.keys(byDay).sort((a, b) => a - b).forEach(d => {
+    daysHtml += `<div class="id-day">Day ${d}</div>` + byDay[d].map(s => `<div class="id-stop">${escHtml(s.place_name)}${s.note ? ' <small>— ' + escHtml(s.note) + '</small>' : ''}</div>`).join('');
+  });
+  $('#itinBody').innerHTML = `<h2>${escHtml(it.title)}</h2>
+    <div class="id-by">by ${escHtml(who)} · ${it.days} day${it.days>1?'s':''}</div>
+    ${it.summary ? `<div class="id-sum">${escHtml(it.summary)}</div>` : ''}
+    <div class="id-actions">
+      <button class="like-btn ${liked?'on':''}" id="itinLike"><span class="lh">${liked?'♥':'♡'}</span> <span id="itinLikeN">${it.like_count||0}</span></button>
+      <button class="id-exp" id="itinExp">Experience this →</button></div>
+    ${daysHtml}
+    <div class="cmt-h">Comments</div><div id="cmtList"></div>
+    <div class="cmt-box"><input id="cmtInput" placeholder="Add a kind word…"><button id="cmtSend">Send</button></div>
+    <button class="id-report" id="itinReport">⚑ Report</button>`;
+  $('#itinExp').onclick = () => experienceItin(it);
+  $('#itinLike').onclick = async () => {
+    if (!DB.user) { openAuthSheet(); return; }
+    const r = await DB.toggleLike('itinerary', id, liked);
+    if (r.needsAuth) { openAuthSheet(); return; }
+    liked = r.liked;
+    const n = $('#itinLikeN'); n.textContent = Math.max(0, (+n.textContent) + (liked ? 1 : -1));
+    $('#itinLike').classList.toggle('on', liked); $('#itinLike').querySelector('.lh').textContent = liked ? '♥' : '♡';
+  };
+  $('#itinReport').onclick = async () => { if (!DB.user) { openAuthSheet(); return; } await DB.report('itinerary', id, 'user report'); toast('Reported — thank you'); };
+  $('#cmtSend').onclick = async () => {
+    if (!DB.user) { openAuthSheet(); return; }
+    const body = $('#cmtInput').value.trim(); if (!body) return;
+    $('#cmtInput').value = '';
+    const c = await DB.addComment('itinerary', id, body);
+    if (c) renderComments(await DB.getComments('itinerary', id));
+  };
+  renderComments(await DB.getComments('itinerary', id));
+}
+function renderComments(list) {
+  const el = $('#cmtList'); if (!el) return;
+  if (!list.length) { el.innerHTML = '<div class="itin-empty">Be the first to leave a note.</div>'; return; }
+  el.innerHTML = list.map(c => {
+    const who = c.profiles ? (c.profiles.display_name || c.profiles.handle) : 'traveller';
+    return `<div class="cmt"><div class="cav">${escHtml(initials(who))}</div><div class="cbody"><span class="cwho">${escHtml(who)}</span>${escHtml(c.body)}</div></div>`;
+  }).join('');
+}
+function closeItin() { $('#itinWrap').classList.remove('open'); }
+if ($('#itinScrim')) $('#itinScrim').onclick = closeItin;
+
+function experienceItin(it) {
+  const refs = (it.stops || []).map(s => s.place_ref);
+  let added = 0;
+  for (const ref of refs) {
+    const place = (ALL[activeCity] || []).find(p => p.id === ref);
+    if (place && !saved.has(place.id)) { saved.add(place.id); added++; }
+  }
+  persist(); rebuild(); closeItin(); closeCitySheet();
+  toast(added ? `Experiencing "${it.title}" — ${added} stop${added>1?'s':''} saved` : `"${it.title}" is ready in Saved`);
+  const mapBtn = document.querySelector('nav button[data-view="mapView"]'); if (mapBtn) mapBtn.click();
+}
+
+async function loadCommunityPlaces() {
+  if (!DB.ready) return;
+  for (const c of CITIES) cloudPlaces[c.id] = await DB.getCommunityPlaces(c.id);
+  rebuildAll(); PLACES = ALL[activeCity];
+  if (map) { drawMarkers(); refreshMarkers(); }
+  rebuild();
+}
+if (DB.ready) {
+  DB.onAuth(async (sess) => {
+    renderCityAccount();
+    if (sess && myPlaces.length) {
+      const n = await DB.migrateLocal(myPlaces, photoCache);
+      if (n) { myPlaces = []; persist(); toast(n + ' of your places are now shared'); }
+    }
+    await loadCommunityPlaces();
+    await loadItineraries();
+  });
+}
 
 function rebuild() {
   buildQueue();
