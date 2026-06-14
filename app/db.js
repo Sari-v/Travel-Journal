@@ -82,6 +82,18 @@
       if (!ready) return { error: 'not configured' };
       return sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href.split('?')[0] } });
     },
+    async signInApple() {
+      if (!ready) return { error: 'not configured' };
+      return sb.auth.signInWithOAuth({ provider: 'apple', options: { redirectTo: window.location.href.split('?')[0] } });
+    },
+    async signInPhone(phone) {
+      if (!ready) return { error: { message: 'not configured' } };
+      return sb.auth.signInWithOtp({ phone });          // sends an SMS code
+    },
+    async verifyPhone(phone, token) {
+      if (!ready) return { error: { message: 'not configured' } };
+      return sb.auth.verifyOtp({ phone, token, type: 'sms' });
+    },
     async signOut() { if (ready) await sb.auth.signOut(); },
 
     // ---- places ----

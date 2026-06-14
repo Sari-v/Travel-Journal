@@ -152,7 +152,12 @@
   .auth-or { display:flex; align-items:center; text-align:center; color:var(--mut); font-size:12px; margin:14px 0; }
   .auth-or::before, .auth-or::after { content:''; flex:1; height:1px; background:var(--line); }
   .auth-or span { padding:0 12px; }
-  .auth-google { width:100%; background:var(--card); color:var(--ink); border:.5px solid var(--line); border-radius:999px; padding:14px 0; font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; }
+  .auth-oauth { width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:var(--card); color:var(--ink); border:.5px solid var(--line); border-radius:999px; padding:14px 0; margin-bottom:9px; font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; }
+  .auth-oauth.apple { background:#000; color:#fff; border-color:#000; }
+  .auth-oauth .oa-ico { font-weight:700; font-size:15px; line-height:1; }
+  .auth-oauth.apple .oa-ico::before { content:'\F8FF'; }   /*  Apple logo glyph */
+  .auth-link { display:block; width:100%; background:none; border:none; color:var(--gold); font-family:var(--sans); font-size:13.5px; font-weight:600; cursor:pointer; margin-top:6px; padding:6px 0; }
+  #authPhoneStep .auth-primary, #authCodeStep .auth-primary, #authEmailStep .auth-primary { margin-top:10px; }
   .auth-msg { font-size:13px; color:var(--green); text-align:center; margin-top:12px; min-height:18px; }
   .auth-cancel { display:block; margin:14px auto 0; background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:13px; cursor:pointer; }
   /* ---- itineraries section + cards ---- */
@@ -469,11 +474,23 @@
     <div class="s-eyebrow">Travel together</div>
     <h2>Join Meraki</h2>
     <p class="auth-sub">Add places, publish itineraries and save across your devices. Likes and warmth only — never dislikes.</p>
-    <label class="ap-l">Email</label>
-    <input id="authEmail" class="ap-in" type="email" placeholder="you@email.com" autocomplete="email">
-    <button id="authSend" class="auth-primary">Send magic link</button>
-    <div class="auth-or"><span>or</span></div>
-    <button id="authGoogle" class="auth-google">Continue with Google</button>
+    <button id="authGoogle" class="auth-oauth"><span class="oa-ico">G</span>Continue with Google</button>
+    <button id="authApple" class="auth-oauth apple"><span class="oa-ico"></span>Continue with Apple</button>
+    <div class="auth-or"><span>or your phone</span></div>
+    <div id="authPhoneStep">
+      <input id="authPhone" class="ap-in" type="tel" autocomplete="tel" placeholder="+1 555 123 4567">
+      <button id="authPhoneSend" class="auth-primary">Text me a code</button>
+    </div>
+    <div id="authCodeStep" hidden>
+      <input id="authCode" class="ap-in" inputmode="numeric" autocomplete="one-time-code" placeholder="Enter 6-digit code">
+      <button id="authCodeVerify" class="auth-primary">Verify &amp; sign in</button>
+      <button id="authCodeBack" class="auth-cancel">Use a different number</button>
+    </div>
+    <button id="authEmailToggle" class="auth-link">Email me a magic link instead</button>
+    <div id="authEmailStep" hidden>
+      <input id="authEmail" class="ap-in" type="email" autocomplete="email" placeholder="you@email.com">
+      <button id="authSend" class="auth-primary">Send magic link</button>
+    </div>
     <div id="authMsg" class="auth-msg"></div>
     <button id="authCancel" class="auth-cancel">Maybe later</button>
   </div>
@@ -1478,15 +1495,46 @@ function renderCityAccount() {
   }
 }
 
+let pendingPhone = '';
 function openAuthSheet() {
   if (!DB.ready) { toast('Add Supabase keys in config.js to enable accounts'); return; }
-  $('#authMsg').textContent = ''; $('#authEmail').value = '';
+  $('#authMsg').textContent = '';
+  $('#authPhone').value = ''; $('#authCode').value = ''; $('#authEmail').value = '';
+  $('#authPhoneStep').hidden = false; $('#authCodeStep').hidden = true; $('#authEmailStep').hidden = true;
   $('#authWrap').classList.add('open');
 }
 function closeAuthSheet() { $('#authWrap').classList.remove('open'); }
 if ($('#authScrim')) {
   $('#authScrim').onclick = closeAuthSheet;
   $('#authCancel').onclick = closeAuthSheet;
+  $('#authGoogle').onclick = () => DB.signInGoogle();
+  $('#authApple').onclick = () => DB.signInApple();
+  // phone: step 1 — send the SMS code
+  $('#authPhoneSend').onclick = async () => {
+    const phone = $('#authPhone').value.trim().replace(/[^\d+]/g, '');
+    if (!/^\+\d{7,15}$/.test(phone)) { $('#authMsg').textContent = 'Use your full number with country code, e.g. +1 555…'; return; }
+    $('#authPhoneSend').disabled = true; $('#authMsg').textContent = 'Texting you a code…';
+    const { error } = await DB.signInPhone(phone);
+    $('#authPhoneSend').disabled = false;
+    if (error) { $('#authMsg').textContent = 'Could not send: ' + (error.message || error); return; }
+    pendingPhone = phone;
+    $('#authPhoneStep').hidden = true; $('#authCodeStep').hidden = false;
+    $('#authMsg').textContent = 'Code sent to ' + phone;
+    setTimeout(() => $('#authCode').focus(), 100);
+  };
+  // phone: step 2 — verify the code
+  $('#authCodeVerify').onclick = async () => {
+    const token = $('#authCode').value.trim().replace(/\D/g, '');
+    if (token.length < 4) { $('#authMsg').textContent = 'Enter the code from the text'; return; }
+    $('#authCodeVerify').disabled = true; $('#authMsg').textContent = 'Verifying…';
+    const { error } = await DB.verifyPhone(pendingPhone, token);
+    $('#authCodeVerify').disabled = false;
+    if (error) { $('#authMsg').textContent = 'That code was wrong or expired — try again'; return; }
+    closeAuthSheet();   // DB.onAuth fires and signs the user in
+  };
+  $('#authCodeBack').onclick = () => { $('#authCodeStep').hidden = true; $('#authPhoneStep').hidden = false; $('#authMsg').textContent = ''; };
+  // email magic link (fallback, hidden behind a toggle)
+  $('#authEmailToggle').onclick = () => { const s = $('#authEmailStep'); s.hidden = !s.hidden; if (!s.hidden) setTimeout(() => $('#authEmail').focus(), 100); };
   $('#authSend').onclick = async () => {
     const email = $('#authEmail').value.trim();
     if (!/.+@.+\..+/.test(email)) { $('#authMsg').textContent = 'Enter a valid email'; return; }
@@ -1495,7 +1543,6 @@ if ($('#authScrim')) {
     $('#authSend').disabled = false;
     $('#authMsg').textContent = error ? ('Could not send: ' + (error.message || error)) : 'Check your email for the magic link ✦';
   };
-  $('#authGoogle').onclick = () => DB.signInGoogle();
 }
 
 function renderCityItins() {

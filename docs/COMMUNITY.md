@@ -18,8 +18,13 @@ Everything below is **already built** in the app. It runs fully local until you 
      supabaseAnonKey: 'eyJhbGci...'
    };
    ```
-5. (Optional) **Authentication → Providers** → enable **Google** if you want that button to work. Email magic-link works by default.
+5. Enable the sign-in methods you want under **Authentication → Providers** (email magic-link is on by default):
+   - **Google** — create an OAuth client in Google Cloud, paste client ID + secret into the Google provider.
+   - **Apple** — needs an Apple Developer account: a Services ID, a Sign-in-with-Apple key, and your team/key IDs, pasted into the Apple provider. Add your domain to the return URLs.
+   - **Phone (SMS)** — enable the Phone provider and connect an SMS sender (Twilio, MessageBird, Vonage, or Twilio Verify) under Authentication → Providers → Phone. Without an SMS provider the "Text me a code" button will error.
 6. Commit + push. Vercel redeploys; the city sheet now shows "Sign in to sync & share", and added places/itineraries go to the cloud for everyone.
+
+The auth sheet offers **Google, Apple, phone (SMS code), and email magic-link**. Each button only works once its provider is enabled above; the others still work independently.
 
 The anon key is safe to ship in a static client — Row-Level Security (below) is what actually guards the data. Leave `config.js` blank to keep the app fully local (Add-a-place still works, stored on-device).
 
