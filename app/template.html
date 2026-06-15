@@ -51,6 +51,7 @@
   #locBtn { background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:8px 14px; font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; }
   #locBtn.on { background:var(--green); color:#fff; }
   #helpBtn { width:32px; height:32px; border-radius:50%; background:var(--chip); color:var(--ink2); border:none; font-family:var(--sans); font-size:15px; font-weight:600; cursor:pointer; line-height:1; }
+  #addBtn { width:32px; height:32px; border-radius:50%; background:var(--green-soft); color:var(--green); border:none; font-family:var(--sans); font-size:19px; font-weight:600; cursor:pointer; line-height:1; }
 
   /* ===== GUIDE / WALKTHROUGH ===== */
   #guide { position:fixed; inset:0; z-index:700; display:none; align-items:flex-end; justify-content:center;
@@ -89,6 +90,156 @@
   .city-info span { font-size:12.5px; color:var(--mut); }
   .city-check { margin-left:auto; color:var(--green); font-weight:700; }
   .city-add { margin-top:14px; font-size:13px; line-height:1.5; color:var(--mut); text-align:center; }
+  #cityTrip { margin-top:18px; }
+  #cityTrip:empty { display:none; }
+  .trip-head { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:0 0 7px; }
+  .trip-when { background:var(--card); border:.5px solid var(--line); border-radius:14px; padding:12px 14px; font-size:13.5px; line-height:1.55; color:var(--ink); display:flex; gap:9px; }
+  .trip-when .tw-ico { font-size:16px; line-height:1.3; flex-shrink:0; }
+  .trip-toggle { width:100%; text-align:left; background:var(--card); border:.5px solid var(--line); border-radius:14px; padding:12px 14px; margin-top:10px; font-family:var(--sans); font-size:14px; font-weight:600; color:var(--ink); cursor:pointer; display:flex; align-items:center; gap:9px; }
+  .trip-toggle .tt-arrow { margin-left:auto; color:var(--mut); transition:transform .2s; }
+  .trip-toggle.open .tt-arrow { transform:rotate(180deg); }
+  .trip-days { display:none; padding:4px 2px 0; }
+  .trip-days.open { display:block; }
+  .trip-day { padding:11px 0; border-bottom:.5px solid var(--line); }
+  .trip-day:last-child { border-bottom:none; padding-bottom:2px; }
+  .trip-day .td-top { display:flex; align-items:baseline; gap:8px; margin-bottom:4px; }
+  .trip-day .td-num { font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); }
+  .trip-day .td-title { font-size:14.5px; font-weight:650; letter-spacing:-0.01em; color:var(--ink); }
+  .trip-day .td-plan { font-size:13px; line-height:1.55; color:var(--mut); }
+  /* ---- Add a place sheet ---- */
+  #addWrap { position:fixed; inset:0; z-index:640; display:none; }
+  #addWrap.open { display:block; }
+  #addWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #addSheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); max-height:90vh; overflow-y:auto; }
+  #addWrap.open #addSheet { transform:none; }
+  #addSheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  #addSheet .s-eyebrow { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  #addSheet h2 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin-bottom:14px; }
+  .ap-l { display:block; font-size:12px; font-weight:600; letter-spacing:.03em; color:var(--mut); margin:14px 0 6px; }
+  .ap-l .ap-opt { font-weight:500; color:#bdb7a8; }
+  .ap-in { width:100%; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:12px 14px; font-family:var(--sans); font-size:15px; color:var(--ink); }
+  textarea.ap-in { min-height:70px; resize:vertical; }
+  #apCats { display:flex; flex-wrap:wrap; gap:7px; }
+  #apCats .chip { background:var(--chip); border:none; border-radius:999px; padding:8px 14px; font-family:var(--sans); font-size:13px; font-weight:500; color:#3c3a35; cursor:pointer; }
+  #apCats .chip.active { background:var(--green); color:#fff; }
+  #apMap { height:170px; border-radius:14px; overflow:hidden; border:.5px solid var(--line); }
+  .ap-coords { display:flex; align-items:center; gap:10px; margin-top:9px; }
+  #apGeo { background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:9px 14px; font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  #apLatLng { font-size:12.5px; color:var(--mut); }
+  #apPhotoStrip { display:flex; flex-wrap:wrap; gap:8px; }
+  .mine-tag { position:absolute; top:12px; left:12px; background:rgba(46,110,78,.92); color:#fff; font-size:10.5px; font-weight:650; letter-spacing:.03em; padding:4px 9px; border-radius:999px; z-index:3; }
+  /* ---- account row (in city sheet) ---- */
+  #cityAccount:empty { display:none; }
+  .acct { display:flex; align-items:center; gap:11px; background:var(--card); border:.5px solid var(--line); border-radius:16px; padding:11px 14px; margin-bottom:16px; }
+  .acct .av { width:34px; height:34px; border-radius:50%; background:var(--green-soft); color:var(--green); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0; }
+  .acct .ai { display:flex; flex-direction:column; line-height:1.25; }
+  .acct .ai b { font-size:14px; color:var(--ink); }
+  .acct .ai span { font-size:12px; color:var(--mut); }
+  .acct .abtn { margin-left:auto; background:var(--chip); border:none; border-radius:999px; padding:8px 13px; font-family:var(--sans); font-size:12.5px; font-weight:600; color:#3c3a35; cursor:pointer; }
+  .acct.signin { cursor:pointer; }
+  .acct.signin .aprompt { font-size:13.5px; color:var(--ink); font-weight:600; }
+  /* ---- auth sheet ---- */
+  #authWrap, #buildWrap, #itinWrap { position:fixed; inset:0; z-index:650; display:none; }
+  #authWrap.open, #buildWrap.open, #itinWrap.open { display:block; }
+  #authWrap .scrim, #buildWrap .scrim, #itinWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #authSheet, #buildSheet, #itinSheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); max-height:90vh; overflow-y:auto; }
+  #authWrap.open #authSheet, #buildWrap.open #buildSheet, #itinWrap.open #itinSheet { transform:none; }
+  #authSheet .grab, #buildSheet .grab, #itinSheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  #authSheet .s-eyebrow, #buildSheet .s-eyebrow { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:5px; }
+  #authSheet h2, #buildSheet h2 { font-size:24px; font-weight:700; letter-spacing:-0.02em; margin-bottom:8px; }
+  .auth-sub { font-size:13.5px; line-height:1.5; color:var(--mut); margin-bottom:6px; }
+  .auth-primary { width:100%; background:var(--ink); color:#fff; border:none; border-radius:999px; padding:15px 0; font-family:var(--sans); font-weight:600; font-size:15px; cursor:pointer; margin-top:14px; }
+  .auth-or { display:flex; align-items:center; text-align:center; color:var(--mut); font-size:12px; margin:14px 0; }
+  .auth-or::before, .auth-or::after { content:''; flex:1; height:1px; background:var(--line); }
+  .auth-or span { padding:0 12px; }
+  .auth-oauth { width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:var(--card); color:var(--ink); border:.5px solid var(--line); border-radius:999px; padding:14px 0; margin-bottom:9px; font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; }
+  .auth-oauth.apple { background:#000; color:#fff; border-color:#000; }
+  .auth-oauth .oa-ico { font-weight:700; font-size:15px; line-height:1; }
+  .auth-oauth.apple .oa-ico::before { content:'\F8FF'; }   /*  Apple logo glyph */
+  .auth-link { display:block; width:100%; background:none; border:none; color:var(--gold); font-family:var(--sans); font-size:13.5px; font-weight:600; cursor:pointer; margin-top:6px; padding:6px 0; }
+  #authPhoneStep .auth-primary, #authCodeStep .auth-primary, #authEmailStep .auth-primary { margin-top:10px; }
+  .auth-msg { font-size:13px; color:var(--green); text-align:center; margin-top:12px; min-height:18px; }
+  .auth-cancel { display:block; margin:14px auto 0; background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:13px; cursor:pointer; }
+  /* ---- itineraries section + cards ---- */
+  #cityItins:empty { display:none; }
+  .itin-head { display:flex; align-items:center; margin:20px 0 9px; }
+  .itin-head .ih-t { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+  .itin-head .ih-build { margin-left:auto; background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:7px 13px; font-family:var(--sans); font-size:12.5px; font-weight:600; cursor:pointer; }
+  .itin-card { background:var(--card); border:.5px solid var(--line); border-radius:16px; padding:13px 15px; margin-bottom:9px; cursor:pointer; }
+  .itin-card b { font-size:15px; font-weight:650; letter-spacing:-0.01em; color:var(--ink); display:block; }
+  .itin-card .ic-by { font-size:12px; color:var(--mut); margin:2px 0 7px; }
+  .itin-card .ic-meta { display:flex; gap:14px; align-items:center; font-size:12.5px; color:var(--mut); }
+  .itin-empty { font-size:13px; color:var(--mut); line-height:1.5; padding:2px 2px 4px; }
+  .like-btn { display:inline-flex; align-items:center; gap:5px; background:none; border:none; font-family:var(--sans); font-size:13px; color:var(--mut); cursor:pointer; padding:0; }
+  .like-btn.on { color:var(--green); font-weight:600; }
+  .like-btn .lh { font-size:14px; }
+  /* ---- build sheet stops ---- */
+  .bi-stop { display:flex; align-items:center; gap:10px; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:8px; }
+  .bi-stop input[type=checkbox] { width:18px; height:18px; accent-color:var(--green); flex-shrink:0; }
+  .bi-stop .bs-name { font-size:13.5px; color:var(--ink); flex:1; }
+  .bi-stop .bs-day { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--mut); }
+  .bi-stop .bs-day button { width:24px; height:24px; border-radius:50%; border:.5px solid var(--line); background:var(--paper); cursor:pointer; font-size:13px; line-height:1; }
+  /* ---- itinerary detail + comments ---- */
+  #itinBody h2 { font-size:22px; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px; }
+  #itinBody .id-by { font-size:12.5px; color:var(--mut); margin-bottom:10px; }
+  #itinBody .id-sum { font-size:14px; line-height:1.55; color:var(--ink2); margin-bottom:14px; }
+  #itinBody .id-day { font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold); margin:14px 0 6px; }
+  #itinBody .id-stop { font-size:14px; color:var(--ink); padding:6px 0; border-bottom:.5px solid var(--line); }
+  #itinBody .id-stop small { color:var(--mut); }
+  .id-actions { display:flex; align-items:center; gap:16px; margin:16px 0; }
+  .id-exp { background:var(--ink); color:#fff; border:none; border-radius:999px; padding:11px 18px; font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; }
+  .cmt-h { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:18px 0 10px; }
+  .cmt { display:flex; gap:9px; margin-bottom:11px; }
+  .cmt .cav { width:26px; height:26px; border-radius:50%; background:var(--green-soft); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+  .cmt .cbody { font-size:13.5px; line-height:1.45; color:var(--ink); }
+  .cmt .cbody .cwho { font-weight:650; margin-right:6px; }
+  .cmt-box { display:flex; gap:8px; margin-top:10px; }
+  .cmt-box input { flex:1; background:var(--card); border:.5px solid var(--line); border-radius:999px; padding:11px 15px; font-family:var(--sans); font-size:14px; }
+  .cmt-box button { background:var(--green); color:#fff; border:none; border-radius:999px; padding:0 16px; font-family:var(--sans); font-weight:600; font-size:13px; cursor:pointer; }
+  .id-report { display:block; margin:8px 0 0; background:none; border:none; color:var(--mut); font-size:12px; cursor:pointer; }
+  /* ---- login gate ---- */
+  #authGate { position:fixed; inset:0; z-index:700; background:var(--paper); display:none; overflow-y:auto; padding:calc(40px + env(safe-area-inset-top)) 26px 40px; }
+  #authGate.open { display:block; }
+  .ag-inner { max-width:380px; margin:0 auto; }
+  .ag-step { animation:agfade .35s ease; }
+  @keyframes agfade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .ag-logo { width:54px; height:54px; border-radius:16px; background:var(--green-soft); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 16px; }
+  .ag-h { font-size:30px; font-weight:700; letter-spacing:-0.03em; text-align:center; }
+  .ag-tag { font-size:14.5px; line-height:1.5; color:var(--mut); text-align:center; margin:6px 0 22px; }
+  #authGate .ap-in { margin-bottom:10px; }
+  #authGate .auth-primary { margin-top:6px; }
+  .ag-links { display:flex; flex-direction:column; align-items:center; gap:4px; margin-top:14px; }
+  .ag-avatar-wrap { display:flex; justify-content:center; margin:6px 0 16px; }
+  .ag-avatar { width:96px; height:96px; border-radius:50%; border:1.5px dashed #c9c2b4; background:var(--card) center/cover no-repeat; color:var(--mut); font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; text-align:center; }
+  #agCityList { margin:4px 0 16px; }
+  /* ---- community feed ---- */
+  .cf-tabs { display:flex; gap:8px; padding:2px 0 14px; }
+  .cf-tabs button { flex:1; background:var(--chip); border:none; border-radius:999px; padding:9px 0; font-family:var(--sans); font-size:13px; font-weight:600; color:#3c3a35; cursor:pointer; }
+  .cf-tabs button.on { background:var(--green); color:#fff; }
+  .moment { background:var(--card); border:.5px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; }
+  .moment .m-top { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+  .moment .m-av { width:30px; height:30px; border-radius:50%; background:var(--green-soft) center/cover; color:var(--green); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  .moment .m-who b { font-size:13.5px; color:var(--ink); } .moment .m-who span { font-size:11.5px; color:var(--mut); display:block; }
+  .moment .m-body { font-size:14px; line-height:1.5; color:var(--ink2); }
+  .moment .m-place { font-size:12.5px; color:var(--gold); font-weight:600; margin-top:7px; }
+  /* ---- profile ---- */
+  .prof-head { display:flex; align-items:center; gap:14px; padding:6px 0 16px; }
+  .prof-av { width:64px; height:64px; border-radius:50%; background:var(--green-soft) center/cover; color:var(--green); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; flex-shrink:0; cursor:pointer; }
+  .prof-id b { font-size:19px; font-weight:700; letter-spacing:-0.01em; } .prof-id span { font-size:13px; color:var(--mut); display:block; }
+  .prof-gear { margin-left:auto; background:var(--chip); border:none; border-radius:50%; width:38px; height:38px; font-size:17px; cursor:pointer; }
+  .prof-stats { display:flex; gap:18px; padding:10px 2px 18px; border-bottom:.5px solid var(--line); }
+  .prof-stats div b { font-size:18px; font-weight:700; } .prof-stats div span { font-size:11.5px; color:var(--mut); display:block; }
+  /* ---- settings ---- */
+  #setWrap { position:fixed; inset:0; z-index:660; display:none; }
+  #setWrap.open { display:block; }
+  #setWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #setSheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); max-height:88vh; overflow-y:auto; }
+  #setWrap.open #setSheet { transform:none; }
+  #setSheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  .set-group { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:18px 0 8px; }
+  .set-row { display:flex; align-items:center; gap:10px; width:100%; background:var(--card); border:.5px solid var(--line); border-radius:14px; padding:14px; margin-bottom:8px; font-family:var(--sans); font-size:14.5px; color:var(--ink); cursor:pointer; text-align:left; }
+  .set-row .sr-v { margin-left:auto; color:var(--mut); font-size:13px; }
+  .set-row.danger { color:var(--red); }
   #filters { display:flex; gap:8px; overflow-x:auto; padding:14px 20px; flex-shrink:0; scrollbar-width:none; position:relative; z-index:2; }
   #filters::-webkit-scrollbar { display:none; }
   .chip { background:var(--chip); border:none; border-radius:999px; padding:9px 16px; font-family:var(--sans); font-size:14px; font-weight:500; color:#3c3a35; white-space:nowrap; cursor:pointer; flex-shrink:0; }
@@ -230,6 +381,10 @@
   nav button .ndot[data-n]:not([data-n="0"])::after { content:attr(data-n); position:absolute; top:-3px; right:-14px; background:var(--red); color:#fff; font-size:9px; font-weight:700; border-radius:99px; padding:1.5px 5px; }
   #toast { position:fixed; bottom:96px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; border-radius:999px; padding:11px 20px; font-size:13.5px; font-weight:500; opacity:0; transition:opacity .25s; pointer-events:none; z-index:999; white-space:nowrap; }
   #toast.show { opacity:1; }
+  #toast .t-action { margin-left:12px; background:none; border:none; color:var(--gold); font-family:var(--sans); font-size:13.5px; font-weight:700; cursor:pointer; pointer-events:auto; padding:0; }
+  #sortBar { position:absolute; top:8px; left:0; right:0; z-index:6; display:flex; gap:7px; justify-content:center; pointer-events:none; }
+  #sortBar .sb { pointer-events:auto; background:rgba(255,255,255,.92); border:.5px solid var(--line); box-shadow:0 1px 4px rgba(0,0,0,.08); border-radius:999px; padding:6px 13px; font-family:var(--sans); font-size:12px; font-weight:600; color:#3c3a35; cursor:pointer; }
+  #sortBar .sb.on { background:var(--ink); color:#fff; border-color:var(--ink); }
 </style>
 </head>
 <body>
@@ -249,12 +404,69 @@
   <div class="l-foot l-rev">Chosen with care · Été 2026</div>
 </div>
 
+<div id="authGate">
+  <div class="ag-inner">
+    <!-- step: auth -->
+    <div id="agAuth" class="ag-step">
+      <div class="ag-logo">✦</div>
+      <h1 class="ag-h">Meraki</h1>
+      <p class="ag-tag">Your travel companion — and a community of places.</p>
+      <button id="agGoogle" class="auth-oauth"><span class="oa-ico">G</span>Continue with Google</button>
+      <button id="agApple" class="auth-oauth apple"><span class="oa-ico"></span>Continue with Apple</button>
+      <div class="auth-or"><span>or with email</span></div>
+      <input id="agEmail" class="ap-in" type="email" autocomplete="email" placeholder="you@email.com">
+      <input id="agPass" class="ap-in" type="password" autocomplete="current-password" placeholder="Password">
+      <button id="agPrimary" class="auth-primary">Create account</button>
+      <div class="ag-links">
+        <button id="agToggle" class="auth-link" type="button">Have an account? Sign in</button>
+        <button id="agForgot" class="auth-link" type="button">Forgot password?</button>
+        <button id="agPhoneLink" class="auth-link" type="button">Use phone number instead</button>
+      </div>
+      <div id="agMsg" class="auth-msg"></div>
+    </div>
+    <!-- step: phone -->
+    <div id="agPhone" class="ag-step" hidden>
+      <div class="ag-logo">✆</div>
+      <h1 class="ag-h">Your phone</h1>
+      <div id="agPhoneSend1">
+        <input id="agPhoneNum" class="ap-in" type="tel" autocomplete="tel" placeholder="+1 555 123 4567">
+        <button id="agPhoneSendBtn" class="auth-primary">Text me a code</button>
+      </div>
+      <div id="agPhoneVerify1" hidden>
+        <input id="agPhoneCode" class="ap-in" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit code">
+        <button id="agPhoneVerifyBtn" class="auth-primary">Verify &amp; continue</button>
+      </div>
+      <button id="agPhoneBack" class="auth-link" type="button">← back to email</button>
+      <div id="agPhoneMsg" class="auth-msg"></div>
+    </div>
+    <!-- step: profile -->
+    <div id="agProfile" class="ag-step" hidden>
+      <h1 class="ag-h">Nice to meet you</h1>
+      <p class="ag-tag">What should we call you?</p>
+      <div class="ag-avatar-wrap"><button id="agAvatar" class="ag-avatar" type="button"><span>add<br>photo</span></button></div>
+      <input id="agAvatarInput" type="file" accept="image/*" hidden>
+      <input id="agName" class="ap-in" placeholder="Your name">
+      <input id="agHandle" class="ap-in" placeholder="@handle">
+      <button id="agProfileSave" class="auth-primary">Continue</button>
+      <div id="agProfileMsg" class="auth-msg"></div>
+    </div>
+    <!-- step: pick a city -->
+    <div id="agCity" class="ag-step" hidden>
+      <h1 class="ag-h">Where to first?</h1>
+      <p class="ag-tag">Pick a city to start exploring.</p>
+      <div id="agCityList"></div>
+      <button id="agStart" class="auth-primary">Start exploring</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="wm" id="cityBtn">
     <svg width="13" height="18" viewBox="0 0 13 18" fill="none"><path d="M6.5 0.5 L8.2 9 L11.8 16 M6.5 0.5 L4.8 9 L1.2 16 M3.6 11.5 L9.4 11.5 M4.6 7.5 L8.4 7.5 M1.2 16 L4.4 13.8 Q6.5 12.6 8.6 13.8 L11.8 16" stroke="#1d1d1f" stroke-width="1.1" stroke-linecap="round"/></svg>
     Meraki · <span id="cityName">Paris</span> <span style="color:var(--mut);font-size:11px">▾</span>
   </div>
   <div style="display:flex; gap:8px; align-items:center;">
+    <button id="addBtn" aria-label="Add a place">＋</button>
     <button id="helpBtn" aria-label="How it works">?</button>
     <button id="locBtn">Near Me</button>
   </div>
@@ -262,6 +474,7 @@
 <div id="filters"></div>
 <main>
   <div id="deck" class="view active">
+    <div id="sortBar"></div>
     <div id="stack"></div>
     <div id="deckBtns">
       <button id="skipBtn" title="Skip">✕</button>
@@ -270,19 +483,22 @@
     </div>
     <div id="deckEmpty">
       <h2>That's everything.</h2>
-      <p>You've seen every place in this filter.</p>
+      <p id="deckEmptySub">You've seen every place here.</p>
       <button id="resetBtn">Start over</button>
     </div>
   </div>
   <div id="mapView" class="view"><div id="map"></div></div>
+  <div id="communityView" class="view"><div class="listwrap" id="communityBody"></div></div>
   <div id="savedView" class="view"><div class="listwrap" id="savedList"></div></div>
   <div id="journalView" class="view"><div class="listwrap" id="journalList"></div></div>
+  <div id="profileView" class="view"><div class="listwrap" id="profileBody"></div></div>
 </main>
 <nav>
   <button data-view="deck" class="active"><span class="ico">◉</span>Discover</button>
   <button data-view="mapView"><span class="ico">◇</span>Map</button>
+  <button data-view="communityView"><span class="ico">❀</span>Community</button>
   <button data-view="savedView"><span class="ico ndot" id="savedDot" data-n="0">♡</span>Saved</button>
-  <button data-view="journalView"><span class="ico ndot" id="journalDot" data-n="0">✎</span>Journal</button>
+  <button data-view="profileView"><span class="ico">◌</span>You</button>
 </nav>
 
 <div id="nudge">
@@ -314,10 +530,111 @@
   <div class="scrim" id="cityScrim"></div>
   <div id="citySheet">
     <div class="grab"></div>
+    <div id="cityAccount"></div>
     <div class="s-eyebrow">Your trips</div>
     <h2>Where to?</h2>
     <div id="cityList"></div>
+    <div id="cityTrip"></div>
+    <div id="cityItins"></div>
     <p class="city-add">Going somewhere new? Ask Claude to add your next city — it researches every place in the same format and drops it right in.</p>
+  </div>
+</div>
+
+<div id="addWrap">
+  <div class="scrim" id="addScrim"></div>
+  <div id="addSheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">Your discovery</div>
+    <h2>Add a place</h2>
+    <label class="ap-l">Name</label>
+    <input id="apName" class="ap-in" placeholder="e.g. Café de Klos">
+    <label class="ap-l">Category</label>
+    <div id="apCats"></div>
+    <label class="ap-l">Neighbourhood</label>
+    <input id="apHood" class="ap-in" placeholder="e.g. Jordaan">
+    <label class="ap-l">Address</label>
+    <input id="apAddr" class="ap-in" placeholder="Street + number">
+    <label class="ap-l">Where is it?</label>
+    <div id="apMap"></div>
+    <div class="ap-coords">
+      <button id="apGeo" type="button">📍 Use my location</button>
+      <span id="apLatLng">Tap the map to drop a pin</span>
+    </div>
+    <label class="ap-l">Photo</label>
+    <div id="apPhotoStrip"></div>
+    <input id="apPhotoInput" type="file" accept="image/*" capture="environment" multiple hidden>
+    <label class="ap-l">Your note</label>
+    <textarea id="apNote" class="ap-in" placeholder="What makes it special? (this becomes the card's story)"></textarea>
+    <label class="ap-l">Price <span class="ap-opt">(optional)</span></label>
+    <input id="apPrice" class="ap-in" placeholder="e.g. €€ — mains €15–20">
+    <div class="s-row">
+      <button id="apSave">Save place</button>
+      <button id="apCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="authWrap">
+  <div class="scrim" id="authScrim"></div>
+  <div id="authSheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">Travel together</div>
+    <h2>Join Meraki</h2>
+    <p class="auth-sub">Add places, publish itineraries and save across your devices. Likes and warmth only — never dislikes.</p>
+    <button id="authGoogle" class="auth-oauth"><span class="oa-ico">G</span>Continue with Google</button>
+    <button id="authApple" class="auth-oauth apple"><span class="oa-ico"></span>Continue with Apple</button>
+    <div class="auth-or"><span>or your phone</span></div>
+    <div id="authPhoneStep">
+      <input id="authPhone" class="ap-in" type="tel" autocomplete="tel" placeholder="+1 555 123 4567">
+      <button id="authPhoneSend" class="auth-primary">Text me a code</button>
+    </div>
+    <div id="authCodeStep" hidden>
+      <input id="authCode" class="ap-in" inputmode="numeric" autocomplete="one-time-code" placeholder="Enter 6-digit code">
+      <button id="authCodeVerify" class="auth-primary">Verify &amp; sign in</button>
+      <button id="authCodeBack" class="auth-cancel">Use a different number</button>
+    </div>
+    <button id="authEmailToggle" class="auth-link">Email me a magic link instead</button>
+    <div id="authEmailStep" hidden>
+      <input id="authEmail" class="ap-in" type="email" autocomplete="email" placeholder="you@email.com">
+      <button id="authSend" class="auth-primary">Send magic link</button>
+    </div>
+    <div id="authMsg" class="auth-msg"></div>
+    <button id="authCancel" class="auth-cancel">Maybe later</button>
+  </div>
+</div>
+
+<div id="buildWrap">
+  <div class="scrim" id="buildScrim"></div>
+  <div id="buildSheet">
+    <div class="grab"></div>
+    <div class="s-eyebrow">Share your route</div>
+    <h2>Build an itinerary</h2>
+    <label class="ap-l">Title</label>
+    <input id="biTitle" class="ap-in" placeholder="e.g. 3 perfect days for clubs">
+    <label class="ap-l">Summary <span class="ap-opt">(optional)</span></label>
+    <textarea id="biSummary" class="ap-in" placeholder="A line on the vibe of this trip"></textarea>
+    <label class="ap-l">Stops <span class="ap-opt">(from your saved places — set a day for each)</span></label>
+    <div id="biStops"></div>
+    <div class="s-row">
+      <button id="biPublish">Publish itinerary</button>
+      <button id="biCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="itinWrap">
+  <div class="scrim" id="itinScrim"></div>
+  <div id="itinSheet">
+    <div class="grab"></div>
+    <div id="itinBody"></div>
+  </div>
+</div>
+
+<div id="setWrap">
+  <div class="scrim" id="setScrim"></div>
+  <div id="setSheet">
+    <div class="grab"></div>
+    <div id="setBody"></div>
   </div>
 </div>
 
@@ -338,13 +655,29 @@
 <div id="toast"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="db.js"></script>
 <script>
 const DATA = /*__PLACES_DATA__*/;
 const CITIES = DATA.manifest;
+const curatedSeed = {};
 const ALL = {};
 for (const c of CITIES) {
-  ALL[c.id] = DATA.cities[c.id].places.map(p => ({ ...p, id: c.id + '/' + p.id, _rawId: p.id, city: c.id }));
+  curatedSeed[c.id] = DATA.cities[c.id].places.map(p => ({ ...p, id: c.id + '/' + p.id, _rawId: p.id, city: c.id }));
 }
+let myPlaces = JSON.parse(localStorage.getItem('pe_myplaces') || '[]');
+let cloudPlaces = {};   // community places fetched from Supabase, per city
+function rebuildAll() {
+  for (const c of CITIES) {
+    const mine = myPlaces.filter(p => p.city === c.id);
+    const cloud = cloudPlaces[c.id] || [];
+    ALL[c.id] = curatedSeed[c.id].concat(cloud, mine);
+    const cm = CITIES.find(x => x.id === c.id);
+    if (cm) cm.count = ALL[c.id].length;
+  }
+}
+rebuildAll();
 function cityMeta(id) { return CITIES.find(c => c.id === id) || CITIES[0]; }
 let activeCity = localStorage.getItem('pe_city');
 if (!activeCity || !ALL[activeCity]) activeCity = CITIES[0].id;
@@ -358,6 +691,7 @@ const CATS = {
   experience: { label: 'Experiences', color: '#9a6bab' },
   arts:       { label: 'Arts',        color: '#c0504f' },
   music:      { label: 'Music',       color: '#b08d3e' },
+  nightlife:  { label: 'Nightlife',   color: '#6a5a8c' },
   workshop:   { label: 'Workshops',   color: '#4f9a92' },
   photo:      { label: 'Photo Spots', color: '#c4708c' },
 };
@@ -385,24 +719,34 @@ let nudgeSnooze = JSON.parse(localStorage.getItem('pe_snooze') || '{}');
 let imgCache = JSON.parse(localStorage.getItem('pe_imgs2') || '{}');
 let queue = [];
 let watchId = null;
+let skipHistory = [];
+let sortMode = localStorage.getItem('pe_sort') || 'top';   // 'top' | 'near' | 'cat'
 
 const $ = s => document.querySelector(s);
 const toastEl = $('#toast');
 let toastTimer;
-function toast(msg) {
-  toastEl.textContent = msg;
+function toast(msg, actionLabel, actionFn) {
+  toastEl.innerHTML = '';
+  toastEl.appendChild(document.createTextNode(msg));
+  if (actionLabel && actionFn) {
+    const b = document.createElement('button');
+    b.className = 't-action'; b.textContent = actionLabel;
+    b.onclick = () => { toastEl.classList.remove('show'); clearTimeout(toastTimer); actionFn(); };
+    toastEl.appendChild(b);
+  }
   toastEl.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1900);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), actionLabel ? 3800 : 1900);
 }
 function persist() {
   localStorage.setItem('pe_seen', JSON.stringify([...seen]));
   localStorage.setItem('pe_saved', JSON.stringify([...saved]));
   localStorage.setItem('pe_journal', JSON.stringify(journal));
+  localStorage.setItem('pe_myplaces', JSON.stringify(myPlaces));
   localStorage.setItem('pe_snooze', JSON.stringify(nudgeSnooze));
   localStorage.setItem('pe_city', activeCity);
-  $('#savedDot').dataset.n = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
-  $('#journalDot').dataset.n = journal.filter(e => e.city === activeCity).length;
+  const sd = $('#savedDot'); if (sd) sd.dataset.n = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
+  const jd = $('#journalDot'); if (jd) jd.dataset.n = journal.filter(e => e.city === activeCity).length;
 }
 function haversine(a, b) {
   const R = 6371, rad = x => x * Math.PI / 180;
@@ -427,6 +771,11 @@ function wikiTitle(p) {
 }
 async function loadImg(p, ph) {
   const img = ph.querySelector('img');
+  // Community places: prefer cloud photo URL, then a locally-stored photo.
+  if (p.source === 'community') {
+    const cloud = (p.photoUrls && p.photoUrls[0]) || (photoCache[p.id] && photoCache[p.id][0]);
+    if (cloud) { img.onload = () => ph.classList.add('has'); img.src = cloud; return; }
+  }
   const apply = () => {
     const raw = imgCache[p.id];
     if (!raw) return;
@@ -435,6 +784,7 @@ async function loadImg(p, ph) {
     img.src = raw.replace(/\/(\d+)px-/, '/640px-');
   };
   if (imgCache[p.id] !== undefined) { apply(); return; }
+  if (p.source === 'community') { imgCache[p.id] = null; return; }
   try {
     const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(wikiTitle(p)));
     if (r.ok) {
@@ -482,15 +832,27 @@ $('#enterBtn').onclick = () => {
 /* wordmark is now the city picker (#cityBtn); landing shows on first run */
 
 /* ---------- guide / walkthrough ---------- */
-const GUIDE_STEPS = [
-  { ico:'🗼', title:'Bienvenue, Ramya', text:'184 hand-picked places across Paris — food, cafés, art, music, photo spots and more. Here’s how to make it yours in 30 seconds.' },
-  { ico:'♥', title:'Swipe to choose', text:'Swipe a card right (or tap ♥) to save a place you love. Swipe left (or ✕) to skip. The ➤ button opens directions.' },
-  { ico:'🎧', title:'Hear its story', text:'Tap Listen on any card and a voice tells you the history and a hidden fact — like a private guide in your pocket.' },
-  { ico:'◉', title:'Near Me', text:'Tap Near Me and everything re-sorts by how close it is. As you walk, distances update live.' },
-  { ico:'◇', title:'The map', text:'See all 184 places as pins, colour-coded by type. Tap any pin for the details, the story, and directions.' },
-  { ico:'✎', title:'Your journal', text:'When you arrive at a place you saved, the app gently asks how it felt. Write a line, pick a mood — it becomes a diary of your trip.' },
-  { ico:'⬇', title:'Keep it forever', text:'In the Journal tab, Export file saves your whole trip as a keepsake you can turn into a beautiful printed journal later. Bon voyage!' },
-];
+// The traveller's first name when signed in; blank otherwise (community app — no hardcoded name).
+function travellerName() {
+  const p = (typeof DB !== 'undefined' && DB.profile) ? DB.profile : null;
+  const n = p && (p.display_name || p.handle);
+  return n ? String(n).split(' ')[0] : '';
+}
+let GUIDE_STEPS = [];
+function buildGuide() {
+  const cm = cityMeta(activeCity);
+  const n = (PLACES || []).length;
+  const who = travellerName();
+  GUIDE_STEPS = [
+    { ico:'🗼', title: who ? ('Bienvenue, ' + who) : 'Bienvenue', text:`${n} hand-picked places across ${cm.name} — food, cafés, art, music, nightlife, photo spots and more. Here’s how to make it yours in 30 seconds.` },
+    { ico:'♥', title:'Swipe to choose', text:'Swipe a card right (or tap ♥) to save a place you love. Swipe left (or ✕) to skip. The ➤ button opens directions.' },
+    { ico:'🎧', title:'Hear its story', text:'Tap Listen on any card and a voice tells you the history and a hidden fact — like a private guide in your pocket.' },
+    { ico:'＋', title:'Add your own', text:'Tap ＋ to add a place of your own — a photo, a pin on the map, a line about why it’s special. Sign in and it’s shared with everyone.' },
+    { ico:'◇', title:'The map', text:`See all ${n} places as pins, colour-coded by type. Tap any pin for the details, the story, and directions.` },
+    { ico:'✎', title:'Your journal', text:'When you arrive at a place you saved, the app gently asks how it felt. Write a line, pick a mood — it becomes a diary of your trip.' },
+    { ico:'⬇', title:'Keep it forever', text:'In the Journal tab, Export file saves your whole trip as a keepsake you can turn into a beautiful printed journal later. Bon voyage!' },
+  ];
+}
 let gIndex = 0;
 function renderGuide() {
   const s = GUIDE_STEPS[gIndex];
@@ -502,7 +864,7 @@ function renderGuide() {
   $('#gNext').textContent = gIndex === GUIDE_STEPS.length - 1 ? 'Start exploring' : 'Next';
   $('#gSkip').style.visibility = gIndex === GUIDE_STEPS.length - 1 ? 'hidden' : 'visible';
 }
-function openGuide() { gIndex = 0; renderGuide(); $('#guide').classList.add('open'); }
+function openGuide() { buildGuide(); gIndex = 0; renderGuide(); $('#guide').classList.add('open'); }
 function closeGuide() { $('#guide').classList.remove('open'); localStorage.setItem('pe_guided','1'); }
 $('#gNext').onclick = () => { if (gIndex < GUIDE_STEPS.length - 1) { gIndex++; renderGuide(); } else closeGuide(); };
 $('#gSkip').onclick = closeGuide;
@@ -543,8 +905,21 @@ for (const [key, c] of Object.entries(CATS)) {
 const stack = $('#stack');
 function buildQueue() {
   queue = PLACES.filter(p => activeCats.has(p.category) && !seen.has(p.id) && !saved.has(p.id));
-  if (userLoc) queue.sort((a, b) => haversine(userLoc, a) - haversine(userLoc, b));
-  else queue.sort((a, b) => (b.googleRating * Math.log10(b.googleReviewCount + 1)) - (a.googleRating * Math.log10(a.googleReviewCount + 1)));
+  const byRating = (a, b) => (b.googleRating * Math.log10(b.googleReviewCount + 1)) - (a.googleRating * Math.log10(a.googleReviewCount + 1));
+  const topSort = (a, b) => {
+    const ac = a.source === 'community', bc = b.source === 'community';
+    if (ac !== bc) return ac ? -1 : 1;              // your own / community places surface first
+    if (ac && bc) return (b.createdAt || '').localeCompare(a.createdAt || ''); // newest first
+    return byRating(a, b);
+  };
+  if (sortMode === 'near' && userLoc) {
+    queue.sort((a, b) => haversine(userLoc, a) - haversine(userLoc, b));
+  } else if (sortMode === 'cat') {
+    const order = Object.keys(CATS);
+    queue.sort((a, b) => { const d = order.indexOf(a.category) - order.indexOf(b.category); return d !== 0 ? d : byRating(a, b); });
+  } else {
+    queue.sort(topSort);   // 'top' (default), or 'near' with no location yet
+  }
 }
 function cardHtml(p) {
   const c = CATS[p.category];
@@ -558,20 +933,23 @@ function cardHtml(p) {
         <div class="cat">${c.label} · ${p.subcategory}</div>
         <h2>${p.name}</h2>
       </div>
+      ${p.source === 'community' ? `<div class="mine-tag">${p.author === 'other' ? 'Community pick' : 'Added by you'}</div>` : ''}
     </div>
     <div class="bd">
       <div class="where">${p.neighborhood}</div>
       <div class="row">
-        <span class="star"><b>★ ${p.googleRating}</b></span>
+        ${p.source === 'community'
+          ? `<span style="color:var(--green);font-weight:600">${p.author === 'other' ? '♥ ' + (p.likeCount || 0) + ' · community' : 'Your spot'}</span>${priceShort(p) ? '<span class="dotsep"></span><span>' + priceShort(p) + '</span>' : ''}`
+          : `<span class="star"><b>★ ${p.googleRating}</b></span>
         <span style="color:var(--mut)">${fmtCount(p.googleReviewCount)} reviews</span>
         <span class="dotsep"></span>
-        <span>${priceShort(p)}</span>
+        <span>${priceShort(p)}</span>`}
       </div>
       <div class="hr"></div>
-      <div class="rev">${p.reviewSummary}</div>
+      ${p.reviewSummary ? `<div class="rev">${p.reviewSummary}</div>` : ''}
       ${p.highlight ? `<div class="miss"><b>Don't miss</b> — ${p.highlight}</div>` : ''}
-      <div class="gsay"><b>Reviewers say</b>${p.googleReviewSummary}</div>
-      <div class="tip">Tip: ${p.localTip}</div>
+      ${p.googleReviewSummary ? `<div class="gsay"><b>Reviewers say</b>${p.googleReviewSummary}</div>` : ''}
+      ${p.localTip ? `<div class="tip">Tip: ${p.localTip}</div>` : ''}
       ${p.story ? `<div class="storytxt"><b>The story</b>${p.story}</div>` : ''}
       <div class="play">
         ${p.story ? `<button class="playbtn" data-speak="${p.id}"><i>▶</i> Listen</button>` : ''}
@@ -584,8 +962,15 @@ function cardHtml(p) {
 }
 function renderStack() {
   stack.innerHTML = '';
+  renderSortBar();
   const top3 = queue.slice(0, 3);
   $('#deckEmpty').classList.toggle('show', top3.length === 0);
+  if (top3.length === 0) {
+    const nSkip = [...seen].filter(id => id.startsWith(activeCity + '/') && !saved.has(id)).length;
+    const sub = $('#deckEmptySub'), btn = $('#resetBtn');
+    if (sub) sub.textContent = nSkip ? `You skipped ${nSkip} here — want them back?` : 'You’ve seen every place here.';
+    if (btn) btn.textContent = nSkip ? `Review ${nSkip} skipped` : 'Start over';
+  }
   for (let i = top3.length - 1; i >= 0; i--) {
     const p = top3[i];
     const el = document.createElement('div');
@@ -636,16 +1021,45 @@ function flyOut(el, p, liked) {
   el.style.transition = 'transform .35s ease-in';
   el.style.transform = `translate(${liked ? '120vw' : '-120vw'}, -30px) rotate(${liked ? 14 : -14}deg)`;
   if (liked) { saved.add(p.id); toast(`Saved ${p.name} ♥`); }
-  else seen.add(p.id);
+  else { seen.add(p.id); skipHistory.push(p.id); toast(`Skipped ${p.name}`, 'Undo', () => undoSkip(p.id)); }
   persist();
   queue = queue.filter(q => q.id !== p.id);
   setTimeout(renderStack, 280);
   renderSaved();
 }
+function undoSkip(id) {
+  seen.delete(id);
+  skipHistory = skipHistory.filter(x => x !== id);
+  persist();
+  buildQueue();
+  const p = PLACES.find(x => x.id === id);
+  if (p) queue = [p, ...queue.filter(q => q.id !== id)];   // bring it back to the top
+  renderStack();
+  if (map) refreshMarkers();
+  renderSaved();
+}
 $('#skipBtn').onclick = () => { const p = queue[0]; if (p) flyOut(stack.querySelector('.pcard:last-child'), p, false); };
 $('#saveBtn').onclick = () => { const p = queue[0]; if (p) flyOut(stack.querySelector('.pcard:last-child'), p, true); };
 $('#mapsBtn').onclick = () => { const p = queue[0]; if (p) window.open(gmapsUrl(p), '_blank'); };
-$('#resetBtn').onclick = () => { seen = new Set(); persist(); rebuild(); toast('Deck reset'); };
+$('#resetBtn').onclick = () => {
+  const before = seen.size;
+  seen = new Set([...seen].filter(id => !(id.startsWith(activeCity + '/') && !saved.has(id))));
+  skipHistory = skipHistory.filter(id => !id.startsWith(activeCity + '/'));
+  persist(); rebuild();
+  const back = before - seen.size;
+  toast(back ? `Brought back ${back} place${back > 1 ? 's' : ''}` : 'Deck reset');
+};
+function renderSortBar() {
+  const el = $('#sortBar'); if (!el) return;
+  const modes = [['top', 'Top-rated'], ['near', 'Nearest'], ['cat', 'By type']];
+  el.innerHTML = modes.map(([k, label]) => `<button class="sb${k === sortMode ? ' on' : ''}" data-sort="${k}">${label}</button>`).join('');
+  el.querySelectorAll('[data-sort]').forEach(b => b.onclick = () => setSort(b.dataset.sort));
+}
+function setSort(mode) {
+  sortMode = mode; localStorage.setItem('pe_sort', mode);
+  if (mode === 'near' && !userLoc) { const lb = $('#locBtn'); if (lb) lb.click(); }
+  rebuild();
+}
 
 /* ---------- map ---------- */
 let map, userMarker;
@@ -694,9 +1108,8 @@ function renderSaved() {
   if (userLoc) items.sort((a, b) => haversine(userLoc, a) - haversine(userLoc, b));
   let html = `<div class="section-title">Saved</div><div class="section-sub">${items.length ? items.length + ' places, nearest first' : 'Your collection'}</div>`;
   if (!items.length) {
-    wrap.innerHTML = html + `<div class="empty-note"><span class="big">Nothing yet</span>Swipe right on places you love.<br>They'll gather here, nearest first.</div>`;
-    return;
-  }
+    html += `<div class="empty-note"><span class="big">Nothing yet</span>Swipe right on places you love.<br>They'll gather here, nearest first.</div>`;
+  } else {
   html += items.map(p => `
     <div class="lcard" data-id="${p.id}">
       <div class="dot" style="background:${CATS[p.category].color}"></div>
@@ -710,10 +1123,26 @@ function renderSaved() {
         <button data-un="${p.id}" title="Remove">✕</button>
       </div>
     </div>`).join('');
+  }
+  // Skipped places — recover anything swiped left
+  const skipped = PLACES.filter(p => seen.has(p.id) && !saved.has(p.id));
+  if (skipped.length) {
+    html += `<div class="section-title" style="margin-top:26px">Skipped (${skipped.length})</div><div class="section-sub">Changed your mind? Bring any back.</div>`;
+    html += skipped.map(p => `
+      <div class="lcard skipped" data-id="${p.id}">
+        <div class="dot" style="background:${CATS[p.category].color}"></div>
+        <div>
+          <h3>${p.name}</h3>
+          <div class="meta">${p.neighborhood}</div>
+        </div>
+        <div class="acts"><button data-restore="${p.id}" title="Bring back" class="restore">↩ Restore</button></div>
+      </div>`).join('');
+  }
   wrap.innerHTML = html;
   wrap.querySelectorAll('.lcard').forEach(el => {
     el.onclick = e => {
       const t = e.target;
+      if (t.dataset.restore) { seen.delete(t.dataset.restore); skipHistory = skipHistory.filter(x => x !== t.dataset.restore); persist(); renderSaved(); rebuild(); toast('Back in the deck'); return; }
       if (t.dataset.un) { saved.delete(t.dataset.un); persist(); renderSaved(); rebuild(); return; }
       if (t.dataset.journal) { openSheet(PLACES.find(p => p.id === t.dataset.journal)); return; }
       window.open(gmapsUrl(PLACES.find(p => p.id === el.dataset.id)), '_blank');
@@ -787,7 +1216,7 @@ if ($('#photoInput')) $('#photoInput').onchange = async (ev) => {
   ev.target.value = '';
   renderPhotoStrip();
 };
-loadPhotos().then(() => renderJournal());
+loadPhotos().then(() => { renderJournal(); try { if (myPlaces.length) renderStack(); } catch (e) {} });
 
 /* ---------- journal ---------- */
 let sheetPlace = null;
@@ -831,12 +1260,14 @@ $('#jsave').onclick = () => {
   } else {
     id = 'j' + Date.now();
     journal.push({ id, city:activeCity, placeId:sheetPlace?sheetPlace.id:null, placeName:sheetPlace?sheetPlace.name:('Somewhere in '+cityMeta(activeCity).name), text, mood:sheetMood, ts:Date.now() });
+    // share to the city's community feed (everyone sees it)
+    if (DB.ready && DB.user) DB.shareMoment({ cityId: activeCity, placeRef: sheetPlace ? sheetPlace.id : null, placeName: sheetPlace ? sheetPlace.name : null, body: text, mood: sheetMood, happenedAt: new Date().toISOString() });
   }
   savePhotos(id, sheetPhotos);
   persist();
   closeSheet();
   renderJournal();
-  toast('Moment kept');
+  toast(DB.ready && DB.user && !editingId ? 'Moment kept & shared with the community' : 'Moment kept');
 };
 function renderJournal() {
   const wrap = $('#journalList');
@@ -893,7 +1324,8 @@ function exportJournal() {
   const cm = cityMeta(activeCity);
   const sorted = [...mine].sort((a, b) => a.ts - b.ts);
   const days = [...new Set(sorted.map(e => fmtDay(e.ts)))];
-  let out = `MERAKI · ${cm.name.toUpperCase()}\nRamya's ${cm.name} journal — ${mine.length} moment${mine.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
+  const poss = travellerName() ? travellerName() + "'s" : 'My';
+  let out = `MERAKI · ${cm.name.toUpperCase()}\n${poss} ${cm.name} journal — ${mine.length} moment${mine.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
   let lastDay = '';
   for (const e of sorted) {
     const day = fmtDay(e.ts);
@@ -901,7 +1333,7 @@ function exportJournal() {
     out += `\n${e.mood} ${e.placeName} · ${fmtTime(e.ts)}\n${e.text}\n`;
   }
   out += `\n— fin —`;
-  if (navigator.share) navigator.share({ title: "Ramya's " + cm.name + " journal", text: out }).catch(() => {});
+  if (navigator.share) navigator.share({ title: poss + " " + cm.name + " journal", text: out }).catch(() => {});
   else navigator.clipboard.writeText(out).then(() => toast('Journal copied to clipboard'));
 }
 // Structured export — the file Claude can later turn into a full journal / scrapbook
@@ -931,7 +1363,7 @@ function exportJournalFile() {
   const days = [...new Set(mine.map(e => fmtDay(e.ts)))];
   const data = {
     app: 'Meraki Travels',
-    traveller: 'Ramya',
+    traveller: travellerName() || 'Traveller',
     city: cm.name,
     country: cm.country,
     exportedAt: new Date().toISOString(),
@@ -1071,6 +1503,8 @@ document.querySelectorAll('nav button').forEach(b => {
     }
     if (b.dataset.view === 'savedView') renderSaved();
     if (b.dataset.view === 'journalView') renderJournal();
+    if (b.dataset.view === 'communityView') renderCommunity();
+    if (b.dataset.view === 'profileView') renderProfile();
   };
 });
 
@@ -1092,7 +1526,29 @@ function renderCityList() {
     </button>`).join('');
   $('#cityList').querySelectorAll('[data-city]').forEach(b => b.onclick = () => switchCity(b.dataset.city));
 }
-function openCitySheet() { renderCityList(); $('#citySheetWrap').classList.add('open'); }
+function renderCityTrip() {
+  const el = $('#cityTrip'); if (!el) return;
+  const c = cityMeta(activeCity);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m]));
+  let html = '';
+  if (c.bestTime) {
+    html += `<p class="trip-head">When to go to ${esc(c.name)}</p>
+      <div class="trip-when"><span class="tw-ico">🗓️</span><span>${esc(c.bestTime)}</span></div>`;
+  }
+  if (Array.isArray(c.itinerary) && c.itinerary.length) {
+    const days = c.itinerary.length;
+    html += `<button class="trip-toggle" id="tripToggle"><span>🧭</span> Suggested ${days}-day itinerary <span class="tt-arrow">▾</span></button>
+      <div class="trip-days" id="tripDays">` +
+      c.itinerary.map(d => `<div class="trip-day">
+        <div class="td-top"><span class="td-num">${esc(d.day)}</span><span class="td-title">${esc(d.title)}</span></div>
+        <div class="td-plan">${esc(d.plan)}</div>
+      </div>`).join('') + `</div>`;
+  }
+  el.innerHTML = html;
+  const tg = $('#tripToggle');
+  if (tg) tg.onclick = () => { tg.classList.toggle('open'); $('#tripDays').classList.toggle('open'); };
+}
+function openCitySheet() { renderCityAccount(); renderCityList(); renderCityTrip(); renderCityItins(); if (DB.ready) loadItineraries(); $('#citySheetWrap').classList.add('open'); }
 function closeCitySheet() { $('#citySheetWrap').classList.remove('open'); }
 function switchCity(id) {
   if (!ALL[id]) return;
@@ -1113,6 +1569,521 @@ function updateCityUI() {
 $('#cityBtn').onclick = openCitySheet;
 $('#cityScrim').onclick = closeCitySheet;
 updateCityUI();
+
+/* ---------- add a place (community, local-first) ---------- */
+let apCat = 'food', apPhotos = [];
+let apMap = null, apMarker = null, apLat = null, apLng = null;
+function renderApCats() {
+  const el = $('#apCats'); el.innerHTML = '';
+  for (const [key, c] of Object.entries(CATS)) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (key === apCat ? ' active' : '');
+    b.textContent = c.label;
+    b.onclick = () => { apCat = key; renderApCats(); };
+    el.appendChild(b);
+  }
+}
+function setApLatLng(lat, lng) {
+  apLat = lat; apLng = lng;
+  $('#apLatLng').textContent = lat.toFixed(5) + ', ' + lng.toFixed(5);
+  if (apMarker) apMarker.setLatLng([lat, lng]);
+}
+function renderApPhotos() {
+  const strip = $('#apPhotoStrip');
+  strip.innerHTML = apPhotos.map((src, i) => `<div class="pthumb"><img src="${src}" alt=""><button data-rmap="${i}">✕</button></div>`).join('')
+    + `<button id="apAddPhoto" class="pthumb add" type="button">＋<span>Photo</span></button>`;
+  strip.querySelector('#apAddPhoto').onclick = () => $('#apPhotoInput').click();
+  strip.querySelectorAll('[data-rmap]').forEach(b => b.onclick = () => { apPhotos.splice(+b.dataset.rmap, 1); renderApPhotos(); });
+}
+$('#apPhotoInput').onchange = async (ev) => {
+  const files = [...ev.target.files].slice(0, 6);
+  for (const f of files) { const d = await compressImage(f); if (d) apPhotos.push(d); }
+  ev.target.value = ''; renderApPhotos();
+};
+function openAddSheet() {
+  apCat = (activeCats.size === 1) ? [...activeCats][0] : 'food';
+  apPhotos = []; apLat = apLng = null;
+  ['#apName','#apHood','#apAddr','#apNote','#apPrice'].forEach(s => $(s).value = '');
+  $('#apLatLng').textContent = 'Tap the map to drop a pin';
+  renderApCats(); renderApPhotos();
+  $('#addWrap').classList.add('open');
+  const center = userLoc ? [userLoc.lat, userLoc.lng] : cityMeta(activeCity).center;
+  setTimeout(() => {
+    if (!apMap) {
+      apMap = L.map('apMap', { zoomControl: false }).setView(center, 14);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, attribution: '© OpenStreetMap, © CARTO' }).addTo(apMap);
+      apMarker = L.marker(center, { draggable: true }).addTo(apMap);
+      apMarker.on('dragend', () => { const ll = apMarker.getLatLng(); setApLatLng(ll.lat, ll.lng); });
+      apMap.on('click', e => setApLatLng(e.latlng.lat, e.latlng.lng));
+    } else { apMap.setView(center, 14); apMarker.setLatLng(center); }
+    apMap.invalidateSize();
+    if (userLoc) setApLatLng(userLoc.lat, userLoc.lng);
+  }, 320);
+}
+function closeAddSheet() { $('#addWrap').classList.remove('open'); }
+$('#addBtn').onclick = openAddSheet;
+$('#addScrim').onclick = closeAddSheet;
+$('#apCancel').onclick = closeAddSheet;
+$('#apGeo').onclick = () => {
+  if (!navigator.geolocation) { toast('Location not available'); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => { const { latitude, longitude } = pos.coords; if (apMap) apMap.setView([latitude, longitude], 15); setApLatLng(latitude, longitude); },
+    () => toast('Could not get your location'),
+    { enableHighAccuracy: true, timeout: 8000 });
+};
+$('#apSave').onclick = async () => {
+  const name = $('#apName').value.trim();
+  if (!name) { toast('Give your place a name'); return; }
+  if (apLat == null || apLng == null) { toast('Drop a pin so it shows on the map'); return; }
+  const rawId = 'my-' + Date.now().toString(36);
+  const fullId = activeCity + '/' + rawId;
+  const note = $('#apNote').value.trim();
+  const place = {
+    id: fullId, _rawId: rawId, city: activeCity,
+    source: 'community', author: 'me', createdAt: new Date().toISOString(),
+    category: apCat, subcategory: 'added by you',
+    name, neighborhood: $('#apHood').value.trim() || cityMeta(activeCity).name,
+    address: $('#apAddr').value.trim() || '',
+    lat: +apLat.toFixed(6), lng: +apLng.toFixed(6),
+    price: $('#apPrice').value.trim() || '',
+    googleRating: 0, googleReviewCount: 0,
+    reviewSummary: note || 'A place you added to ' + cityMeta(activeCity).name + '.',
+    googleReviewSummary: '', localTip: '', story: note || '', highlight: '',
+  };
+  const signedIn = DB.ready && DB.user;
+  $('#apSave').disabled = true; $('#apSave').textContent = signedIn ? 'Sharing…' : 'Saving…';
+  if (signedIn) {
+    // Publish to the community (cloud) so others can find it.
+    const row = await DB.addPlace(place, apPhotos);
+    if (row) { (cloudPlaces[activeCity] = cloudPlaces[activeCity] || []).unshift(row); }
+    else { toast('Could not share — saved on this device instead'); myPlaces.push(place); if (apPhotos.length) await savePhotos(fullId, apPhotos); }
+  } else {
+    myPlaces.push(place);
+    if (apPhotos.length) await savePhotos(fullId, apPhotos);
+  }
+  $('#apSave').disabled = false; $('#apSave').textContent = 'Save place';
+  persist();
+  rebuildAll();
+  PLACES = ALL[activeCity];
+  if (map) { drawMarkers(); refreshMarkers(); }
+  rebuild();
+  closeAddSheet();
+  toast(signedIn ? 'Shared with the ' + cityMeta(activeCity).name + ' community' : 'Added to ' + cityMeta(activeCity).name + ' — find it on the map');
+};
+
+/* ---------- community: auth, account, itineraries, likes, comments ---------- */
+const escHtml = s => String(s == null ? '' : s).replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m]));
+const initials = s => (s || 'You').trim().slice(0, 2).toUpperCase();
+let itinCache = {};
+
+function renderCityAccount() {
+  const el = $('#cityAccount'); if (!el) return;
+  if (!DB.ready) { el.innerHTML = ''; return; }
+  const u = DB.user, p = DB.profile;
+  if (u) {
+    const name = (p && (p.display_name || p.handle)) || 'You';
+    el.innerHTML = `<div class="acct"><div class="av">${escHtml(initials(name))}</div>
+      <div class="ai"><b>${escHtml(name)}</b><span>Signed in · syncing</span></div>
+      <button class="abtn" id="acctOut">Sign out</button></div>`;
+    $('#acctOut').onclick = async () => { await DB.signOut(); toast('Signed out'); };
+  } else {
+    el.innerHTML = `<div class="acct signin" id="acctIn"><div class="av">✦</div>
+      <div class="ai"><span class="aprompt">Sign in to sync &amp; share</span><span>Add places &amp; itineraries for everyone</span></div>
+      <button class="abtn">Join</button></div>`;
+    $('#acctIn').onclick = openAuthSheet;
+  }
+}
+
+let pendingPhone = '';
+function openAuthSheet() {
+  if (!DB.ready) { toast('Add Supabase keys in config.js to enable accounts'); return; }
+  $('#authMsg').textContent = '';
+  $('#authPhone').value = ''; $('#authCode').value = ''; $('#authEmail').value = '';
+  $('#authPhoneStep').hidden = false; $('#authCodeStep').hidden = true; $('#authEmailStep').hidden = true;
+  $('#authWrap').classList.add('open');
+}
+function closeAuthSheet() { $('#authWrap').classList.remove('open'); }
+if ($('#authScrim')) {
+  $('#authScrim').onclick = closeAuthSheet;
+  $('#authCancel').onclick = closeAuthSheet;
+  $('#authGoogle').onclick = () => DB.signInGoogle();
+  $('#authApple').onclick = () => DB.signInApple();
+  // phone: step 1 — send the SMS code
+  $('#authPhoneSend').onclick = async () => {
+    const phone = $('#authPhone').value.trim().replace(/[^\d+]/g, '');
+    if (!/^\+\d{7,15}$/.test(phone)) { $('#authMsg').textContent = 'Use your full number with country code, e.g. +1 555…'; return; }
+    $('#authPhoneSend').disabled = true; $('#authMsg').textContent = 'Texting you a code…';
+    const { error } = await DB.signInPhone(phone);
+    $('#authPhoneSend').disabled = false;
+    if (error) { $('#authMsg').textContent = 'Could not send: ' + (error.message || error); return; }
+    pendingPhone = phone;
+    $('#authPhoneStep').hidden = true; $('#authCodeStep').hidden = false;
+    $('#authMsg').textContent = 'Code sent to ' + phone;
+    setTimeout(() => $('#authCode').focus(), 100);
+  };
+  // phone: step 2 — verify the code
+  $('#authCodeVerify').onclick = async () => {
+    const token = $('#authCode').value.trim().replace(/\D/g, '');
+    if (token.length < 4) { $('#authMsg').textContent = 'Enter the code from the text'; return; }
+    $('#authCodeVerify').disabled = true; $('#authMsg').textContent = 'Verifying…';
+    const { error } = await DB.verifyPhone(pendingPhone, token);
+    $('#authCodeVerify').disabled = false;
+    if (error) { $('#authMsg').textContent = 'That code was wrong or expired — try again'; return; }
+    closeAuthSheet();   // DB.onAuth fires and signs the user in
+  };
+  $('#authCodeBack').onclick = () => { $('#authCodeStep').hidden = true; $('#authPhoneStep').hidden = false; $('#authMsg').textContent = ''; };
+  // email magic link (fallback, hidden behind a toggle)
+  $('#authEmailToggle').onclick = () => { const s = $('#authEmailStep'); s.hidden = !s.hidden; if (!s.hidden) setTimeout(() => $('#authEmail').focus(), 100); };
+  $('#authSend').onclick = async () => {
+    const email = $('#authEmail').value.trim();
+    if (!/.+@.+\..+/.test(email)) { $('#authMsg').textContent = 'Enter a valid email'; return; }
+    $('#authSend').disabled = true; $('#authMsg').textContent = 'Sending…';
+    const { error } = await DB.signInEmail(email);
+    $('#authSend').disabled = false;
+    $('#authMsg').textContent = error ? ('Could not send: ' + (error.message || error)) : 'Check your email for the magic link ✦';
+  };
+}
+
+function renderCityItins() {
+  const el = $('#cityItins'); if (!el) return;
+  if (!DB.ready) { el.innerHTML = ''; return; }
+  const list = itinCache[activeCity] || [];
+  let html = `<div class="itin-head"><span class="ih-t">Itineraries · ${escHtml(cityMeta(activeCity).name)}</span><button class="ih-build" id="itinBuild">+ Build</button></div>`;
+  if (!list.length) {
+    html += `<div class="itin-empty">No community trips here yet. Save a few places, then build the first one for ${escHtml(cityMeta(activeCity).name)}.</div>`;
+  } else {
+    html += list.map(it => {
+      const who = it.profiles ? (it.profiles.display_name || it.profiles.handle) : 'a traveller';
+      return `<div class="itin-card" data-itin="${it.id}"><b>${escHtml(it.title)}</b>
+        <div class="ic-by">by ${escHtml(who)} · ${it.days} day${it.days>1?'s':''}</div>
+        <div class="ic-meta"><span>♥ ${it.like_count||0}</span><span>Tap to open →</span></div></div>`;
+    }).join('');
+  }
+  el.innerHTML = html;
+  $('#itinBuild').onclick = openBuildSheet;
+  el.querySelectorAll('[data-itin]').forEach(c => c.onclick = () => openItin(c.dataset.itin));
+}
+async function loadItineraries() {
+  if (!DB.ready) return;
+  itinCache[activeCity] = await DB.getItineraries(activeCity);
+  if ($('#citySheetWrap').classList.contains('open')) renderCityItins();
+}
+
+let biStops = [];
+function openBuildSheet() {
+  if (!DB.user) { closeCitySheet(); openAuthSheet(); return; }
+  const savedPlaces = (ALL[activeCity] || []).filter(p => saved.has(p.id));
+  if (!savedPlaces.length) { toast('Save a few places first (swipe right)'); return; }
+  biStops = savedPlaces.map(p => ({ placeRef: p.id, placeName: p.name, day: 1, checked: true }));
+  $('#biTitle').value = ''; $('#biSummary').value = '';
+  renderBiStops();
+  $('#buildWrap').classList.add('open');
+}
+function closeBuildSheet() { $('#buildWrap').classList.remove('open'); }
+function renderBiStops() {
+  $('#biStops').innerHTML = biStops.map((s, i) => `<div class="bi-stop">
+    <input type="checkbox" data-bic="${i}" ${s.checked ? 'checked' : ''}>
+    <span class="bs-name">${escHtml(s.placeName)}</span>
+    <span class="bs-day"><button data-bid="${i}" data-d="-1">−</button>Day ${s.day}<button data-bid="${i}" data-d="1">+</button></span></div>`).join('');
+  $('#biStops').querySelectorAll('[data-bic]').forEach(b => b.onchange = () => { biStops[+b.dataset.bic].checked = b.checked; });
+  $('#biStops').querySelectorAll('[data-bid]').forEach(b => b.onclick = () => { const s = biStops[+b.dataset.bid]; s.day = Math.max(1, s.day + (+b.dataset.d)); renderBiStops(); });
+}
+if ($('#buildScrim')) {
+  $('#buildScrim').onclick = closeBuildSheet;
+  $('#biCancel').onclick = closeBuildSheet;
+  $('#biPublish').onclick = async () => {
+    const title = $('#biTitle').value.trim();
+    if (!title) { toast('Give your itinerary a title'); return; }
+    const chosen = biStops.filter(s => s.checked);
+    if (!chosen.length) { toast('Pick at least one stop'); return; }
+    const days = Math.max(...chosen.map(s => s.day));
+    $('#biPublish').disabled = true; $('#biPublish').textContent = 'Publishing…';
+    const stops = chosen.sort((a, b) => a.day - b.day).map((s, i) => ({ placeRef: s.placeRef, placeName: s.placeName, day: s.day, position: i }));
+    const row = await DB.createItinerary({ cityId: activeCity, title, summary: $('#biSummary').value.trim(), days }, stops, true);
+    $('#biPublish').disabled = false; $('#biPublish').textContent = 'Publish itinerary';
+    if (row) { toast('Published to ' + cityMeta(activeCity).name); closeBuildSheet(); await loadItineraries(); }
+    else { toast('Could not publish — check your connection'); }
+  };
+}
+
+async function openItin(id) {
+  $('#itinBody').innerHTML = '<div class="itin-empty">Loading…</div>';
+  $('#itinWrap').classList.add('open');
+  const it = await DB.getItinerary(id);
+  if (!it) { $('#itinBody').innerHTML = '<div class="itin-empty">Could not load this itinerary.</div>'; return; }
+  const who = it.profiles ? (it.profiles.display_name || it.profiles.handle) : 'a traveller';
+  const likedS = await DB.likedSet('itinerary', [id]);
+  let liked = likedS.has(id);
+  const byDay = {};
+  (it.stops || []).forEach(s => { (byDay[s.day] = byDay[s.day] || []).push(s); });
+  let daysHtml = '';
+  Object.keys(byDay).sort((a, b) => a - b).forEach(d => {
+    daysHtml += `<div class="id-day">Day ${d}</div>` + byDay[d].map(s => `<div class="id-stop">${escHtml(s.place_name)}${s.note ? ' <small>— ' + escHtml(s.note) + '</small>' : ''}</div>`).join('');
+  });
+  $('#itinBody').innerHTML = `<h2>${escHtml(it.title)}</h2>
+    <div class="id-by">by ${escHtml(who)} · ${it.days} day${it.days>1?'s':''}</div>
+    ${it.summary ? `<div class="id-sum">${escHtml(it.summary)}</div>` : ''}
+    <div class="id-actions">
+      <button class="like-btn ${liked?'on':''}" id="itinLike"><span class="lh">${liked?'♥':'♡'}</span> <span id="itinLikeN">${it.like_count||0}</span></button>
+      <button class="id-exp" id="itinExp">Experience this →</button></div>
+    ${daysHtml}
+    <div class="cmt-h">Comments</div><div id="cmtList"></div>
+    <div class="cmt-box"><input id="cmtInput" placeholder="Add a kind word…"><button id="cmtSend">Send</button></div>
+    <button class="id-report" id="itinReport">⚑ Report</button>`;
+  $('#itinExp').onclick = () => experienceItin(it);
+  $('#itinLike').onclick = async () => {
+    if (!DB.user) { openAuthSheet(); return; }
+    const r = await DB.toggleLike('itinerary', id, liked);
+    if (r.needsAuth) { openAuthSheet(); return; }
+    liked = r.liked;
+    const n = $('#itinLikeN'); n.textContent = Math.max(0, (+n.textContent) + (liked ? 1 : -1));
+    $('#itinLike').classList.toggle('on', liked); $('#itinLike').querySelector('.lh').textContent = liked ? '♥' : '♡';
+  };
+  $('#itinReport').onclick = async () => { if (!DB.user) { openAuthSheet(); return; } await DB.report('itinerary', id, 'user report'); toast('Reported — thank you'); };
+  $('#cmtSend').onclick = async () => {
+    if (!DB.user) { openAuthSheet(); return; }
+    const body = $('#cmtInput').value.trim(); if (!body) return;
+    $('#cmtInput').value = '';
+    const c = await DB.addComment('itinerary', id, body);
+    if (c) renderComments(await DB.getComments('itinerary', id));
+  };
+  renderComments(await DB.getComments('itinerary', id));
+}
+function renderComments(list) {
+  const el = $('#cmtList'); if (!el) return;
+  if (!list.length) { el.innerHTML = '<div class="itin-empty">Be the first to leave a note.</div>'; return; }
+  el.innerHTML = list.map(c => {
+    const who = c.profiles ? (c.profiles.display_name || c.profiles.handle) : 'traveller';
+    return `<div class="cmt"><div class="cav">${escHtml(initials(who))}</div><div class="cbody"><span class="cwho">${escHtml(who)}</span>${escHtml(c.body)}</div></div>`;
+  }).join('');
+}
+function closeItin() { $('#itinWrap').classList.remove('open'); }
+if ($('#itinScrim')) $('#itinScrim').onclick = closeItin;
+
+function experienceItin(it) {
+  const refs = (it.stops || []).map(s => s.place_ref);
+  let added = 0;
+  for (const ref of refs) {
+    const place = (ALL[activeCity] || []).find(p => p.id === ref);
+    if (place && !saved.has(place.id)) { saved.add(place.id); added++; }
+  }
+  persist(); rebuild(); closeItin(); closeCitySheet();
+  toast(added ? `Experiencing "${it.title}" — ${added} stop${added>1?'s':''} saved` : `"${it.title}" is ready in Saved`);
+  const mapBtn = document.querySelector('nav button[data-view="mapView"]'); if (mapBtn) mapBtn.click();
+}
+
+async function loadCommunityPlaces() {
+  if (!DB.ready) return;
+  for (const c of CITIES) cloudPlaces[c.id] = await DB.getCommunityPlaces(c.id);
+  rebuildAll(); PLACES = ALL[activeCity];
+  if (map) { drawMarkers(); refreshMarkers(); }
+  rebuild();
+}
+if (DB.ready) {
+  // account required: hide the app behind the gate until a session exists
+  $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
+  DB.onAuth(async (sess) => {
+    renderCityAccount();
+    if (sess) {
+      if (myPlaces.length) {
+        const n = await DB.migrateLocal(myPlaces, photoCache);
+        if (n) { myPlaces = []; persist(); }
+      }
+      await loadCommunityPlaces();
+      await loadItineraries();
+      if (!localStorage.getItem(onboardedKey())) {
+        // first time on this account → name/photo, then pick a city
+        const p = DB.profile || {};
+        $('#agName').value = (p.display_name && !p.display_name.includes('@')) ? p.display_name : '';
+        $('#agHandle').value = (p.handle && !/^traveller_/.test(p.handle)) ? p.handle : '';
+        $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
+        gateStep('agProfile');
+      } else {
+        hideGate();
+      }
+    } else {
+      showGate();   // signed out → show login
+    }
+  });
+}
+
+/* ---------- login gate ---------- */
+function showView(id) {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x.dataset.view === id));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === id));
+  const el = $('#' + id); if (!el) return;
+  if (id === 'mapView') { if (!map) initMap(); setTimeout(() => map.invalidateSize(), 60); refreshMarkers(); }
+  if (id === 'savedView') renderSaved();
+  if (id === 'communityView') renderCommunity();
+  if (id === 'profileView') renderProfile();
+  if (id === 'journalView') renderJournal();
+}
+function gateStep(id) { document.querySelectorAll('#authGate .ag-step').forEach(s => s.hidden = s.id !== id); }
+function showGate() { $('#authGate').classList.add('open'); $('#landing').classList.add('hidden'); gateStep('agAuth'); }
+function hideGate() { $('#authGate').classList.remove('open'); }
+const onboardedKey = () => 'pe_onboarded_' + (DB.user ? DB.user.id : 'x');
+const agMsg = (t, el) => { const e = $(el || '#agMsg'); if (e) e.textContent = t || ''; };
+
+let agMode = 'signup', agAvatarData = null, agPickedCity = null, agPendingPhone = '';
+if ($('#agPrimary')) {
+  $('#agToggle').onclick = () => {
+    agMode = agMode === 'signup' ? 'signin' : 'signup';
+    $('#agPrimary').textContent = agMode === 'signup' ? 'Create account' : 'Sign in';
+    $('#agToggle').textContent = agMode === 'signup' ? 'Have an account? Sign in' : 'New here? Create account';
+    agMsg('');
+  };
+  $('#agPrimary').onclick = async () => {
+    const email = $('#agEmail').value.trim(), pass = $('#agPass').value;
+    if (!/.+@.+\..+/.test(email)) return agMsg('Enter a valid email');
+    if (pass.length < 6) return agMsg('Password needs 6+ characters');
+    $('#agPrimary').disabled = true; agMsg(agMode === 'signup' ? 'Creating your account…' : 'Signing in…');
+    const res = agMode === 'signup' ? await DB.signUpEmail(email, pass) : await DB.signInPassword(email, pass);
+    $('#agPrimary').disabled = false;
+    if (res.error) return agMsg(res.error.message || 'Something went wrong');
+    if (res.needsConfirm) { agMode = 'signin'; $('#agPrimary').textContent = 'Sign in'; return agMsg('Check your email to confirm, then sign in.'); }
+    agMsg('');   // session arrives via onAuth → gate advances
+  };
+  $('#agGoogle').onclick = () => DB.signInGoogle();
+  $('#agApple').onclick = () => DB.signInApple();
+  $('#agForgot').onclick = async () => {
+    const email = $('#agEmail').value.trim();
+    if (!/.+@.+\..+/.test(email)) return agMsg('Type your email first, then tap forgot.');
+    await DB.resetPassword(email); agMsg('Password reset link sent — check your email.');
+  };
+  $('#agPhoneLink').onclick = () => gateStep('agPhone');
+  $('#agPhoneBack').onclick = () => gateStep('agAuth');
+  $('#agPhoneSendBtn').onclick = async () => {
+    const phone = $('#agPhoneNum').value.trim().replace(/[^\d+]/g, '');
+    if (!/^\+\d{7,15}$/.test(phone)) return agMsg('Use your full number with country code (+1…)', '#agPhoneMsg');
+    $('#agPhoneSendBtn').disabled = true; agMsg('Texting a code…', '#agPhoneMsg');
+    const { error } = await DB.signInPhone(phone); $('#agPhoneSendBtn').disabled = false;
+    if (error) return agMsg('Could not send: ' + (error.message || error), '#agPhoneMsg');
+    agPendingPhone = phone; $('#agPhoneSend1').hidden = true; $('#agPhoneVerify1').hidden = false; agMsg('Code sent to ' + phone, '#agPhoneMsg');
+  };
+  $('#agPhoneVerifyBtn').onclick = async () => {
+    const token = $('#agPhoneCode').value.trim().replace(/\D/g, '');
+    if (token.length < 4) return agMsg('Enter the code from the text', '#agPhoneMsg');
+    $('#agPhoneVerifyBtn').disabled = true; agMsg('Verifying…', '#agPhoneMsg');
+    const { error } = await DB.verifyPhone(agPendingPhone, token); $('#agPhoneVerifyBtn').disabled = false;
+    if (error) return agMsg('Wrong or expired code', '#agPhoneMsg');   // session via onAuth
+  };
+  // profile step
+  $('#agAvatar').onclick = () => $('#agAvatarInput').click();
+  $('#agAvatarInput').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return; const d = await compressImage(f);
+    if (d) { agAvatarData = d; $('#agAvatar').style.backgroundImage = `url(${d})`; $('#agAvatar').innerHTML = ''; }
+  };
+  $('#agProfileSave').onclick = async () => {
+    const name = $('#agName').value.trim();
+    if (!name) return agMsg('Tell us your name', '#agProfileMsg');
+    const handle = ($('#agHandle').value.trim().replace(/^@/, '') || name.toLowerCase().replace(/[^a-z0-9]+/g, '')).slice(0, 24);
+    $('#agProfileSave').disabled = true; agMsg('Saving…', '#agProfileMsg');
+    let avatar_url = null; if (agAvatarData) avatar_url = await DB.uploadAvatar(agAvatarData);
+    await DB.updateProfile(Object.assign({ display_name: name, handle }, avatar_url ? { avatar_url } : {}));
+    $('#agProfileSave').disabled = false; agMsg('', '#agProfileMsg');
+    agPickedCity = activeCity; buildAgCityList(); gateStep('agCity');
+  };
+  // city step
+  $('#agStart').onclick = () => {
+    if (agPickedCity) switchCity(agPickedCity);
+    localStorage.setItem(onboardedKey(), '1');
+    hideGate();
+  };
+}
+function buildAgCityList() {
+  const el = $('#agCityList'); if (!el) return;
+  el.innerHTML = CITIES.map(c => `<button class="city-row${c.id === agPickedCity ? ' on' : ''}" data-agcity="${c.id}">
+    <span class="city-flag">${c.emoji || '📍'}</span><span class="city-info"><b>${escHtml(c.name)}</b><span>${escHtml(c.country)}</span></span>
+    ${c.id === agPickedCity ? '<span class="city-check">✓</span>' : ''}</button>`).join('')
+    + `<p class="city-add" style="margin-top:10px">Going somewhere else? Ask Claude to add your city — it shows up here.</p>`;
+  el.querySelectorAll('[data-agcity]').forEach(b => b.onclick = () => { agPickedCity = b.dataset.agcity; buildAgCityList(); });
+}
+
+/* ---------- community feed ---------- */
+let cfTab = 'journals';
+async function renderCommunity() {
+  const el = $('#communityBody'); if (!el) return; const cm = cityMeta(activeCity);
+  el.innerHTML = `<div class="section-title">Community · ${escHtml(cm.name)}</div>
+    <div class="section-sub">Journals, trips & places shared by travellers here</div>
+    <div class="cf-tabs">
+      <button data-cf="journals" class="${cfTab === 'journals' ? 'on' : ''}">Journals</button>
+      <button data-cf="itineraries" class="${cfTab === 'itineraries' ? 'on' : ''}">Trips</button>
+      <button data-cf="places" class="${cfTab === 'places' ? 'on' : ''}">Places</button>
+    </div><div id="cfBody"></div>`;
+  el.querySelectorAll('[data-cf]').forEach(b => b.onclick = () => { cfTab = b.dataset.cf; renderCommunity(); });
+  const body = $('#cfBody'); body.innerHTML = '<div class="itin-empty">Loading…</div>';
+  if (!DB.ready) { body.innerHTML = '<div class="itin-empty">Community is offline.</div>'; return; }
+  if (cfTab === 'journals') {
+    const ms = await DB.getCityMoments(activeCity);
+    body.innerHTML = ms.length ? ms.map(m => {
+      const who = m.profiles ? (m.profiles.display_name || m.profiles.handle) : 'a traveller';
+      const av = m.profiles && m.profiles.avatar_url;
+      return `<div class="moment"><div class="m-top">
+        <div class="m-av" style="${av ? `background-image:url(${av})` : ''}">${av ? '' : escHtml(initials(who))}</div>
+        <div class="m-who"><b>${escHtml(who)}</b><span>${escHtml(m.place_name || cm.name)}</span></div></div>
+        <div class="m-body">${m.mood ? m.mood + ' ' : ''}${escHtml(m.body || '')}</div></div>`;
+    }).join('') : '<div class="itin-empty">No shared journals here yet. Write a moment in your Journal — it appears here for everyone.</div>';
+  } else if (cfTab === 'itineraries') {
+    const its = await DB.getItineraries(activeCity); itinCache[activeCity] = its;
+    body.innerHTML = its.length ? its.map(it => {
+      const who = it.profiles ? (it.profiles.display_name || it.profiles.handle) : 'a traveller';
+      return `<div class="itin-card" data-itin="${it.id}"><b>${escHtml(it.title)}</b>
+        <div class="ic-by">by ${escHtml(who)} · ${it.days} day${it.days > 1 ? 's' : ''}</div>
+        <div class="ic-meta"><span>♥ ${it.like_count || 0}</span><span>open →</span></div></div>`;
+    }).join('') : '<div class="itin-empty">No community trips yet. Build one from your saved places (Saved → Build).</div>';
+    body.querySelectorAll('[data-itin]').forEach(c => c.onclick = () => openItin(c.dataset.itin));
+  } else {
+    const ps = (cloudPlaces[activeCity] || []);
+    body.innerHTML = ps.length ? ps.map(p => `<div class="lcard"><div class="dot" style="background:${CATS[p.category].color}"></div>
+      <div><h3>${escHtml(p.name)}</h3><div class="meta">${escHtml(p.neighborhood || '')}${p.author === 'me' ? ' · by you' : ''}</div></div></div>`).join('')
+      : '<div class="itin-empty">No community places yet. Add one with ＋ on the Discover screen.</div>';
+  }
+}
+
+/* ---------- profile + settings ---------- */
+let voicePref = localStorage.getItem('pe_pref_voice') !== '0';
+function renderProfile() {
+  const el = $('#profileBody'); if (!el) return;
+  if (!DB.user) { el.innerHTML = '<div class="empty-note"><span class="big">Not signed in</span>Sign in to build your profile.</div>'; return; }
+  const p = DB.profile || {}, name = p.display_name || 'You', handle = p.handle || 'you';
+  const av = p.avatar_url;
+  const savedN = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
+  const addedN = (cloudPlaces[activeCity] || []).filter(x => x.author === 'me').length + myPlaces.length;
+  el.innerHTML = `<div class="prof-head">
+      <div class="prof-av" style="${av ? `background-image:url(${av})` : ''}">${av ? '' : escHtml(initials(name))}</div>
+      <div class="prof-id"><b>${escHtml(name)}</b><span>@${escHtml(handle)}</span></div>
+      <button class="prof-gear" id="profGear">⚙</button></div>
+    <div class="prof-stats">
+      <div><b>${savedN}</b><span>Saved</span></div>
+      <div><b>${journal.length}</b><span>Moments</span></div>
+      <div><b>${addedN}</b><span>Added</span></div></div>
+    <button class="set-row" id="profJournalBtn" style="margin-top:16px">Your journal<span class="sr-v">${journal.length} ›</span></button>
+    <button class="set-row" id="profEdit">Edit name &amp; photo<span class="sr-v">›</span></button>`;
+  $('#profGear').onclick = openSettings;
+  $('#profEdit').onclick = () => { agPickedCity = activeCity; $('#agName').value = name; $('#agHandle').value = handle; $('#authGate').classList.add('open'); $('#landing').classList.add('hidden'); gateStep('agProfile'); };
+  $('#profJournalBtn').onclick = () => showView('journalView');
+}
+function openSettings() {
+  const u = DB.user, email = u ? u.email : '';
+  $('#setBody').innerHTML = `<div class="s-eyebrow">Settings</div><h2 style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px">Your account</h2>
+    <div class="set-group">Account</div>
+    <button class="set-row" id="setEmail">Email<span class="sr-v">${escHtml(email || '—')} ›</span></button>
+    <button class="set-row" id="setPass">Change password<span class="sr-v">›</span></button>
+    <button class="set-row" id="setReset">Send password reset<span class="sr-v">›</span></button>
+    <div class="set-group">Preferences</div>
+    <button class="set-row" id="setVoice">Voice guide<span class="sr-v">${voicePref ? 'On' : 'Off'}</span></button>
+    <div class="set-group">Session</div>
+    <button class="set-row" id="setSignout">Sign out<span class="sr-v">›</span></button>`;
+  $('#setEmail').onclick = async () => { const v = prompt('New email address', email); if (v && v !== email) { const { error } = await DB.updateEmail(v.trim()); toast(error ? 'Could not update' : 'Check both inboxes to confirm'); } };
+  $('#setPass').onclick = async () => { const v = prompt('New password (6+ characters)'); if (v && v.length >= 6) { const { error } = await DB.updatePassword(v); toast(error ? 'Could not update' : 'Password updated'); } else if (v) toast('Too short'); };
+  $('#setReset').onclick = async () => { if (email) { await DB.resetPassword(email); toast('Reset link sent to ' + email); } };
+  $('#setVoice').onclick = () => { voicePref = !voicePref; localStorage.setItem('pe_pref_voice', voicePref ? '1' : '0'); openSettings(); };
+  $('#setSignout').onclick = async () => { closeSettings(); await DB.signOut(); };
+  $('#setWrap').classList.add('open');
+}
+function closeSettings() { $('#setWrap').classList.remove('open'); }
+if ($('#setScrim')) $('#setScrim').onclick = closeSettings;
 
 function rebuild() {
   buildQueue();
