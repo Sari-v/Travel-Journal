@@ -708,15 +708,27 @@ $('#enterBtn').onclick = () => {
 /* wordmark is now the city picker (#cityBtn); landing shows on first run */
 
 /* ---------- guide / walkthrough ---------- */
-const GUIDE_STEPS = [
-  { ico:'🗼', title:'Bienvenue, Ramya', text:'184 hand-picked places across Paris — food, cafés, art, music, photo spots and more. Here’s how to make it yours in 30 seconds.' },
-  { ico:'♥', title:'Swipe to choose', text:'Swipe a card right (or tap ♥) to save a place you love. Swipe left (or ✕) to skip. The ➤ button opens directions.' },
-  { ico:'🎧', title:'Hear its story', text:'Tap Listen on any card and a voice tells you the history and a hidden fact — like a private guide in your pocket.' },
-  { ico:'◉', title:'Near Me', text:'Tap Near Me and everything re-sorts by how close it is. As you walk, distances update live.' },
-  { ico:'◇', title:'The map', text:'See all 184 places as pins, colour-coded by type. Tap any pin for the details, the story, and directions.' },
-  { ico:'✎', title:'Your journal', text:'When you arrive at a place you saved, the app gently asks how it felt. Write a line, pick a mood — it becomes a diary of your trip.' },
-  { ico:'⬇', title:'Keep it forever', text:'In the Journal tab, Export file saves your whole trip as a keepsake you can turn into a beautiful printed journal later. Bon voyage!' },
-];
+// The traveller's first name when signed in; blank otherwise (community app — no hardcoded name).
+function travellerName() {
+  const p = (typeof DB !== 'undefined' && DB.profile) ? DB.profile : null;
+  const n = p && (p.display_name || p.handle);
+  return n ? String(n).split(' ')[0] : '';
+}
+let GUIDE_STEPS = [];
+function buildGuide() {
+  const cm = cityMeta(activeCity);
+  const n = (PLACES || []).length;
+  const who = travellerName();
+  GUIDE_STEPS = [
+    { ico:'🗼', title: who ? ('Bienvenue, ' + who) : 'Bienvenue', text:`${n} hand-picked places across ${cm.name} — food, cafés, art, music, nightlife, photo spots and more. Here’s how to make it yours in 30 seconds.` },
+    { ico:'♥', title:'Swipe to choose', text:'Swipe a card right (or tap ♥) to save a place you love. Swipe left (or ✕) to skip. The ➤ button opens directions.' },
+    { ico:'🎧', title:'Hear its story', text:'Tap Listen on any card and a voice tells you the history and a hidden fact — like a private guide in your pocket.' },
+    { ico:'＋', title:'Add your own', text:'Tap ＋ to add a place of your own — a photo, a pin on the map, a line about why it’s special. Sign in and it’s shared with everyone.' },
+    { ico:'◇', title:'The map', text:`See all ${n} places as pins, colour-coded by type. Tap any pin for the details, the story, and directions.` },
+    { ico:'✎', title:'Your journal', text:'When you arrive at a place you saved, the app gently asks how it felt. Write a line, pick a mood — it becomes a diary of your trip.' },
+    { ico:'⬇', title:'Keep it forever', text:'In the Journal tab, Export file saves your whole trip as a keepsake you can turn into a beautiful printed journal later. Bon voyage!' },
+  ];
+}
 let gIndex = 0;
 function renderGuide() {
   const s = GUIDE_STEPS[gIndex];
@@ -728,7 +740,7 @@ function renderGuide() {
   $('#gNext').textContent = gIndex === GUIDE_STEPS.length - 1 ? 'Start exploring' : 'Next';
   $('#gSkip').style.visibility = gIndex === GUIDE_STEPS.length - 1 ? 'hidden' : 'visible';
 }
-function openGuide() { gIndex = 0; renderGuide(); $('#guide').classList.add('open'); }
+function openGuide() { buildGuide(); gIndex = 0; renderGuide(); $('#guide').classList.add('open'); }
 function closeGuide() { $('#guide').classList.remove('open'); localStorage.setItem('pe_guided','1'); }
 $('#gNext').onclick = () => { if (gIndex < GUIDE_STEPS.length - 1) { gIndex++; renderGuide(); } else closeGuide(); };
 $('#gSkip').onclick = closeGuide;
@@ -1127,7 +1139,8 @@ function exportJournal() {
   const cm = cityMeta(activeCity);
   const sorted = [...mine].sort((a, b) => a.ts - b.ts);
   const days = [...new Set(sorted.map(e => fmtDay(e.ts)))];
-  let out = `MERAKI · ${cm.name.toUpperCase()}\nRamya's ${cm.name} journal — ${mine.length} moment${mine.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
+  const poss = travellerName() ? travellerName() + "'s" : 'My';
+  let out = `MERAKI · ${cm.name.toUpperCase()}\n${poss} ${cm.name} journal — ${mine.length} moment${mine.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
   let lastDay = '';
   for (const e of sorted) {
     const day = fmtDay(e.ts);
@@ -1135,7 +1148,7 @@ function exportJournal() {
     out += `\n${e.mood} ${e.placeName} · ${fmtTime(e.ts)}\n${e.text}\n`;
   }
   out += `\n— fin —`;
-  if (navigator.share) navigator.share({ title: "Ramya's " + cm.name + " journal", text: out }).catch(() => {});
+  if (navigator.share) navigator.share({ title: poss + " " + cm.name + " journal", text: out }).catch(() => {});
   else navigator.clipboard.writeText(out).then(() => toast('Journal copied to clipboard'));
 }
 // Structured export — the file Claude can later turn into a full journal / scrapbook
@@ -1165,7 +1178,7 @@ function exportJournalFile() {
   const days = [...new Set(mine.map(e => fmtDay(e.ts)))];
   const data = {
     app: 'Meraki Travels',
-    traveller: 'Ramya',
+    traveller: travellerName() || 'Traveller',
     city: cm.name,
     country: cm.country,
     exportedAt: new Date().toISOString(),
