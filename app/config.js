@@ -1,10 +1,7 @@
 /* Meraki Travel — runtime config.
-   Paste your Supabase project credentials here to switch on community features
-   (accounts, cloud places, shared itineraries, likes & comments).
-   Find them in Supabase → Project Settings → API.
-   The anon key is safe to ship in a static site: Row-Level Security guards the data.
-   Leave blank to run fully local (Add-a-place still works, stored on this device). */
+   Supabase publishable key is safe to ship in a static site: Row-Level Security
+   guards the data. The SECRET key must never go here or in the repo. */
 window.MERAKI_CONFIG = {
-  supabaseUrl: '',
-  supabaseAnonKey: ''
+  supabaseUrl: 'https://wwlkluaemeywwxbqkghf.supabase.co',
+  supabaseAnonKey: 'sb_publishable_SAbdRMEzFk2b8vwV1OUp3w_vu_dcJ_x'
 };
