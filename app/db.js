@@ -96,6 +96,51 @@
     },
     async signOut() { if (ready) await sb.auth.signOut(); },
 
+    // ---- email + password ----
+    async signUpEmail(email, password, name) {
+      if (!ready) return { error: { message: 'not configured' } };
+      const { data, error } = await sb.auth.signUp({
+        email, password,
+        options: { data: name ? { name } : undefined, emailRedirectTo: window.location.href.split('?')[0] }
+      });
+      // confirm-email ON -> user but no session; OFF -> session present
+      return { data, error, needsConfirm: !error && data && data.user && !data.session };
+    },
+    async signInPassword(email, password) {
+      if (!ready) return { error: { message: 'not configured' } };
+      return sb.auth.signInWithPassword({ email, password });
+    },
+    async resetPassword(email) {
+      if (!ready) return { error: { message: 'not configured' } };
+      return sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href.split('?')[0] });
+    },
+    async updatePassword(password) {
+      if (!ready || !session) return { error: { message: 'sign in first' } };
+      return sb.auth.updateUser({ password });
+    },
+    async updateEmail(email) {
+      if (!ready || !session) return { error: { message: 'sign in first' } };
+      return sb.auth.updateUser({ email });
+    },
+
+    // ---- profile ----
+    async updateProfile(fields) {
+      if (!ready || !session) return null;
+      const { data, error } = await sb.from('profiles').update(fields).eq('id', session.user.id).select().single();
+      if (error) { console.warn('updateProfile', error.message); return null; }
+      profile = data;
+      return data;
+    },
+    async uploadAvatar(dataUrl) {
+      return DB.uploadPhoto(dataUrl, 'avatars/' + (session ? session.user.id : 'anon'));
+    },
+    async getMyItineraries() {
+      if (!ready || !session) return [];
+      const { data } = await sb.from('itineraries').select('*').eq('author_id', session.user.id)
+        .order('created_at', { ascending: false });
+      return data || [];
+    },
+
     // ---- places ----
     async getCommunityPlaces(cityId) {
       if (!ready) return [];
