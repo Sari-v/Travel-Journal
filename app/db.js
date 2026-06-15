@@ -141,6 +141,27 @@
       return data || [];
     },
 
+    // ---- shared journals (moments) ----
+    async shareMoment(m) {
+      if (!ready || !session) return null;
+      const { data, error } = await sb.from('moments').insert({
+        author_id: session.user.id, city_id: m.cityId, place_ref: m.placeRef || null,
+        place_name: m.placeName || null, body: m.body || null, mood: m.mood || null,
+        happened_at: m.happenedAt || null, is_public: true
+      }).select('*, profiles(handle, display_name, avatar_url)').single();
+      if (error) { console.warn('shareMoment', error.message); return null; }
+      return data;
+    },
+    async getCityMoments(cityId) {
+      if (!ready) return [];
+      const { data, error } = await sb.from('moments')
+        .select('*, profiles(handle, display_name, avatar_url)')
+        .eq('city_id', cityId).eq('is_public', true)
+        .order('created_at', { ascending: false }).limit(100);
+      if (error) { console.warn('getCityMoments', error.message); return []; }
+      return data || [];
+    },
+
     // ---- places ----
     async getCommunityPlaces(cityId) {
       if (!ready) return [];

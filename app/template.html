@@ -197,6 +197,49 @@
   .cmt-box input { flex:1; background:var(--card); border:.5px solid var(--line); border-radius:999px; padding:11px 15px; font-family:var(--sans); font-size:14px; }
   .cmt-box button { background:var(--green); color:#fff; border:none; border-radius:999px; padding:0 16px; font-family:var(--sans); font-weight:600; font-size:13px; cursor:pointer; }
   .id-report { display:block; margin:8px 0 0; background:none; border:none; color:var(--mut); font-size:12px; cursor:pointer; }
+  /* ---- login gate ---- */
+  #authGate { position:fixed; inset:0; z-index:700; background:var(--paper); display:none; overflow-y:auto; padding:calc(40px + env(safe-area-inset-top)) 26px 40px; }
+  #authGate.open { display:block; }
+  .ag-inner { max-width:380px; margin:0 auto; }
+  .ag-step { animation:agfade .35s ease; }
+  @keyframes agfade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .ag-logo { width:54px; height:54px; border-radius:16px; background:var(--green-soft); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 16px; }
+  .ag-h { font-size:30px; font-weight:700; letter-spacing:-0.03em; text-align:center; }
+  .ag-tag { font-size:14.5px; line-height:1.5; color:var(--mut); text-align:center; margin:6px 0 22px; }
+  #authGate .ap-in { margin-bottom:10px; }
+  #authGate .auth-primary { margin-top:6px; }
+  .ag-links { display:flex; flex-direction:column; align-items:center; gap:4px; margin-top:14px; }
+  .ag-avatar-wrap { display:flex; justify-content:center; margin:6px 0 16px; }
+  .ag-avatar { width:96px; height:96px; border-radius:50%; border:1.5px dashed #c9c2b4; background:var(--card) center/cover no-repeat; color:var(--mut); font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; text-align:center; }
+  #agCityList { margin:4px 0 16px; }
+  /* ---- community feed ---- */
+  .cf-tabs { display:flex; gap:8px; padding:2px 0 14px; }
+  .cf-tabs button { flex:1; background:var(--chip); border:none; border-radius:999px; padding:9px 0; font-family:var(--sans); font-size:13px; font-weight:600; color:#3c3a35; cursor:pointer; }
+  .cf-tabs button.on { background:var(--green); color:#fff; }
+  .moment { background:var(--card); border:.5px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; }
+  .moment .m-top { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+  .moment .m-av { width:30px; height:30px; border-radius:50%; background:var(--green-soft) center/cover; color:var(--green); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  .moment .m-who b { font-size:13.5px; color:var(--ink); } .moment .m-who span { font-size:11.5px; color:var(--mut); display:block; }
+  .moment .m-body { font-size:14px; line-height:1.5; color:var(--ink2); }
+  .moment .m-place { font-size:12.5px; color:var(--gold); font-weight:600; margin-top:7px; }
+  /* ---- profile ---- */
+  .prof-head { display:flex; align-items:center; gap:14px; padding:6px 0 16px; }
+  .prof-av { width:64px; height:64px; border-radius:50%; background:var(--green-soft) center/cover; color:var(--green); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; flex-shrink:0; cursor:pointer; }
+  .prof-id b { font-size:19px; font-weight:700; letter-spacing:-0.01em; } .prof-id span { font-size:13px; color:var(--mut); display:block; }
+  .prof-gear { margin-left:auto; background:var(--chip); border:none; border-radius:50%; width:38px; height:38px; font-size:17px; cursor:pointer; }
+  .prof-stats { display:flex; gap:18px; padding:10px 2px 18px; border-bottom:.5px solid var(--line); }
+  .prof-stats div b { font-size:18px; font-weight:700; } .prof-stats div span { font-size:11.5px; color:var(--mut); display:block; }
+  /* ---- settings ---- */
+  #setWrap { position:fixed; inset:0; z-index:660; display:none; }
+  #setWrap.open { display:block; }
+  #setWrap .scrim { position:absolute; inset:0; background:rgba(30,28,24,.45); backdrop-filter:blur(2px); }
+  #setSheet { position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:24px 24px 0 0; padding:22px 22px calc(22px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .3s cubic-bezier(.2,.8,.25,1); max-height:88vh; overflow-y:auto; }
+  #setWrap.open #setSheet { transform:none; }
+  #setSheet .grab { width:36px; height:4px; border-radius:99px; background:#d8d3c8; margin:0 auto 16px; }
+  .set-group { font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin:18px 0 8px; }
+  .set-row { display:flex; align-items:center; gap:10px; width:100%; background:var(--card); border:.5px solid var(--line); border-radius:14px; padding:14px; margin-bottom:8px; font-family:var(--sans); font-size:14.5px; color:var(--ink); cursor:pointer; text-align:left; }
+  .set-row .sr-v { margin-left:auto; color:var(--mut); font-size:13px; }
+  .set-row.danger { color:var(--red); }
   #filters { display:flex; gap:8px; overflow-x:auto; padding:14px 20px; flex-shrink:0; scrollbar-width:none; position:relative; z-index:2; }
   #filters::-webkit-scrollbar { display:none; }
   .chip { background:var(--chip); border:none; border-radius:999px; padding:9px 16px; font-family:var(--sans); font-size:14px; font-weight:500; color:#3c3a35; white-space:nowrap; cursor:pointer; flex-shrink:0; }
@@ -361,6 +404,62 @@
   <div class="l-foot l-rev">Chosen with care · Été 2026</div>
 </div>
 
+<div id="authGate">
+  <div class="ag-inner">
+    <!-- step: auth -->
+    <div id="agAuth" class="ag-step">
+      <div class="ag-logo">✦</div>
+      <h1 class="ag-h">Meraki</h1>
+      <p class="ag-tag">Your travel companion — and a community of places.</p>
+      <button id="agGoogle" class="auth-oauth"><span class="oa-ico">G</span>Continue with Google</button>
+      <button id="agApple" class="auth-oauth apple"><span class="oa-ico"></span>Continue with Apple</button>
+      <div class="auth-or"><span>or with email</span></div>
+      <input id="agEmail" class="ap-in" type="email" autocomplete="email" placeholder="you@email.com">
+      <input id="agPass" class="ap-in" type="password" autocomplete="current-password" placeholder="Password">
+      <button id="agPrimary" class="auth-primary">Create account</button>
+      <div class="ag-links">
+        <button id="agToggle" class="auth-link" type="button">Have an account? Sign in</button>
+        <button id="agForgot" class="auth-link" type="button">Forgot password?</button>
+        <button id="agPhoneLink" class="auth-link" type="button">Use phone number instead</button>
+      </div>
+      <div id="agMsg" class="auth-msg"></div>
+    </div>
+    <!-- step: phone -->
+    <div id="agPhone" class="ag-step" hidden>
+      <div class="ag-logo">✆</div>
+      <h1 class="ag-h">Your phone</h1>
+      <div id="agPhoneSend1">
+        <input id="agPhoneNum" class="ap-in" type="tel" autocomplete="tel" placeholder="+1 555 123 4567">
+        <button id="agPhoneSendBtn" class="auth-primary">Text me a code</button>
+      </div>
+      <div id="agPhoneVerify1" hidden>
+        <input id="agPhoneCode" class="ap-in" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit code">
+        <button id="agPhoneVerifyBtn" class="auth-primary">Verify &amp; continue</button>
+      </div>
+      <button id="agPhoneBack" class="auth-link" type="button">← back to email</button>
+      <div id="agPhoneMsg" class="auth-msg"></div>
+    </div>
+    <!-- step: profile -->
+    <div id="agProfile" class="ag-step" hidden>
+      <h1 class="ag-h">Nice to meet you</h1>
+      <p class="ag-tag">What should we call you?</p>
+      <div class="ag-avatar-wrap"><button id="agAvatar" class="ag-avatar" type="button"><span>add<br>photo</span></button></div>
+      <input id="agAvatarInput" type="file" accept="image/*" hidden>
+      <input id="agName" class="ap-in" placeholder="Your name">
+      <input id="agHandle" class="ap-in" placeholder="@handle">
+      <button id="agProfileSave" class="auth-primary">Continue</button>
+      <div id="agProfileMsg" class="auth-msg"></div>
+    </div>
+    <!-- step: pick a city -->
+    <div id="agCity" class="ag-step" hidden>
+      <h1 class="ag-h">Where to first?</h1>
+      <p class="ag-tag">Pick a city to start exploring.</p>
+      <div id="agCityList"></div>
+      <button id="agStart" class="auth-primary">Start exploring</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="wm" id="cityBtn">
     <svg width="13" height="18" viewBox="0 0 13 18" fill="none"><path d="M6.5 0.5 L8.2 9 L11.8 16 M6.5 0.5 L4.8 9 L1.2 16 M3.6 11.5 L9.4 11.5 M4.6 7.5 L8.4 7.5 M1.2 16 L4.4 13.8 Q6.5 12.6 8.6 13.8 L11.8 16" stroke="#1d1d1f" stroke-width="1.1" stroke-linecap="round"/></svg>
@@ -389,14 +488,17 @@
     </div>
   </div>
   <div id="mapView" class="view"><div id="map"></div></div>
+  <div id="communityView" class="view"><div class="listwrap" id="communityBody"></div></div>
   <div id="savedView" class="view"><div class="listwrap" id="savedList"></div></div>
   <div id="journalView" class="view"><div class="listwrap" id="journalList"></div></div>
+  <div id="profileView" class="view"><div class="listwrap" id="profileBody"></div></div>
 </main>
 <nav>
   <button data-view="deck" class="active"><span class="ico">◉</span>Discover</button>
   <button data-view="mapView"><span class="ico">◇</span>Map</button>
+  <button data-view="communityView"><span class="ico">❀</span>Community</button>
   <button data-view="savedView"><span class="ico ndot" id="savedDot" data-n="0">♡</span>Saved</button>
-  <button data-view="journalView"><span class="ico ndot" id="journalDot" data-n="0">✎</span>Journal</button>
+  <button data-view="profileView"><span class="ico">◌</span>You</button>
 </nav>
 
 <div id="nudge">
@@ -528,6 +630,14 @@
   </div>
 </div>
 
+<div id="setWrap">
+  <div class="scrim" id="setScrim"></div>
+  <div id="setSheet">
+    <div class="grab"></div>
+    <div id="setBody"></div>
+  </div>
+</div>
+
 <div id="guide">
   <div class="g-card">
     <div class="g-ico" id="gIco">◉</div>
@@ -635,8 +745,8 @@ function persist() {
   localStorage.setItem('pe_myplaces', JSON.stringify(myPlaces));
   localStorage.setItem('pe_snooze', JSON.stringify(nudgeSnooze));
   localStorage.setItem('pe_city', activeCity);
-  $('#savedDot').dataset.n = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
-  $('#journalDot').dataset.n = journal.filter(e => e.city === activeCity).length;
+  const sd = $('#savedDot'); if (sd) sd.dataset.n = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
+  const jd = $('#journalDot'); if (jd) jd.dataset.n = journal.filter(e => e.city === activeCity).length;
 }
 function haversine(a, b) {
   const R = 6371, rad = x => x * Math.PI / 180;
@@ -1150,12 +1260,14 @@ $('#jsave').onclick = () => {
   } else {
     id = 'j' + Date.now();
     journal.push({ id, city:activeCity, placeId:sheetPlace?sheetPlace.id:null, placeName:sheetPlace?sheetPlace.name:('Somewhere in '+cityMeta(activeCity).name), text, mood:sheetMood, ts:Date.now() });
+    // share to the city's community feed (everyone sees it)
+    if (DB.ready && DB.user) DB.shareMoment({ cityId: activeCity, placeRef: sheetPlace ? sheetPlace.id : null, placeName: sheetPlace ? sheetPlace.name : null, body: text, mood: sheetMood, happenedAt: new Date().toISOString() });
   }
   savePhotos(id, sheetPhotos);
   persist();
   closeSheet();
   renderJournal();
-  toast('Moment kept');
+  toast(DB.ready && DB.user && !editingId ? 'Moment kept & shared with the community' : 'Moment kept');
 };
 function renderJournal() {
   const wrap = $('#journalList');
@@ -1391,6 +1503,8 @@ document.querySelectorAll('nav button').forEach(b => {
     }
     if (b.dataset.view === 'savedView') renderSaved();
     if (b.dataset.view === 'journalView') renderJournal();
+    if (b.dataset.view === 'communityView') renderCommunity();
+    if (b.dataset.view === 'profileView') renderProfile();
   };
 });
 
@@ -1767,16 +1881,209 @@ async function loadCommunityPlaces() {
   rebuild();
 }
 if (DB.ready) {
+  // account required: hide the app behind the gate until a session exists
+  $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
   DB.onAuth(async (sess) => {
     renderCityAccount();
-    if (sess && myPlaces.length) {
-      const n = await DB.migrateLocal(myPlaces, photoCache);
-      if (n) { myPlaces = []; persist(); toast(n + ' of your places are now shared'); }
+    if (sess) {
+      if (myPlaces.length) {
+        const n = await DB.migrateLocal(myPlaces, photoCache);
+        if (n) { myPlaces = []; persist(); }
+      }
+      await loadCommunityPlaces();
+      await loadItineraries();
+      if (!localStorage.getItem(onboardedKey())) {
+        // first time on this account → name/photo, then pick a city
+        const p = DB.profile || {};
+        $('#agName').value = (p.display_name && !p.display_name.includes('@')) ? p.display_name : '';
+        $('#agHandle').value = (p.handle && !/^traveller_/.test(p.handle)) ? p.handle : '';
+        $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
+        gateStep('agProfile');
+      } else {
+        hideGate();
+      }
+    } else {
+      showGate();   // signed out → show login
     }
-    await loadCommunityPlaces();
-    await loadItineraries();
   });
 }
+
+/* ---------- login gate ---------- */
+function showView(id) {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x.dataset.view === id));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === id));
+  const el = $('#' + id); if (!el) return;
+  if (id === 'mapView') { if (!map) initMap(); setTimeout(() => map.invalidateSize(), 60); refreshMarkers(); }
+  if (id === 'savedView') renderSaved();
+  if (id === 'communityView') renderCommunity();
+  if (id === 'profileView') renderProfile();
+  if (id === 'journalView') renderJournal();
+}
+function gateStep(id) { document.querySelectorAll('#authGate .ag-step').forEach(s => s.hidden = s.id !== id); }
+function showGate() { $('#authGate').classList.add('open'); $('#landing').classList.add('hidden'); gateStep('agAuth'); }
+function hideGate() { $('#authGate').classList.remove('open'); }
+const onboardedKey = () => 'pe_onboarded_' + (DB.user ? DB.user.id : 'x');
+const agMsg = (t, el) => { const e = $(el || '#agMsg'); if (e) e.textContent = t || ''; };
+
+let agMode = 'signup', agAvatarData = null, agPickedCity = null, agPendingPhone = '';
+if ($('#agPrimary')) {
+  $('#agToggle').onclick = () => {
+    agMode = agMode === 'signup' ? 'signin' : 'signup';
+    $('#agPrimary').textContent = agMode === 'signup' ? 'Create account' : 'Sign in';
+    $('#agToggle').textContent = agMode === 'signup' ? 'Have an account? Sign in' : 'New here? Create account';
+    agMsg('');
+  };
+  $('#agPrimary').onclick = async () => {
+    const email = $('#agEmail').value.trim(), pass = $('#agPass').value;
+    if (!/.+@.+\..+/.test(email)) return agMsg('Enter a valid email');
+    if (pass.length < 6) return agMsg('Password needs 6+ characters');
+    $('#agPrimary').disabled = true; agMsg(agMode === 'signup' ? 'Creating your account…' : 'Signing in…');
+    const res = agMode === 'signup' ? await DB.signUpEmail(email, pass) : await DB.signInPassword(email, pass);
+    $('#agPrimary').disabled = false;
+    if (res.error) return agMsg(res.error.message || 'Something went wrong');
+    if (res.needsConfirm) { agMode = 'signin'; $('#agPrimary').textContent = 'Sign in'; return agMsg('Check your email to confirm, then sign in.'); }
+    agMsg('');   // session arrives via onAuth → gate advances
+  };
+  $('#agGoogle').onclick = () => DB.signInGoogle();
+  $('#agApple').onclick = () => DB.signInApple();
+  $('#agForgot').onclick = async () => {
+    const email = $('#agEmail').value.trim();
+    if (!/.+@.+\..+/.test(email)) return agMsg('Type your email first, then tap forgot.');
+    await DB.resetPassword(email); agMsg('Password reset link sent — check your email.');
+  };
+  $('#agPhoneLink').onclick = () => gateStep('agPhone');
+  $('#agPhoneBack').onclick = () => gateStep('agAuth');
+  $('#agPhoneSendBtn').onclick = async () => {
+    const phone = $('#agPhoneNum').value.trim().replace(/[^\d+]/g, '');
+    if (!/^\+\d{7,15}$/.test(phone)) return agMsg('Use your full number with country code (+1…)', '#agPhoneMsg');
+    $('#agPhoneSendBtn').disabled = true; agMsg('Texting a code…', '#agPhoneMsg');
+    const { error } = await DB.signInPhone(phone); $('#agPhoneSendBtn').disabled = false;
+    if (error) return agMsg('Could not send: ' + (error.message || error), '#agPhoneMsg');
+    agPendingPhone = phone; $('#agPhoneSend1').hidden = true; $('#agPhoneVerify1').hidden = false; agMsg('Code sent to ' + phone, '#agPhoneMsg');
+  };
+  $('#agPhoneVerifyBtn').onclick = async () => {
+    const token = $('#agPhoneCode').value.trim().replace(/\D/g, '');
+    if (token.length < 4) return agMsg('Enter the code from the text', '#agPhoneMsg');
+    $('#agPhoneVerifyBtn').disabled = true; agMsg('Verifying…', '#agPhoneMsg');
+    const { error } = await DB.verifyPhone(agPendingPhone, token); $('#agPhoneVerifyBtn').disabled = false;
+    if (error) return agMsg('Wrong or expired code', '#agPhoneMsg');   // session via onAuth
+  };
+  // profile step
+  $('#agAvatar').onclick = () => $('#agAvatarInput').click();
+  $('#agAvatarInput').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return; const d = await compressImage(f);
+    if (d) { agAvatarData = d; $('#agAvatar').style.backgroundImage = `url(${d})`; $('#agAvatar').innerHTML = ''; }
+  };
+  $('#agProfileSave').onclick = async () => {
+    const name = $('#agName').value.trim();
+    if (!name) return agMsg('Tell us your name', '#agProfileMsg');
+    const handle = ($('#agHandle').value.trim().replace(/^@/, '') || name.toLowerCase().replace(/[^a-z0-9]+/g, '')).slice(0, 24);
+    $('#agProfileSave').disabled = true; agMsg('Saving…', '#agProfileMsg');
+    let avatar_url = null; if (agAvatarData) avatar_url = await DB.uploadAvatar(agAvatarData);
+    await DB.updateProfile(Object.assign({ display_name: name, handle }, avatar_url ? { avatar_url } : {}));
+    $('#agProfileSave').disabled = false; agMsg('', '#agProfileMsg');
+    agPickedCity = activeCity; buildAgCityList(); gateStep('agCity');
+  };
+  // city step
+  $('#agStart').onclick = () => {
+    if (agPickedCity) switchCity(agPickedCity);
+    localStorage.setItem(onboardedKey(), '1');
+    hideGate();
+  };
+}
+function buildAgCityList() {
+  const el = $('#agCityList'); if (!el) return;
+  el.innerHTML = CITIES.map(c => `<button class="city-row${c.id === agPickedCity ? ' on' : ''}" data-agcity="${c.id}">
+    <span class="city-flag">${c.emoji || '📍'}</span><span class="city-info"><b>${escHtml(c.name)}</b><span>${escHtml(c.country)}</span></span>
+    ${c.id === agPickedCity ? '<span class="city-check">✓</span>' : ''}</button>`).join('')
+    + `<p class="city-add" style="margin-top:10px">Going somewhere else? Ask Claude to add your city — it shows up here.</p>`;
+  el.querySelectorAll('[data-agcity]').forEach(b => b.onclick = () => { agPickedCity = b.dataset.agcity; buildAgCityList(); });
+}
+
+/* ---------- community feed ---------- */
+let cfTab = 'journals';
+async function renderCommunity() {
+  const el = $('#communityBody'); if (!el) return; const cm = cityMeta(activeCity);
+  el.innerHTML = `<div class="section-title">Community · ${escHtml(cm.name)}</div>
+    <div class="section-sub">Journals, trips & places shared by travellers here</div>
+    <div class="cf-tabs">
+      <button data-cf="journals" class="${cfTab === 'journals' ? 'on' : ''}">Journals</button>
+      <button data-cf="itineraries" class="${cfTab === 'itineraries' ? 'on' : ''}">Trips</button>
+      <button data-cf="places" class="${cfTab === 'places' ? 'on' : ''}">Places</button>
+    </div><div id="cfBody"></div>`;
+  el.querySelectorAll('[data-cf]').forEach(b => b.onclick = () => { cfTab = b.dataset.cf; renderCommunity(); });
+  const body = $('#cfBody'); body.innerHTML = '<div class="itin-empty">Loading…</div>';
+  if (!DB.ready) { body.innerHTML = '<div class="itin-empty">Community is offline.</div>'; return; }
+  if (cfTab === 'journals') {
+    const ms = await DB.getCityMoments(activeCity);
+    body.innerHTML = ms.length ? ms.map(m => {
+      const who = m.profiles ? (m.profiles.display_name || m.profiles.handle) : 'a traveller';
+      const av = m.profiles && m.profiles.avatar_url;
+      return `<div class="moment"><div class="m-top">
+        <div class="m-av" style="${av ? `background-image:url(${av})` : ''}">${av ? '' : escHtml(initials(who))}</div>
+        <div class="m-who"><b>${escHtml(who)}</b><span>${escHtml(m.place_name || cm.name)}</span></div></div>
+        <div class="m-body">${m.mood ? m.mood + ' ' : ''}${escHtml(m.body || '')}</div></div>`;
+    }).join('') : '<div class="itin-empty">No shared journals here yet. Write a moment in your Journal — it appears here for everyone.</div>';
+  } else if (cfTab === 'itineraries') {
+    const its = await DB.getItineraries(activeCity); itinCache[activeCity] = its;
+    body.innerHTML = its.length ? its.map(it => {
+      const who = it.profiles ? (it.profiles.display_name || it.profiles.handle) : 'a traveller';
+      return `<div class="itin-card" data-itin="${it.id}"><b>${escHtml(it.title)}</b>
+        <div class="ic-by">by ${escHtml(who)} · ${it.days} day${it.days > 1 ? 's' : ''}</div>
+        <div class="ic-meta"><span>♥ ${it.like_count || 0}</span><span>open →</span></div></div>`;
+    }).join('') : '<div class="itin-empty">No community trips yet. Build one from your saved places (Saved → Build).</div>';
+    body.querySelectorAll('[data-itin]').forEach(c => c.onclick = () => openItin(c.dataset.itin));
+  } else {
+    const ps = (cloudPlaces[activeCity] || []);
+    body.innerHTML = ps.length ? ps.map(p => `<div class="lcard"><div class="dot" style="background:${CATS[p.category].color}"></div>
+      <div><h3>${escHtml(p.name)}</h3><div class="meta">${escHtml(p.neighborhood || '')}${p.author === 'me' ? ' · by you' : ''}</div></div></div>`).join('')
+      : '<div class="itin-empty">No community places yet. Add one with ＋ on the Discover screen.</div>';
+  }
+}
+
+/* ---------- profile + settings ---------- */
+let voicePref = localStorage.getItem('pe_pref_voice') !== '0';
+function renderProfile() {
+  const el = $('#profileBody'); if (!el) return;
+  if (!DB.user) { el.innerHTML = '<div class="empty-note"><span class="big">Not signed in</span>Sign in to build your profile.</div>'; return; }
+  const p = DB.profile || {}, name = p.display_name || 'You', handle = p.handle || 'you';
+  const av = p.avatar_url;
+  const savedN = [...saved].filter(k => k.startsWith(activeCity + '/')).length;
+  const addedN = (cloudPlaces[activeCity] || []).filter(x => x.author === 'me').length + myPlaces.length;
+  el.innerHTML = `<div class="prof-head">
+      <div class="prof-av" style="${av ? `background-image:url(${av})` : ''}">${av ? '' : escHtml(initials(name))}</div>
+      <div class="prof-id"><b>${escHtml(name)}</b><span>@${escHtml(handle)}</span></div>
+      <button class="prof-gear" id="profGear">⚙</button></div>
+    <div class="prof-stats">
+      <div><b>${savedN}</b><span>Saved</span></div>
+      <div><b>${journal.length}</b><span>Moments</span></div>
+      <div><b>${addedN}</b><span>Added</span></div></div>
+    <button class="set-row" id="profJournalBtn" style="margin-top:16px">Your journal<span class="sr-v">${journal.length} ›</span></button>
+    <button class="set-row" id="profEdit">Edit name &amp; photo<span class="sr-v">›</span></button>`;
+  $('#profGear').onclick = openSettings;
+  $('#profEdit').onclick = () => { agPickedCity = activeCity; $('#agName').value = name; $('#agHandle').value = handle; $('#authGate').classList.add('open'); $('#landing').classList.add('hidden'); gateStep('agProfile'); };
+  $('#profJournalBtn').onclick = () => showView('journalView');
+}
+function openSettings() {
+  const u = DB.user, email = u ? u.email : '';
+  $('#setBody').innerHTML = `<div class="s-eyebrow">Settings</div><h2 style="font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px">Your account</h2>
+    <div class="set-group">Account</div>
+    <button class="set-row" id="setEmail">Email<span class="sr-v">${escHtml(email || '—')} ›</span></button>
+    <button class="set-row" id="setPass">Change password<span class="sr-v">›</span></button>
+    <button class="set-row" id="setReset">Send password reset<span class="sr-v">›</span></button>
+    <div class="set-group">Preferences</div>
+    <button class="set-row" id="setVoice">Voice guide<span class="sr-v">${voicePref ? 'On' : 'Off'}</span></button>
+    <div class="set-group">Session</div>
+    <button class="set-row" id="setSignout">Sign out<span class="sr-v">›</span></button>`;
+  $('#setEmail').onclick = async () => { const v = prompt('New email address', email); if (v && v !== email) { const { error } = await DB.updateEmail(v.trim()); toast(error ? 'Could not update' : 'Check both inboxes to confirm'); } };
+  $('#setPass').onclick = async () => { const v = prompt('New password (6+ characters)'); if (v && v.length >= 6) { const { error } = await DB.updatePassword(v); toast(error ? 'Could not update' : 'Password updated'); } else if (v) toast('Too short'); };
+  $('#setReset').onclick = async () => { if (email) { await DB.resetPassword(email); toast('Reset link sent to ' + email); } };
+  $('#setVoice').onclick = () => { voicePref = !voicePref; localStorage.setItem('pe_pref_voice', voicePref ? '1' : '0'); openSettings(); };
+  $('#setSignout').onclick = async () => { closeSettings(); await DB.signOut(); };
+  $('#setWrap').classList.add('open');
+}
+function closeSettings() { $('#setWrap').classList.remove('open'); }
+if ($('#setScrim')) $('#setScrim').onclick = closeSettings;
 
 function rebuild() {
   buildQueue();
