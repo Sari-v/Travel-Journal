@@ -20,6 +20,7 @@
     --sans:-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  [hidden] { display: none !important; }   /* the hidden attr must win over display:flex/block rules */
   html, body { height:100%; overflow:hidden; }
   body { font-family:var(--sans); -webkit-font-smoothing:antialiased; background:var(--paper); color:var(--ink); display:flex; flex-direction:column; }
   body::after { content:""; position:fixed; right:-30px; bottom:40px; width:240px; height:340px; pointer-events:none; z-index:0; opacity:0.05;
@@ -406,23 +407,34 @@
 
 <div id="authGate">
   <div class="ag-inner">
-    <!-- step: auth -->
-    <div id="agAuth" class="ag-step">
+    <!-- step: loading (while we check your session) -->
+    <div id="agLoading" class="ag-step"><div class="ag-logo">✦</div><p class="ag-tag" style="margin-top:22px">Loading…</p></div>
+    <!-- step: auth (email + password) -->
+    <div id="agAuth" class="ag-step" hidden>
       <div class="ag-logo">✦</div>
       <h1 class="ag-h">Travel Journal</h1>
-      <p class="ag-tag">Your travel companion — and a community of places.</p>
-      <button id="agGoogle" class="auth-oauth"><span class="oa-ico">G</span>Continue with Google</button>
-      <button id="agApple" class="auth-oauth apple"><span class="oa-ico"></span>Continue with Apple</button>
-      <div class="auth-or"><span>or with email</span></div>
+      <p class="ag-tag" id="agAuthTag">Create an account to start your journey.</p>
+      <button id="agGoogle" class="auth-oauth" hidden><span class="oa-ico">G</span>Continue with Google</button>
+      <button id="agApple" class="auth-oauth apple" hidden><span class="oa-ico"></span>Continue with Apple</button>
+      <div class="auth-or" hidden><span>or with email</span></div>
       <input id="agEmail" class="ap-in" type="email" autocomplete="email" placeholder="you@email.com">
-      <input id="agPass" class="ap-in" type="password" autocomplete="current-password" placeholder="Password">
+      <input id="agPass" class="ap-in" type="password" autocomplete="current-password" placeholder="Password (6+ characters)">
       <button id="agPrimary" class="auth-primary">Create account</button>
       <div class="ag-links">
         <button id="agToggle" class="auth-link" type="button">Have an account? Sign in</button>
         <button id="agForgot" class="auth-link" type="button">Forgot password?</button>
-        <button id="agPhoneLink" class="auth-link" type="button">Use phone number instead</button>
+        <button id="agPhoneLink" class="auth-link" type="button" hidden>Use phone number instead</button>
       </div>
       <div id="agMsg" class="auth-msg"></div>
+    </div>
+    <!-- step: password recovery (landing from the reset email link) -->
+    <div id="agRecover" class="ag-step" hidden>
+      <div class="ag-logo">🔑</div>
+      <h1 class="ag-h">Set a new password</h1>
+      <p class="ag-tag">Almost there — choose a new password for your account.</p>
+      <input id="agNewPass" class="ap-in" type="password" autocomplete="new-password" placeholder="New password (6+ characters)">
+      <button id="agNewPassSave" class="auth-primary">Update password &amp; continue</button>
+      <div id="agRecoverMsg" class="auth-msg"></div>
     </div>
     <!-- step: phone -->
     <div id="agPhone" class="ag-step" hidden>
@@ -1882,9 +1894,15 @@ async function loadCommunityPlaces() {
 }
 if (DB.ready) {
   // account required: hide the app behind the gate until a session exists
-  $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
-  DB.onAuth(async (sess) => {
+  $('#authGate').classList.add('open'); $('#landing').classList.add('hidden'); gateStep('agLoading');
+  DB.onAuth(async (sess, prof, event) => {
     renderCityAccount();
+    if (event === 'PASSWORD_RECOVERY') {
+      // user clicked the reset link in their email → let them set a new password
+      $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
+      $('#agNewPass').value = ''; agMsg('', '#agRecoverMsg'); gateStep('agRecover');
+      return;
+    }
     if (sess) {
       if (myPlaces.length) {
         const n = await DB.migrateLocal(myPlaces, photoCache);
@@ -1931,7 +1949,21 @@ if ($('#agPrimary')) {
     agMode = agMode === 'signup' ? 'signin' : 'signup';
     $('#agPrimary').textContent = agMode === 'signup' ? 'Create account' : 'Sign in';
     $('#agToggle').textContent = agMode === 'signup' ? 'Have an account? Sign in' : 'New here? Create account';
+    const tag = $('#agAuthTag'); if (tag) tag.textContent = agMode === 'signup' ? 'Create an account to start your journey.' : 'Welcome back — sign in to continue.';
+    $('#agPass').setAttribute('autocomplete', agMode === 'signup' ? 'new-password' : 'current-password');
     agMsg('');
+  };
+  // password recovery: set a new password after clicking the email link
+  $('#agNewPassSave').onclick = async () => {
+    const pw = $('#agNewPass').value;
+    if (pw.length < 6) return agMsg('Password needs 6+ characters', '#agRecoverMsg');
+    $('#agNewPassSave').disabled = true; agMsg('Updating…', '#agRecoverMsg');
+    const { error } = await DB.updatePassword(pw);
+    $('#agNewPassSave').disabled = false;
+    if (error) return agMsg(error.message || 'Could not update password', '#agRecoverMsg');
+    agMsg('Password updated ✓', '#agRecoverMsg');
+    // now signed in with the new password → continue into the app/onboarding
+    if (!localStorage.getItem(onboardedKey())) gateStep('agProfile'); else hideGate();
   };
   $('#agPrimary').onclick = async () => {
     const email = $('#agEmail').value.trim(), pass = $('#agPass').value;

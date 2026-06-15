@@ -13,7 +13,7 @@
   }
 
   const authCbs = [];
-  let session = null, profile = null;
+  let session = null, profile = null, initialized = false;
 
   async function loadProfile() {
     if (!session) { profile = null; return null; }
@@ -21,14 +21,15 @@
     profile = data || { id: session.user.id, handle: 'you', display_name: 'You' };
     return profile;
   }
-  function fireAuth() { authCbs.forEach(cb => { try { cb(session, profile); } catch (e) {} }); }
+  function fireAuth(event) { authCbs.forEach(cb => { try { cb(session, profile, event); } catch (e) {} }); }
 
   if (ready) {
     sb.auth.getSession().then(async ({ data }) => {
-      session = data.session; if (session) await loadProfile(); fireAuth();
+      session = data.session; if (session) await loadProfile(); initialized = true; fireAuth('INITIAL');
     });
-    sb.auth.onAuthStateChange(async (_e, s) => {
-      session = s; if (session) await loadProfile(); else profile = null; fireAuth();
+    sb.auth.onAuthStateChange(async (event, s) => {
+      session = s; if (session) await loadProfile(); else profile = null;
+      fireAuth(event);   // event can be PASSWORD_RECOVERY, SIGNED_IN, SIGNED_OUT, …
     });
   }
 
@@ -72,7 +73,7 @@
     get session() { return session; },
     get user() { return session ? session.user : null; },
     get profile() { return profile; },
-    onAuth(cb) { authCbs.push(cb); if (session !== null || !ready) cb(session, profile); },
+    onAuth(cb) { authCbs.push(cb); if (initialized || !ready) cb(session, profile, 'INITIAL'); },
 
     async signInEmail(email) {
       if (!ready) return { error: 'not configured' };
