@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#faf8f4">
-<title>Meraki Paris Tour</title>
+<title>Travel Journal</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Meraki">
+<meta name="apple-mobile-web-app-title" content="Travel Journal">
 <style>
   :root {
     --paper:#faf8f4; --card:#ffffff; --ink:#1d1d1f; --ink2:#46433c; --mut:#8e8a82;
@@ -393,7 +393,7 @@
   <svg class="bigeiffel" viewBox="0 0 40 58" fill="none">
     <path d="M20 2 L24 28 L34 54 M20 2 L16 28 L6 54 M11 38 L29 38 M14 24 L26 24 M6 54 Q20 46 34 54" stroke="#b08d3e" stroke-width="0.7" stroke-linecap="round"/>
   </svg>
-  <h1 class="l-title l-rev">Meraki<br><span id="lCity">Paris.</span></h1>
+  <h1 class="l-title l-rev">Travel Journal<br><span id="lCity">Paris.</span></h1>
   <p class="l-quote l-rev" id="lQuote"></p>
   <div class="l-stats l-rev">
     <div class="l-stat"><b id="statPlaces">0</b><span>Places</span></div>
@@ -409,7 +409,7 @@
     <!-- step: auth -->
     <div id="agAuth" class="ag-step">
       <div class="ag-logo">✦</div>
-      <h1 class="ag-h">Meraki</h1>
+      <h1 class="ag-h">Travel Journal</h1>
       <p class="ag-tag">Your travel companion — and a community of places.</p>
       <button id="agGoogle" class="auth-oauth"><span class="oa-ico">G</span>Continue with Google</button>
       <button id="agApple" class="auth-oauth apple"><span class="oa-ico"></span>Continue with Apple</button>
@@ -463,7 +463,7 @@
 <header>
   <div class="wm" id="cityBtn">
     <svg width="13" height="18" viewBox="0 0 13 18" fill="none"><path d="M6.5 0.5 L8.2 9 L11.8 16 M6.5 0.5 L4.8 9 L1.2 16 M3.6 11.5 L9.4 11.5 M4.6 7.5 L8.4 7.5 M1.2 16 L4.4 13.8 Q6.5 12.6 8.6 13.8 L11.8 16" stroke="#1d1d1f" stroke-width="1.1" stroke-linecap="round"/></svg>
-    Meraki · <span id="cityName">Paris</span> <span style="color:var(--mut);font-size:11px">▾</span>
+    Travel Journal · <span id="cityName">Paris</span> <span style="color:var(--mut);font-size:11px">▾</span>
   </div>
   <div style="display:flex; gap:8px; align-items:center;">
     <button id="addBtn" aria-label="Add a place">＋</button>
@@ -579,7 +579,7 @@
   <div id="authSheet">
     <div class="grab"></div>
     <div class="s-eyebrow">Travel together</div>
-    <h2>Join Meraki</h2>
+    <h2>Join Travel Journal</h2>
     <p class="auth-sub">Add places, publish itineraries and save across your devices. Likes and warmth only — never dislikes.</p>
     <button id="authGoogle" class="auth-oauth"><span class="oa-ico">G</span>Continue with Google</button>
     <button id="authApple" class="auth-oauth apple"><span class="oa-ico"></span>Continue with Apple</button>
@@ -1325,7 +1325,7 @@ function exportJournal() {
   const sorted = [...mine].sort((a, b) => a.ts - b.ts);
   const days = [...new Set(sorted.map(e => fmtDay(e.ts)))];
   const poss = travellerName() ? travellerName() + "'s" : 'My';
-  let out = `MERAKI · ${cm.name.toUpperCase()}\n${poss} ${cm.name} journal — ${mine.length} moment${mine.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
+  let out = `TRAVEL JOURNAL · ${cm.name.toUpperCase()}\n${poss} ${cm.name} journal — ${mine.length} moment${mine.length>1?'s':''} across ${days.length} day${days.length>1?'s':''}\n`;
   let lastDay = '';
   for (const e of sorted) {
     const day = fmtDay(e.ts);
@@ -1362,7 +1362,7 @@ function exportJournalFile() {
     .map(p => ({ name: p.name, id: p.id, category: p.category, neighborhood: p.neighborhood, address: p.address, lat: p.lat, lng: p.lng }));
   const days = [...new Set(mine.map(e => fmtDay(e.ts)))];
   const data = {
-    app: 'Meraki Travels',
+    app: 'Travel Journal',
     traveller: travellerName() || 'Traveller',
     city: cm.name,
     country: cm.country,
@@ -1376,7 +1376,7 @@ function exportJournalFile() {
   const stamp = new Date().toISOString().slice(0, 10);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `meraki-${activeCity}-journal-${stamp}.json`;
+  a.download = `travel-journal-${activeCity}-${stamp}.json`;
   document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   toast(mine.length ? 'Journal file saved' : 'Empty journal saved');

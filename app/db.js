@@ -1,4 +1,4 @@
-/* Meraki Travel — data layer (Supabase).
+/* Travel Journal — data layer (Supabase).
    Exposes window.DB. When config is blank, DB.ready is false and every call is a
    safe no-op, so the app runs fully local. When configured, this handles auth,
    community places, itineraries, comments and likes (no dislikes). */

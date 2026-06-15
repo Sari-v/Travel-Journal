@@ -1,6 +1,6 @@
 {
-  "name": "Meraki Travels",
-  "short_name": "Meraki",
+  "name": "Travel Journal",
+  "short_name": "Travel Journal",
   "description": "Your pocket travel companion & journal.",
   "start_url": "./",
   "scope": "./",

@@ -1,4 +1,4 @@
-# Meraki Travel — a personal travel companion & journal
+# Travel Journal — a personal travel companion & journal
 
 A mobile-first web app that turns a trip into a swipeable, map-based, voice-guided guide — and quietly becomes a journal of everywhere you go. Built first for Paris; designed to grow city by city.
 
