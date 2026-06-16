@@ -1904,15 +1904,10 @@ if (DB.ready) {
       return;
     }
     if (sess) {
-      if (myPlaces.length) {
-        const n = await DB.migrateLocal(myPlaces, photoCache);
-        if (n) { myPlaces = []; persist(); }
-      }
-      await loadCommunityPlaces();
-      await loadItineraries();
+      // Decide the gate IMMEDIATELY — never make sign-in wait on network data,
+      // or a slow connection freezes the login on "Signing in…".
       // A returning user already has a real profile (handle no longer the default
-      // "traveller_…" the trigger created) — send them straight in, regardless of
-      // whether this particular device has the local onboarded flag.
+      // "traveller_…" the trigger created) — send them straight in.
       const p = DB.profile || {};
       const hasRealProfile = p.handle && !/^traveller_/.test(p.handle);
       if (hasRealProfile || localStorage.getItem(onboardedKey())) {
@@ -1925,6 +1920,14 @@ if (DB.ready) {
         $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
         gateStep('agProfile');
       }
+      // Background: migrate local data + load community content. Never blocks the gate.
+      (async () => {
+        try {
+          if (myPlaces.length) { const n = await DB.migrateLocal(myPlaces, photoCache); if (n) { myPlaces = []; persist(); } }
+          await loadCommunityPlaces();
+          await loadItineraries();
+        } catch (e) { console.warn('community load failed (non-blocking)', e); }
+      })();
     } else {
       showGate();   // signed out → show login
     }
