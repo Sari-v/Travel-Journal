@@ -1910,15 +1910,20 @@ if (DB.ready) {
       }
       await loadCommunityPlaces();
       await loadItineraries();
-      if (!localStorage.getItem(onboardedKey())) {
-        // first time on this account → name/photo, then pick a city
-        const p = DB.profile || {};
+      // A returning user already has a real profile (handle no longer the default
+      // "traveller_…" the trigger created) — send them straight in, regardless of
+      // whether this particular device has the local onboarded flag.
+      const p = DB.profile || {};
+      const hasRealProfile = p.handle && !/^traveller_/.test(p.handle);
+      if (hasRealProfile || localStorage.getItem(onboardedKey())) {
+        localStorage.setItem(onboardedKey(), '1');
+        hideGate();
+      } else {
+        // genuinely new account → name/photo, then pick a city
         $('#agName').value = (p.display_name && !p.display_name.includes('@')) ? p.display_name : '';
         $('#agHandle').value = (p.handle && !/^traveller_/.test(p.handle)) ? p.handle : '';
         $('#authGate').classList.add('open'); $('#landing').classList.add('hidden');
         gateStep('agProfile');
-      } else {
-        hideGate();
       }
     } else {
       showGate();   // signed out → show login
