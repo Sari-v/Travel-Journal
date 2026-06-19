@@ -5,7 +5,10 @@
       "name": "Paris",
       "country": "France",
       "emoji": "🇫🇷",
-      "center": [48.8566, 2.3522],
+      "center": [
+        48.8566,
+        2.3522
+      ],
       "tagline": "Food, art, music and quiet corners — gathered with soul.",
       "bestTime": "April–June and September–October. Spring brings blossom and café terraces without the August crush; early autumn is warm, golden and far quieter once the summer crowds leave. Avoid August, when many locals shut up shop and leave the city.",
       "itinerary": [
@@ -31,7 +34,10 @@
       "name": "Amsterdam",
       "country": "Netherlands",
       "emoji": "🇳🇱",
-      "center": [52.3676, 4.9041],
+      "center": [
+        52.3676,
+        4.9041
+      ],
       "tagline": "Canals, Golden-Age art, brown cafés and long, generous nights.",
       "bestTime": "April–May and September. Late April is tulip season and King's Day (27 April) turns the whole city orange — magical but very busy. September has mild weather, golden canal light and thinner crowds. Winters are dark and cold, but the city glows during the Amsterdam Light Festival (Dec–Jan).",
       "itinerary": [
@@ -51,6 +57,617 @@
           "plan": "Morning bike ride along the canals to De Pijp and the Albert Cuyp Market for stroopwafels. Afternoon at the A'DAM Lookout swing across the river, sunset photos at the Magere Brug and the Seven Bridges, then a final, easy night dancing at Disco Dolly or Club NYX."
         }
       ]
+    },
+    {
+      "id": "athens",
+      "name": "Athens",
+      "country": "Greece",
+      "emoji": "🇬🇷",
+      "center": [
+        37.9764,
+        23.727
+      ],
+      "tagline": "Athens — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "austin",
+      "name": "Austin",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        30.2617,
+        -97.7492
+      ],
+      "tagline": "Austin — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "bali",
+      "name": "Bali",
+      "country": "Indonesia",
+      "emoji": "🇮🇩",
+      "center": [
+        -8.5217,
+        115.2566
+      ],
+      "tagline": "Bali — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "bangkok",
+      "name": "Bangkok",
+      "country": "Thailand",
+      "emoji": "🇹🇭",
+      "center": [
+        13.7408,
+        100.5154
+      ],
+      "tagline": "Bangkok — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "barcelona",
+      "name": "Barcelona",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "center": [
+        41.3847,
+        2.1724
+      ],
+      "tagline": "Barcelona — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "berlin",
+      "name": "Berlin",
+      "country": "Germany",
+      "emoji": "🇩🇪",
+      "center": [
+        52.5078,
+        13.4011
+      ],
+      "tagline": "Berlin — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "boston",
+      "name": "Boston",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        42.3541,
+        -71.0701
+      ],
+      "tagline": "Boston — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "brussels",
+      "name": "Brussels",
+      "country": "Belgium",
+      "emoji": "🇧🇪",
+      "center": [
+        50.8454,
+        4.3528
+      ],
+      "tagline": "Brussels — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "budapest",
+      "name": "Budapest",
+      "country": "Hungary",
+      "emoji": "🇭🇺",
+      "center": [
+        47.4986,
+        19.0547
+      ],
+      "tagline": "Budapest — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "cape-town",
+      "name": "Cape Town",
+      "country": "South Africa",
+      "emoji": "🇿🇦",
+      "center": [
+        -33.9256,
+        18.419
+      ],
+      "tagline": "Cape Town — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "chicago",
+      "name": "Chicago",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        41.8892,
+        -87.6342
+      ],
+      "tagline": "Chicago — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "copenhagen",
+      "name": "Copenhagen",
+      "country": "Denmark",
+      "emoji": "🇩🇰",
+      "center": [
+        55.6812,
+        12.5755
+      ],
+      "tagline": "Copenhagen — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "dubai",
+      "name": "Dubai",
+      "country": "United Arab Emirates",
+      "emoji": "🇦🇪",
+      "center": [
+        25.2037,
+        55.281
+      ],
+      "tagline": "Dubai — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "dublin",
+      "name": "Dublin",
+      "country": "Ireland",
+      "emoji": "🇮🇪",
+      "center": [
+        53.3429,
+        -6.264
+      ],
+      "tagline": "Dublin — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "edinburgh",
+      "name": "Edinburgh",
+      "country": "Scotland",
+      "emoji": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+      "center": [
+        55.9498,
+        -3.1928
+      ],
+      "tagline": "Edinburgh — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "florence",
+      "name": "Florence",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "center": [
+        43.7694,
+        11.2548
+      ],
+      "tagline": "Florence — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "istanbul",
+      "name": "Istanbul",
+      "country": "Türkiye",
+      "emoji": "🇹🇷",
+      "center": [
+        41.027,
+        28.9776
+      ],
+      "tagline": "Istanbul — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "krakow",
+      "name": "Kraków",
+      "country": "Poland",
+      "emoji": "🇵🇱",
+      "center": [
+        50.0605,
+        19.9395
+      ],
+      "tagline": "Kraków — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "kyoto",
+      "name": "Kyoto",
+      "country": "Japan",
+      "emoji": "🇯🇵",
+      "center": [
+        35.0067,
+        135.77
+      ],
+      "tagline": "Kyoto — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "las-vegas",
+      "name": "Las Vegas",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        36.1264,
+        -115.1658
+      ],
+      "tagline": "Las Vegas — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "lisbon",
+      "name": "Lisbon",
+      "country": "Portugal",
+      "emoji": "🇵🇹",
+      "center": [
+        38.7109,
+        -9.1438
+      ],
+      "tagline": "Lisbon — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "los-angeles",
+      "name": "Los Angeles",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        34.0635,
+        -118.3043
+      ],
+      "tagline": "Los Angeles — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "madrid",
+      "name": "Madrid",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "center": [
+        40.4181,
+        -3.7014
+      ],
+      "tagline": "Madrid — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "marrakech",
+      "name": "Marrakech",
+      "country": "Morocco",
+      "emoji": "🇲🇦",
+      "center": [
+        31.6266,
+        -7.9892
+      ],
+      "tagline": "Marrakech — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "melbourne",
+      "name": "Melbourne",
+      "country": "Australia",
+      "emoji": "🇦🇺",
+      "center": [
+        -37.8145,
+        144.969
+      ],
+      "tagline": "Melbourne — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "mexico-city",
+      "name": "Mexico City",
+      "country": "Mexico",
+      "emoji": "🇲🇽",
+      "center": [
+        19.4267,
+        -99.1606
+      ],
+      "tagline": "Mexico City — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "miami",
+      "name": "Miami",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        25.7792,
+        -80.1925
+      ],
+      "tagline": "Miami — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "mumbai",
+      "name": "Mumbai",
+      "country": "India",
+      "emoji": "🇮🇳",
+      "center": [
+        18.959,
+        72.83
+      ],
+      "tagline": "Mumbai — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "nashville",
+      "name": "Nashville",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        36.1551,
+        -86.7817
+      ],
+      "tagline": "Nashville — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "new-orleans",
+      "name": "New Orleans",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        29.9567,
+        -90.0668
+      ],
+      "tagline": "New Orleans — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "new-york",
+      "name": "New York",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        40.7355,
+        -73.9882
+      ],
+      "tagline": "New York — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "nice",
+      "name": "Nice",
+      "country": "France",
+      "emoji": "🇫🇷",
+      "center": [
+        43.6968,
+        7.2744
+      ],
+      "tagline": "Nice — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "porto",
+      "name": "Porto",
+      "country": "Portugal",
+      "emoji": "🇵🇹",
+      "center": [
+        41.1462,
+        -8.6131
+      ],
+      "tagline": "Porto — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "prague",
+      "name": "Prague",
+      "country": "Czechia",
+      "emoji": "🇨🇿",
+      "center": [
+        50.0866,
+        14.4189
+      ],
+      "tagline": "Prague — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "rio-de-janeiro",
+      "name": "Rio de Janeiro",
+      "country": "Brazil",
+      "emoji": "🇧🇷",
+      "center": [
+        -22.9489,
+        -43.1869
+      ],
+      "tagline": "Rio de Janeiro — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "rome",
+      "name": "Rome",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "center": [
+        41.898,
+        12.4757
+      ],
+      "tagline": "Rome — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "san-diego",
+      "name": "San Diego",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        32.7375,
+        -117.1703
+      ],
+      "tagline": "San Diego — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "san-francisco",
+      "name": "San Francisco",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        37.78,
+        -122.42
+      ],
+      "tagline": "San Francisco — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "seattle",
+      "name": "Seattle",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        47.6141,
+        -122.3388
+      ],
+      "tagline": "Seattle — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "seoul",
+      "name": "Seoul",
+      "country": "South Korea",
+      "emoji": "🇰🇷",
+      "center": [
+        37.5654,
+        126.9875
+      ],
+      "tagline": "Seoul — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "seville",
+      "name": "Seville",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "center": [
+        37.3863,
+        -5.9935
+      ],
+      "tagline": "Seville — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "singapore",
+      "name": "Singapore",
+      "country": "Singapore",
+      "emoji": "🇸🇬",
+      "center": [
+        1.2902,
+        103.8515
+      ],
+      "tagline": "Singapore — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "stockholm",
+      "name": "Stockholm",
+      "country": "Sweden",
+      "emoji": "🇸🇪",
+      "center": [
+        59.325,
+        18.0709
+      ],
+      "tagline": "Stockholm — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "sydney",
+      "name": "Sydney",
+      "country": "Australia",
+      "emoji": "🇦🇺",
+      "center": [
+        -33.8713,
+        151.2093
+      ],
+      "tagline": "Sydney — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "tokyo",
+      "name": "Tokyo",
+      "country": "Japan",
+      "emoji": "🇯🇵",
+      "center": [
+        35.6852,
+        139.7475
+      ],
+      "tagline": "Tokyo — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "venice",
+      "name": "Venice",
+      "country": "Italy",
+      "emoji": "🇮🇹",
+      "center": [
+        45.4355,
+        12.3342
+      ],
+      "tagline": "Venice — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
+    },
+    {
+      "id": "washington-dc",
+      "name": "Washington DC",
+      "country": "United States",
+      "emoji": "🇺🇸",
+      "center": [
+        38.9047,
+        -77.0276
+      ],
+      "tagline": "Washington DC — hand-picked places, gathered with soul.",
+      "bestTime": "",
+      "itinerary": []
     }
   ]
 }
