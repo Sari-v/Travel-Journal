@@ -668,6 +668,64 @@
       "tagline": "Washington DC — hand-picked places, gathered with soul.",
       "bestTime": "",
       "itinerary": []
+    },
+    {
+      "id": "montreal",
+      "name": "Montreal",
+      "country": "Canada",
+      "emoji": "🇨🇦",
+      "center": [
+        45.5019,
+        -73.5674
+      ],
+      "tagline": "European soul, North American energy — bagels, bistros, and all-night beats.",
+      "bestTime": "Late spring through early fall (May–September) is the sweet spot, when terrasses open, festivals fill the Quartier des Spectacles, and Tam-Tams take over Mount Royal. June and July bring the Jazz Festival and warm patio nights, while September offers golden weather with thinner crowds. Winter is magical but bitterly cold, ideal mainly for skating, the underground city, and Notre-Dame's Aura light show.",
+      "itinerary": [
+        {
+          "day": "Day 1",
+          "title": "Old Montreal & the Waterfront",
+          "plan": "Start with cobblestones in Vieux-Montréal and the cobalt-and-gold interior of Notre-Dame Basilica, then dig into the city's origins at Pointe-à-Callière. Wander the Old Port, ride La Grande Roue, and unwind with a thermal circuit at the floating Bota Bota spa before dinner and tiki cocktails at Le Mal Nécessaire in nearby Chinatown."
+        },
+        {
+          "day": "Day 2",
+          "title": "Plateau, Mile End & Mountain Views",
+          "plan": "Fuel up on hot bagels at St-Viateur and espresso at Café Olimpico in Mile End, then hike Mount Royal to the Kondiaronk Belvedere for the skyline. Stroll Avenue Mont-Royal and the Saint-Laurent murals, grab smoked meat at Schwartz's, and end with craft beer at Dieu du Ciel! or a show at Casa del Popolo."
+        },
+        {
+          "day": "Day 3",
+          "title": "Markets, Art & Nightlife",
+          "plan": "Graze through Jean-Talon Market in Little Italy, then explore the Montreal Museum of Fine Arts or immersive art at the PHI Centre. Bike the Lachine Canal to Atwater Market for lunch, and cap the night with natural wine at Vin Mon Lapin or dancing at Stereo's legendary afterhours."
+        }
+      ]
+    },
+    {
+      "id": "london",
+      "name": "London",
+      "country": "United Kingdom",
+      "emoji": "🇬🇧",
+      "center": [
+        51.5074,
+        -0.1278
+      ],
+      "tagline": "Centuries of history, world-class culture, and a pub on every corner.",
+      "bestTime": "Late spring (May–June) and early autumn (September) are ideal, with long daylight, mild weather, and parks in full bloom or golden colour. Summer is warmest and liveliest but busiest and priciest, while December brings magical Christmas lights and markets despite short, chilly days. Avoid betting on sunshine year-round — pack a light rain jacket whenever you come.",
+      "itinerary": [
+        {
+          "day": "Day 1",
+          "title": "Classic London Landmarks",
+          "plan": "Start at the Tower of London and walk across Tower Bridge, then ride an Uber Boat along the Thames to Westminster for Big Ben and Westminster Abbey. End with sunset views from the free Sky Garden and an evening pint at Gordon's Wine Bar, London's oldest."
+        },
+        {
+          "day": "Day 2",
+          "title": "Markets, Museums & the South Bank",
+          "plan": "Graze through Borough Market for lunch, then cross the Millennium Bridge to Tate Modern and St Paul's Cathedral. Wander the City to photogenic Leadenhall Market and St Dunstan in the East, then cap the night with live jazz at Ronnie Scott's in Soho."
+        },
+        {
+          "day": "Day 3",
+          "title": "Local Neighbourhoods & Hidden Corners",
+          "plan": "Browse the beautiful Daunt Books in Marylebone, then head to colourful Notting Hill and Portobello Road. Climb Primrose Hill for the skyline, explore East London's Columbia Road and Brick Lane (grab a salt-beef bagel at Beigel Bake), and finish with cocktails at Shoreditch speakeasy Nightjar."
+        }
+      ]
     }
   ]
 }
