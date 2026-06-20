@@ -49,10 +49,10 @@
   /* ===== SHELL ===== */
   header { padding:18px 20px 0; display:flex; justify-content:space-between; align-items:center; flex-shrink:0; position:relative; z-index:2; }
   .wm { font-size:15px; font-weight:600; letter-spacing:-0.01em; display:flex; align-items:center; gap:8px; cursor:pointer; }
-  #locBtn { background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:8px 14px; font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; }
+  #locBtn { background:var(--green-soft); color:var(--green); border:none; border-radius:999px; padding:11px 18px; font-family:var(--sans); font-size:14.5px; font-weight:600; cursor:pointer; }
   #locBtn.on { background:var(--green); color:#fff; }
-  #helpBtn { width:32px; height:32px; border-radius:50%; background:var(--chip); color:var(--ink2); border:none; font-family:var(--sans); font-size:15px; font-weight:600; cursor:pointer; line-height:1; }
-  #addBtn { width:32px; height:32px; border-radius:50%; background:var(--green-soft); color:var(--green); border:none; font-family:var(--sans); font-size:19px; font-weight:600; cursor:pointer; line-height:1; }
+  #helpBtn { width:40px; height:40px; border-radius:50%; background:var(--chip); color:var(--ink2); border:none; font-family:var(--sans); font-size:18px; font-weight:600; cursor:pointer; line-height:1; }
+  #addBtn { width:40px; height:40px; border-radius:50%; background:var(--green-soft); color:var(--green); border:none; font-family:var(--sans); font-size:23px; font-weight:600; cursor:pointer; line-height:1; }
 
   /* ===== GUIDE / WALKTHROUGH ===== */
   #guide { position:fixed; inset:0; z-index:700; display:none; align-items:flex-end; justify-content:center;
@@ -121,7 +121,7 @@
   .ap-in { width:100%; background:var(--card); border:.5px solid var(--line); border-radius:12px; padding:12px 14px; font-family:var(--sans); font-size:15px; color:var(--ink); }
   textarea.ap-in { min-height:70px; resize:vertical; }
   #apCats { display:flex; flex-wrap:wrap; gap:7px; }
-  #apCats .chip { background:var(--chip); border:none; border-radius:999px; padding:8px 14px; font-family:var(--sans); font-size:13px; font-weight:500; color:#3c3a35; cursor:pointer; }
+  #apCats .chip { background:var(--chip); border:none; border-radius:999px; padding:11px 18px; font-family:var(--sans); font-size:14.5px; font-weight:500; color:#3c3a35; cursor:pointer; }
   #apCats .chip.active { background:var(--green); color:#fff; }
   #apMap { height:170px; border-radius:14px; overflow:hidden; border:.5px solid var(--line); }
   .ap-coords { display:flex; align-items:center; gap:10px; margin-top:9px; }
@@ -291,9 +291,9 @@
   .badge.like { left:18px; background:rgba(46,110,78,.9); color:#fff; }
   .badge.nope { right:18px; background:rgba(255,255,255,.85); color:var(--mut); border:.5px solid var(--line); }
   #deckBtns { position:absolute; bottom:16px; left:0; right:0; display:flex; justify-content:center; align-items:center; gap:16px; z-index:10; }
-  #deckBtns button { width:54px; height:54px; border-radius:50%; border:.5px solid var(--line); background:var(--card); box-shadow:0 4px 14px rgba(40,35,25,.09); font-size:19px; color:var(--mut); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .15s; }
+  #deckBtns button { width:64px; height:64px; border-radius:50%; border:.5px solid var(--line); background:var(--card); box-shadow:0 6px 18px rgba(40,35,25,.12); font-size:23px; color:var(--mut); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .15s; }
   #deckBtns button:active { transform:scale(.92); }
-  #mapsBtn { width:46px !important; height:46px !important; font-size:15px !important; color:var(--green) !important; }
+  #mapsBtn { width:56px !important; height:56px !important; font-size:18px !important; color:var(--green) !important; }
   #saveBtn { color:var(--red) !important; }
   #deckEmpty { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; padding:36px; }
   #deckEmpty.show { display:flex; }
@@ -375,8 +375,8 @@
   #nudge .n-x { background:none; border:none; color:var(--mut); font-size:15px; cursor:pointer; padding:4px; flex-shrink:0; }
 
   nav { display:flex; flex-shrink:0; background:rgba(250,248,244,.88); backdrop-filter:blur(20px); border-top:.5px solid rgba(176,141,62,.35); padding:6px 0 calc(10px + env(safe-area-inset-bottom)); position:relative; z-index:2; }
-  nav button { flex:1; background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:10.5px; font-weight:500; cursor:pointer; padding-top:5px; }
-  nav button .ico { display:block; font-size:20px; margin-bottom:2px; font-weight:400; }
+  nav button { flex:1; background:none; border:none; color:var(--mut); font-family:var(--sans); font-size:11.5px; font-weight:500; cursor:pointer; padding-top:7px; }
+  nav button .ico { display:block; font-size:24px; margin-bottom:2px; font-weight:400; }
   nav button.active { color:var(--green); }
   nav button .ndot { position:relative; display:inline-block; }
   nav button .ndot[data-n]:not([data-n="0"])::after { content:attr(data-n); position:absolute; top:-3px; right:-14px; background:var(--red); color:#fff; font-size:9px; font-weight:700; border-radius:99px; padding:1.5px 5px; }
