@@ -545,6 +545,7 @@
     <div id="cityAccount"></div>
     <div class="s-eyebrow">Your trips</div>
     <h2>Where to?</h2>
+    <input id="citySearch" class="ap-in" placeholder="🔍  Search cities or countries…" autocomplete="off" style="margin-bottom:12px">
     <div id="cityList"></div>
     <div id="cityTrip"></div>
     <div id="cityItins"></div>
@@ -1529,13 +1530,15 @@ function fmtCityStats(id) {
   if (jc) parts.push(jc + ' moment' + (jc > 1 ? 's' : ''));
   return parts.length ? parts.join(' · ') : (cityMeta(id).count + ' places');
 }
-function renderCityList() {
-  $('#cityList').innerHTML = CITIES.map(c => `
+function renderCityList(q) {
+  q = (q || '').trim().toLowerCase();
+  const list = q ? CITIES.filter(c => ((c.name || '') + ' ' + (c.country || '')).toLowerCase().includes(q)) : CITIES;
+  $('#cityList').innerHTML = list.map(c => `
     <button class="city-row${c.id === activeCity ? ' on' : ''}" data-city="${c.id}">
       <span class="city-flag">${c.emoji || '📍'}</span>
       <span class="city-info"><b>${c.name}</b><span>${c.country} · ${fmtCityStats(c.id)}</span></span>
       ${c.id === activeCity ? '<span class="city-check">✓</span>' : ''}
-    </button>`).join('');
+    </button>`).join('') || `<p class="city-add">No city matches “${q}”. Ask Claude to add it.</p>`;
   $('#cityList').querySelectorAll('[data-city]').forEach(b => b.onclick = () => switchCity(b.dataset.city));
 }
 function renderCityTrip() {
@@ -1560,7 +1563,7 @@ function renderCityTrip() {
   const tg = $('#tripToggle');
   if (tg) tg.onclick = () => { tg.classList.toggle('open'); $('#tripDays').classList.toggle('open'); };
 }
-function openCitySheet() { renderCityAccount(); renderCityList(); renderCityTrip(); renderCityItins(); if (DB.ready) loadItineraries(); $('#citySheetWrap').classList.add('open'); }
+function openCitySheet() { renderCityAccount(); const cs = $('#citySearch'); if (cs) { cs.value = ''; cs.oninput = e => renderCityList(e.target.value); } renderCityList(); renderCityTrip(); renderCityItins(); if (DB.ready) loadItineraries(); $('#citySheetWrap').classList.add('open'); }
 function closeCitySheet() { $('#citySheetWrap').classList.remove('open'); }
 function switchCity(id) {
   if (!ALL[id]) return;
