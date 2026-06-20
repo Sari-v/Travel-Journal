@@ -674,27 +674,35 @@
 <script>
 const DATA = /*__PLACES_DATA__*/;
 const CITIES = DATA.manifest;
-const curatedSeed = {};
+const curatedSeed = {};   // filled lazily per city via loadCityData()
 const ALL = {};
-for (const c of CITIES) {
-  curatedSeed[c.id] = DATA.cities[c.id].places.map(p => ({ ...p, id: c.id + '/' + p.id, _rawId: p.id, city: c.id }));
-}
 let myPlaces = JSON.parse(localStorage.getItem('pe_myplaces') || '[]');
 let cloudPlaces = {};   // community places fetched from Supabase, per city
 function rebuildAll() {
   for (const c of CITIES) {
     const mine = myPlaces.filter(p => p.city === c.id);
     const cloud = cloudPlaces[c.id] || [];
-    ALL[c.id] = curatedSeed[c.id].concat(cloud, mine);
+    ALL[c.id] = (curatedSeed[c.id] || []).concat(cloud, mine);
     const cm = CITIES.find(x => x.id === c.id);
-    if (cm) cm.count = ALL[c.id].length;
+    if (cm && curatedSeed[c.id]) cm.count = ALL[c.id].length;
   }
+}
+// Lazy-load a city's curated places from its own small JSON — keeps index.html tiny + fast.
+const _cityFetch = {};
+function loadCityData(id) {
+  if (curatedSeed[id]) return Promise.resolve();
+  if (_cityFetch[id]) return _cityFetch[id];
+  _cityFetch[id] = fetch('cities/' + id + '.json')
+    .then(r => r.ok ? r.json() : { places: [] })
+    .catch(() => ({ places: [] }))
+    .then(d => { curatedSeed[id] = (d.places || []).map(p => ({ ...p, id: id + '/' + p.id, _rawId: p.id, city: id })); rebuildAll(); });
+  return _cityFetch[id];
 }
 rebuildAll();
 function cityMeta(id) { return CITIES.find(c => c.id === id) || CITIES[0]; }
 let activeCity = localStorage.getItem('pe_city');
-if (!activeCity || !ALL[activeCity]) activeCity = CITIES[0].id;
-let PLACES = ALL[activeCity];
+if (!activeCity || !CITIES.find(c => c.id === activeCity)) activeCity = CITIES[0].id;
+let PLACES = ALL[activeCity] || [];
 
 const CATS = {
   food:       { label: 'Food',        color: '#b06a2c' },
@@ -1567,15 +1575,18 @@ function renderCityTrip() {
 function openCitySheet() { renderCityAccount(); const cs = $('#citySearch'); if (cs) { cs.value = ''; cs.oninput = e => renderCityList(e.target.value); } renderCityList(); renderCityTrip(); renderCityItins(); if (DB.ready) loadItineraries(); $('#citySheetWrap').classList.add('open'); }
 function closeCitySheet() { $('#citySheetWrap').classList.remove('open'); }
 function switchCity(id) {
-  if (!ALL[id]) return;
-  activeCity = id; PLACES = ALL[id];
-  localStorage.setItem('pe_city', id);
-  if (speakingId) { speechSynthesis.cancel(); speakingId = null; }
-  updateCityUI();
-  if (map) { drawMarkers(); refreshMarkers(); map.setView(cityMeta(id).center, 13); }
-  rebuild(); renderJournal();
+  if (!CITIES.find(c => c.id === id)) return;
   closeCitySheet();
-  toast('Now exploring ' + cityMeta(id).name);
+  toast('Loading ' + cityMeta(id).name + '…');
+  loadCityData(id).then(() => {
+    activeCity = id; PLACES = ALL[id];
+    localStorage.setItem('pe_city', id);
+    if (speakingId) { speechSynthesis.cancel(); speakingId = null; }
+    updateCityUI();
+    if (map) { drawMarkers(); refreshMarkers(); map.setView(cityMeta(id).center, 13); }
+    rebuild(); renderJournal();
+    toast('Now exploring ' + cityMeta(id).name);
+  });
 }
 function updateCityUI() {
   const c = cityMeta(activeCity);
@@ -2139,6 +2150,8 @@ function rebuild() {
 persist();
 rebuild();
 renderJournal();
+// lazy-load the active city's places, then render the deck/map
+loadCityData(activeCity).then(() => { PLACES = ALL[activeCity]; rebuild(); if (map) { drawMarkers(); refreshMarkers(); } });
 </script>
 </body>
 </html>

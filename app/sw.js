@@ -1,4 +1,4 @@
-const CACHE = 'tj-v3';
+const CACHE = 'tj-v4';
 const CORE = [
   './', './index.html', './db.js',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
