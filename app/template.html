@@ -1509,6 +1509,7 @@ document.querySelectorAll('nav button').forEach(b => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     b.classList.add('active');
     $('#' + b.dataset.view).classList.add('active');
+    $('#filters').style.display = (b.dataset.view === 'deck' || b.dataset.view === 'mapView') ? '' : 'none';
     if (b.dataset.view === 'mapView') {
       if (!map) initMap();
       setTimeout(() => map.invalidateSize(), 60);
@@ -1942,6 +1943,7 @@ function showView(id) {
   document.querySelectorAll('nav button').forEach(x => x.classList.toggle('active', x.dataset.view === id));
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === id));
   const el = $('#' + id); if (!el) return;
+  $('#filters').style.display = (id === 'deck' || id === 'mapView') ? '' : 'none';
   if (id === 'mapView') { if (!map) initMap(); setTimeout(() => map.invalidateSize(), 60); refreshMarkers(); }
   if (id === 'savedView') renderSaved();
   if (id === 'communityView') renderCommunity();
