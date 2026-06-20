@@ -1,4 +1,4 @@
-const CACHE = 'tj-v4';
+const CACHE = 'tj-v5';
 const CORE = [
   './', './index.html', './db.js',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
@@ -15,21 +15,16 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-  // config.js holds Supabase keys — always try the network first so credential
-  // changes (community on/off) propagate without waiting for a cache bump.
-  if (url.pathname.endsWith('/config.js') || url.pathname.endsWith('config.js')) {
-    e.respondWith(fetch(e.request).then(res => {
-      const copy = res.clone();
-      caches.open(CACHE).then(c => { try { c.put(e.request, copy); } catch (_) {} });
-      return res;
-    }).catch(() => caches.match(e.request)));
+  // Cross-origin (Leaflet CDN, Wikipedia images): cache-first for speed.
+  if (url.origin !== self.location.origin) {
+    e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+      const copy = res.clone(); caches.open(CACHE).then(c => { try { c.put(e.request, copy); } catch (_) {} }); return res;
+    })));
     return;
   }
-  e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-      const copy = res.clone();
-      caches.open(CACHE).then(c => { try { c.put(e.request, copy); } catch (_) {} });
-      return res;
-    }).catch(() => caches.match('./index.html')))
-  );
+  // Same-origin app shell + data: NETWORK-FIRST so new deploys always show.
+  // Cache is only the offline fallback.
+  e.respondWith(fetch(e.request).then(res => {
+    const copy = res.clone(); caches.open(CACHE).then(c => { try { c.put(e.request, copy); } catch (_) {} }); return res;
+  }).catch(() => caches.match(e.request).then(hit => hit || caches.match('./index.html'))));
 });
